@@ -14,9 +14,9 @@ type Mood =
 
 const happyLines = [
   "he's also interested in working with you ↗",
-  "let's build something good",
+  "let's build something good together",
   "available for work · 2026",
-  "based in berlin · open remote",
+  "based in berlin · Open to work",
   "click works to see the good stuff",
 ];
 
@@ -202,10 +202,10 @@ export function Emo() {
               waving
                 ? { rotate: [0, -12, 12, -8, 8, -4, 0] }
                 : mood === "happy"
-                ? { rotate: [0, -4, 4, -3, 0] }
-                : mood === "annoyed"
-                ? { x: [0, -2, 2, -1, 1, 0] }
-                : { rotate: 0, x: 0 }
+                  ? { rotate: [0, -4, 4, -3, 0] }
+                  : mood === "annoyed"
+                    ? { x: [0, -2, 2, -1, 1, 0] }
+                    : { rotate: 0, x: 0 }
             }
             transition={{ duration: waving ? 1.2 : 0.5 }}
             aria-label="Emo — click to talk"

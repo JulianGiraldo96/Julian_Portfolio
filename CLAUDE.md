@@ -35,3 +35,10 @@ Single-page portfolio site for Julian Giraldo (visual/experience designer). Next
 - Strict TypeScript. `jsx: react-jsx` — no `import React` needed for JSX.
 - Tailwind v4 is configured via PostCSS only (no `tailwind.config.*`); extend theme through CSS custom properties in `globals.css`.
 - Keep the layout-level providers (`SmoothScroll`, `Cursor`, `Nav`) in `app/layout.tsx` — sections should not re-mount their own scroll/cursor machinery.
+
+## Image rules (MANDATORY — never break these)
+
+- **No letterboxing / black bars ever.** Images must always render at their natural aspect ratio. Never place an image inside a fixed-size container that is a different shape — this creates black borders on the sides or top/bottom.
+- Never use `object-contain` inside a fixed aspect-ratio box unless the box's ratio exactly matches the image. Use `object-cover` (crops) or let the container size to the image (`h-auto`, `w-auto`).
+- For scrollable screen galleries (`ScreensGrid`): fix height (`h-[480px]`), set `width: auto` on the image, and let the container shrink-wrap the image width. No forced aspect-ratio wrapper.
+- For inline section images with a background (`SectionMedia` with `bg`): the wrapper must be `w-full` and contain only `<img class="w-full h-auto" />` so height is always proportional to width.
