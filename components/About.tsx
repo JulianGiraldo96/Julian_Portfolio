@@ -64,11 +64,10 @@ export function About() {
             </RevealBlock>
             <RevealBlock delay={0.25}>
               <p className="text-muted">
-                Outside of design, I&apos;m really into physics, AI tools, and
-                building personal automations and processes that make life and
-                work easier. I also enjoy learning from the way product
-                designers think about systems, usability, and digital
-                experiences.
+                Outside of design, I&apos;m into physics, AI tools, and
+                building automations that make work and life less annoying. I
+                also spend a lot of time studying how product designers think
+                about systems, usability, and digital experiences.
               </p>
             </RevealBlock>
           </div>
