@@ -6,7 +6,7 @@ import { useRef } from "react";
 const socials = [
   {
     label: "Email",
-    href: "mailto:juliangr.work@gmail.com",
+    href: "mailto:application@juliang.de",
     icon: (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="4" width="20" height="16" rx="2" />
