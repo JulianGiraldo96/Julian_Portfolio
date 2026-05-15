@@ -9,7 +9,7 @@ import { BerlinClock } from "./Clock";
 const links = [
   { hash: "#top", label: "Home" },
   { hash: "#work", label: "Works" },
-  { hash: "#archives", label: "Archives" },
+  { hash: "#about", label: "About" },
   { hash: "#contact", label: "Contact" },
 ];
 

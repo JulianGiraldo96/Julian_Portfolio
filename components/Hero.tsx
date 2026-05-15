@@ -55,6 +55,18 @@ export function Hero() {
           <BlurLine delay={0.65}>Giraldo</BlurLine>
         </h1>
 
+        <motion.div
+          initial={{ opacity: 0, filter: "blur(8px)" }}
+          animate={{ opacity: 1, filter: "blur(0px)" }}
+          transition={{ duration: 0.9, delay: 0.95, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-6 flex justify-center"
+        >
+          <span className="inline-flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.2em] text-foreground/60 bg-foreground/5 border border-border px-3 py-1.5 rounded-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+            open for work
+          </span>
+        </motion.div>
+
         <motion.p
           initial={{ opacity: 0, filter: "blur(10px)" }}
           animate={{ opacity: 1, filter: "blur(0px)" }}

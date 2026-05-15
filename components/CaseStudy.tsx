@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 type Stat = { number: string; caption: string; icon?: StatIcon };
 type StatIcon = "percent" | "bolt" | "globe" | "leaf" | "triangle" | "dot";
@@ -61,12 +61,30 @@ type FlowSection = {
   body?: string[];
 };
 
+type DemoSection = {
+  kind: "demo";
+  label: string;
+  heading: string;
+  body?: string[];
+  url: string;
+};
+
+type GallerySection = {
+  kind: "gallery";
+  label: string;
+  heading: string;
+  body?: string[];
+  images: Array<{ src: string; alt: string; caption?: string }>;
+};
+
 type Section =
   | TextSection
   | ListSection
   | QuestionsSection
   | ScreensSection
-  | FlowSection;
+  | FlowSection
+  | DemoSection
+  | GallerySection;
 
 type Meta = {
   index: string;
@@ -76,16 +94,19 @@ type Meta = {
   role: string;
   tags: string[];
   note?: string;
+  status?: string;
 };
 
 export function CaseStudy({
   meta,
   cover,
   sections,
+  currentSlug,
 }: {
   meta: Meta;
-  cover: { src: string; alt: string };
+  cover: { src?: string; alt: string; gradient?: string };
   sections: Section[];
+  currentSlug?: string;
 }) {
   return (
     <main className="relative pb-24">
@@ -109,7 +130,7 @@ export function CaseStudy({
             <MetaItem label="Year" value={meta.year} />
             <MetaItem label="Role" value={meta.role} />
             <MetaItem label="Tags" value={meta.tags.join(" · ")} />
-            <MetaItem label="Status" value="Concept · 2025" />
+            <MetaItem label="Status" value={meta.status ?? `Concept · ${meta.year}`} />
           </dl>
 
           {meta.note && (
@@ -120,7 +141,7 @@ export function CaseStudy({
         </div>
       </header>
 
-      <Cover src={cover.src} alt={cover.alt} />
+      <Cover src={cover.src} alt={cover.alt} gradient={cover.gradient} />
 
       <div className="px-6 md:px-10 mt-20 md:mt-32">
         <div className="mx-auto max-w-[1400px] space-y-24 md:space-y-32">
@@ -130,7 +151,7 @@ export function CaseStudy({
         </div>
       </div>
 
-      <MoreWork />
+      <MoreWork currentSlug={currentSlug} />
 
       <footer className="mt-16 px-6 md:px-10 border-t border-border pt-10 pb-10">
         <div className="mx-auto max-w-[1400px] flex flex-col md:flex-row md:items-center md:justify-between gap-6 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.22em]">
@@ -159,7 +180,7 @@ function MetaItem({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Cover({ src, alt }: { src: string; alt: string }) {
+function Cover({ src, alt, gradient }: { src?: string; alt: string; gradient?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -170,17 +191,19 @@ function Cover({ src, alt }: { src: string; alt: string }) {
   return (
     <div
       ref={ref}
-      className="relative mx-6 md:mx-10 aspect-[16/9] md:aspect-[16/8] overflow-hidden bg-[#0a0a0a]"
+      className={`relative mx-6 md:mx-10 aspect-[16/9] md:aspect-[16/8] overflow-hidden ${gradient ? "bg-[#0a0a0a]" : "bg-[#e8e8e6]"}`}
     >
-      <motion.div style={{ y }} className="absolute inset-0 scale-110">
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          sizes="100vw"
-          className="object-cover"
-          priority
-        />
+      <motion.div style={{ y }} className={`absolute inset-0 scale-110 ${gradient ?? ""}`}>
+        {src && (
+          <Image
+            src={src}
+            alt={alt}
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
+          />
+        )}
       </motion.div>
     </div>
   );
@@ -195,7 +218,7 @@ function SectionBlock({ section }: { section: Section }) {
         </span>
       </div>
 
-      <div className="col-span-12 md:col-span-9 space-y-8 md:space-y-12">
+      <div className={`col-span-12 space-y-8 md:space-y-12 ${section.kind === "demo" ? "" : "md:col-span-9"}`}>
         <HeadingReveal>
           <h2 className="font-display font-extralight tracking-[-0.025em] leading-[1.05] text-[clamp(1.75rem,3.6vw,3rem)] max-w-3xl">
             {section.heading}
@@ -309,6 +332,35 @@ function SectionBlock({ section }: { section: Section }) {
           </>
         )}
 
+        {section.kind === "gallery" && (
+          <>
+            {section.body &&
+              section.body.map((p, i) => (
+                <p key={i} className="max-w-2xl text-base md:text-lg leading-relaxed text-muted">{p}</p>
+              ))}
+            <div className="space-y-4 md:space-y-6">
+              {section.images.map((img, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+                  whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  viewport={{ once: true, amount: 0.1 }}
+                  transition={{ duration: 0.85, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                  className="w-full overflow-hidden border border-border"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={img.src} alt={img.alt} className="block w-full h-auto" />
+                  {img.caption && (
+                    <p className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-muted border-t border-border">
+                      {img.caption}
+                    </p>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          </>
+        )}
+
         {section.kind === "flow" && (
           <>
             {section.body &&
@@ -323,7 +375,27 @@ function SectionBlock({ section }: { section: Section }) {
             <FlowDiagram />
           </>
         )}
+
+        {section.kind === "demo" && (
+          <>
+            {section.body &&
+              section.body.map((p, i) => (
+                <p
+                  key={i}
+                  className="max-w-2xl text-base md:text-lg leading-relaxed text-muted"
+                >
+                  {p}
+                </p>
+              ))}
+          </>
+        )}
       </div>
+
+      {section.kind === "demo" && (
+        <div className="col-span-12 mt-2">
+          <DemoFrame url={section.url} />
+        </div>
+      )}
     </section>
   );
 }
@@ -857,34 +929,112 @@ function FlowDiagram() {
   );
 }
 
-const moreWorkProjects = [
+const IFRAME_W = 1440;
+const IFRAME_H = 900;
+
+function DemoFrame({ url }: { url: string }) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const update = () => setScale(el.clientWidth / IFRAME_W);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const containerHeight = Math.round(IFRAME_H * scale);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20, filter: "blur(12px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, amount: 0.05 }}
+      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+      className="w-full border border-border overflow-hidden"
+    >
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-subtle">
+        <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
+          interactive demo · 1440px viewport
+        </span>
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground hover:text-muted transition-colors"
+          data-cursor-hover
+        >
+          open full ↗
+        </a>
+      </div>
+      <div ref={wrapRef} style={{ height: `${containerHeight}px`, overflow: "hidden" }}>
+        <iframe
+          src={url}
+          title="Duo ERP Dashboard — live demo"
+          style={{
+            width: `${IFRAME_W}px`,
+            height: `${IFRAME_H}px`,
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+            border: "none",
+            display: "block",
+          }}
+        />
+      </div>
+    </motion.div>
+  );
+}
+
+const allMoreWorkProjects = [
+  {
+    title: "Savee",
+    headline: "Meal planning that makes food waste impossible.",
+    types: ["Mobile", "UX", "Sustainability"],
+    year: "2025",
+    slug: "savee" as string | null,
+    image: "/projects/savee/cover.png",
+    tone: "",
+    accent: "",
+  },
+  {
+    title: "ERP Duo",
+    headline: "Nine locations. One system. Full control.",
+    types: ["Web", "B2B", "ERP"],
+    year: "2026",
+    slug: "erp-duo" as string | null,
+    image: "/projects/erp-duo/cover.png",
+    tone: "",
+    accent: "",
+  },
   {
     title: "Tierra Viva",
-    tagline: "Breathing new life into an organic market.",
+    headline: "",
+    types: [] as string[],
     year: "2024",
     slug: null as string | null,
+    image: "",
     tone: "bg-gradient-to-br from-amber-100 via-orange-200 to-yellow-300",
     accent: "after:bg-[radial-gradient(circle_at_70%_30%,#f7d89c_0%,transparent_60%)]",
   },
   {
     title: "Casa Nomad",
-    tagline: "Weaving artisan stories into a global brand.",
+    headline: "",
+    types: [] as string[],
     year: "2024",
     slug: null as string | null,
+    image: "",
     tone: "bg-gradient-to-br from-[#c26f3c] via-[#8f4a24] to-[#d48c5a]",
     accent: "after:bg-[radial-gradient(circle_at_20%_30%,#e6a46e_0%,transparent_60%)]",
   },
-  {
-    title: "Alba",
-    tagline: "Crafting a sanctuary of minimalism and nature.",
-    year: "2023",
-    slug: null as string | null,
-    tone: "bg-gradient-to-br from-[#9aa48d] via-[#6b7a5c] to-[#3f4a32]",
-    accent: "after:bg-[radial-gradient(circle_at_60%_40%,#cfd4b8_0%,transparent_55%)]",
-  },
 ];
 
-function MoreWork() {
+function MoreWork({ currentSlug }: { currentSlug?: string }) {
+  const moreWorkProjects = allMoreWorkProjects
+    .filter((p) => p.slug !== currentSlug)
+    .slice(0, 3);
   return (
     <div className="mt-24 md:mt-40 px-6 md:px-10 border-t border-border pt-16 pb-8">
       <div className="mx-auto max-w-[1400px]">
@@ -914,32 +1064,53 @@ function MoreWork() {
                 transition={{ duration: 0.9, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
               >
                 <Link href={href} className="group block" data-cursor-hover>
-                  <div
-                    className={`relative aspect-[4/3] overflow-hidden ${p.tone} after:content-[''] after:absolute after:inset-0 ${p.accent}`}
-                  >
-                    <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-colors duration-500" />
-                    {!p.slug && (
-                      <div className="absolute top-5 right-5 font-mono text-[9px] uppercase tracking-[0.22em] text-white/60 bg-black/20 px-2 py-1 rounded-sm">
-                        soon
+                  <div className={`relative aspect-[4/3] overflow-hidden bg-subtle ${p.tone} ${p.accent ? `after:content-[''] after:absolute after:inset-0 ${p.accent}` : ""}`}>
+                    {p.image && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={p.image} alt={p.title} className="absolute inset-0 w-full h-full object-cover" />
+                    )}
+                    <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/8 transition-colors duration-500" />
+                    <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none" />
+                    {/* top row */}
+                    <div className="absolute top-5 left-5 right-5 flex items-start justify-between gap-3">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/60">
+                        {String(allMoreWorkProjects.findIndex(x => x.title === p.title) + 1).padStart(2, "0")} /{" "}
+                        {String(allMoreWorkProjects.length).padStart(2, "0")}
+                      </span>
+                      <div className="flex gap-1.5 flex-wrap justify-end">
+                        {p.slug ? (
+                          p.types.map((t) => (
+                            <span key={t} className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/80 bg-black/25 backdrop-blur-sm px-2 py-0.5 rounded-sm">
+                              {t}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.18em] text-white/60 bg-black/25 px-2 py-1 rounded-sm">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                            coming soon
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {/* bottom row */}
+                    {p.slug && (
+                      <div className="absolute bottom-5 left-5 right-5">
+                        <span className="block font-mono text-[9px] uppercase tracking-[0.18em] text-white/60 mb-1.5">
+                          {p.title} · {p.year}
+                        </span>
+                        <h3 className="font-display font-light text-lg md:text-2xl text-white tracking-[-0.02em] leading-tight drop-shadow-lg">
+                          {p.headline}
+                        </h3>
                       </div>
                     )}
-                    <div className="absolute bottom-6 left-6">
-                      <span className="font-display font-light text-2xl md:text-4xl text-white tracking-[-0.02em] lowercase">
-                        {p.title.toLowerCase()}
-                      </span>
+                  </div>
+                  {!p.slug && (
+                    <div className="mt-4">
+                      <p className="font-display font-light text-xl md:text-2xl tracking-[-0.02em] text-foreground/30">
+                        Project incoming
+                      </p>
                     </div>
-                  </div>
-                  <div className="mt-4 flex items-baseline justify-between gap-4">
-                    <h3 className="font-display font-light text-base tracking-[-0.01em]">
-                      {p.title}
-                      <span className="ml-3 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
-                        · {p.year}
-                      </span>
-                    </h3>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted text-right max-w-[160px]">
-                      {p.tagline}
-                    </p>
-                  </div>
+                  )}
                 </Link>
               </motion.div>
             );

@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 export default function SaveePage() {
   return (
     <CaseStudy
+      currentSlug="savee"
       meta={{
         index: "01",
         title: "Savee",

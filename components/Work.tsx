@@ -9,6 +9,8 @@ type Project = {
   slug?: string;
   title: string;
   tagline: string;
+  headline: string;
+  types: string[];
   year: string;
   image?: string;
   tone?: string;
@@ -19,13 +21,26 @@ const projects: Project[] = [
   {
     slug: "savee",
     title: "Savee",
+    headline: "Meal planning that makes food waste impossible.",
     tagline: "A social planner that cuts household food waste.",
+    types: ["Mobile", "UX", "Sustainability"],
     year: "2025",
     image: "/projects/savee/cover.png",
   },
   {
+    slug: "erp-duo",
+    title: "ERP Duo",
+    headline: "Nine locations. One system. Full control.",
+    tagline: "Bespoke ERP for a Sicilian gelato chain.",
+    types: ["Web", "B2B", "ERP"],
+    year: "2026",
+    image: "/projects/erp-duo/cover.png",
+  },
+  {
     title: "Tierra Viva",
+    headline: "An organic market, reborn.",
     tagline: "Breathing new life into an organic market.",
+    types: ["Web", "Branding"],
     year: "2024",
     tone: "bg-gradient-to-br from-amber-100 via-orange-200 to-yellow-300",
     accent:
@@ -33,19 +48,13 @@ const projects: Project[] = [
   },
   {
     title: "Casa Nomad",
+    headline: "Artisan craft. Global reach.",
     tagline: "Weaving artisan stories into a global brand.",
+    types: ["Web", "Identity"],
     year: "2024",
     tone: "bg-gradient-to-br from-[#c26f3c] via-[#8f4a24] to-[#d48c5a]",
     accent:
       "after:bg-[radial-gradient(circle_at_20%_30%,#e6a46e_0%,transparent_60%)]",
-  },
-  {
-    title: "Alba",
-    tagline: "Crafting a sanctuary of minimalism and nature.",
-    year: "2023",
-    tone: "bg-gradient-to-br from-[#9aa48d] via-[#6b7a5c] to-[#3f4a32]",
-    accent:
-      "after:bg-[radial-gradient(circle_at_60%_40%,#cfd4b8_0%,transparent_55%)]",
   },
 ];
 
@@ -131,28 +140,51 @@ function ProjectCard({
               className={`absolute inset-0 scale-110 ${project.tone} after:content-[''] after:absolute after:inset-0 ${project.accent}`}
             />
           )}
-          <motion.div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-colors duration-500" />
-          <div className="absolute top-5 left-5 md:top-6 md:left-6 font-mono text-[10px] uppercase tracking-[0.22em] text-white/70">
-            {String(index + 1).padStart(2, "0")} /{" "}
-            {String(projects.length).padStart(2, "0")}
-          </div>
-          <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8">
-            <span className="font-display font-light text-3xl md:text-5xl text-white tracking-[-0.02em] lowercase">
-              {project.title.toLowerCase()}
+          <motion.div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/8 transition-colors duration-500" />
+          <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none" />
+          {/* top row */}
+          <div className="absolute top-5 left-5 right-5 md:top-6 md:left-6 md:right-6 flex items-start justify-between gap-3">
+            <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/60">
+              {String(index + 1).padStart(2, "0")} /{" "}
+              {String(projects.length).padStart(2, "0")}
             </span>
+            <div className="flex gap-1.5 flex-wrap justify-end">
+              {project.slug ? (
+                project.types.map((t) => (
+                  <span
+                    key={t}
+                    className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/80 bg-black/25 backdrop-blur-sm px-2 py-0.5 rounded-sm"
+                  >
+                    {t}
+                  </span>
+                ))
+              ) : (
+                <span className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.18em] text-white/60 bg-black/25 px-2 py-1 rounded-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                  coming soon
+                </span>
+              )}
+            </div>
           </div>
+          {/* bottom row */}
+          {project.slug && (
+            <div className="absolute bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8">
+              <span className="block font-mono text-[9px] uppercase tracking-[0.18em] text-white/60 mb-2">
+                {project.title} · {project.year}
+              </span>
+              <h3 className="font-display font-light text-2xl md:text-4xl text-white tracking-[-0.02em] leading-tight drop-shadow-lg">
+                {project.headline}
+              </h3>
+            </div>
+          )}
         </div>
-        <div className="mt-5 flex items-baseline justify-between gap-4">
-          <h3 className="font-display font-light text-base md:text-lg tracking-[-0.01em]">
-            {project.title}
-            <span className="ml-3 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
-              · {project.year}
-            </span>
-          </h3>
-          <p className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.15em] text-muted text-right max-w-xs">
-            {project.tagline}
-          </p>
-        </div>
+        {!project.slug && (
+          <div className="mt-5">
+            <p className="font-display font-light text-2xl md:text-3xl tracking-[-0.02em] text-foreground/30">
+              Project incoming
+            </p>
+          </div>
+        )}
       </Wrapper>
     </motion.div>
   );
