@@ -4,7 +4,7 @@ import { CaseStudy } from "@/components/CaseStudy";
 export const metadata: Metadata = {
   title: "ERP Duo — Julian Giraldo",
   description:
-    "Custom ERP system for Duo — nine locations, multiple departments, role-based access, and full document traceability across operations, HR, logistics, and client orders.",
+    "Custom ERP system for Duo: nine locations, multiple departments, role-based access, and full document traceability across operations, HR, logistics, and client orders.",
 };
 
 export default function ErpDuoPage() {
@@ -30,7 +30,7 @@ export default function ErpDuoPage() {
           label: "01 · Challenge",
           heading: "Nine locations. No single source of truth.",
           body: [
-            "Duo runs across nine locations: production, retail, logistics, and administration all moving at the same time, mostly without visibility into each other. The real problem wasn't software. It was that critical data lived in spreadsheets, WhatsApp threads, and personal inboxes — no structure, no version history, no audit trail.",
+            "Duo runs across nine locations: production, retail, logistics, and administration all moving at the same time, mostly without visibility into each other. The real problem wasn't software. It was that critical data lived in spreadsheets, WhatsApp threads, and personal inboxes. No structure, no version history, no audit trail.",
             "The work started with mapping every data type that actually mattered to the business: who owns it, how often it changes, and where it needs to go. From there, the goal was a system where data gets entered once, reaches the right person, and stays traceable.",
           ],
           stats: [
@@ -62,11 +62,11 @@ export default function ErpDuoPage() {
           items: [
             {
               title: "Inventory & stock",
-              body: "Products, raw materials, and consumables across all locations. Each item carries current quantity, minimum threshold, expiry date, supplier reference, and movement history. Stock changes recalculate status automatically — no manual flagging needed.",
+              body: "Products, raw materials, and consumables across all locations. Each item carries current quantity, minimum threshold, expiry date, supplier reference, and movement history. Stock changes recalculate status automatically, so nothing needs manual flagging.",
             },
             {
               title: "Client orders & requisitions",
-              body: "Every incoming order gets a unique reference, ties to a client record, and moves through fulfilment stages. Confirmations, delivery notes, and invoices attach directly to the order — not filed somewhere separately.",
+              body: "Every incoming order gets a unique reference, ties to a client record, and moves through fulfilment stages. Confirmations, delivery notes, and invoices attach directly to the order, not filed somewhere separately.",
             },
             {
               title: "Production batches",
@@ -78,7 +78,7 @@ export default function ErpDuoPage() {
             },
             {
               title: "Logistics & delivery",
-              body: "Outbound deliveries link to the orders they fulfil and the stock they draw from. Each one has a status trail, an assigned driver, and a route record — a full chain from order receipt to confirmed delivery.",
+              body: "Outbound deliveries link to the orders they fulfil and the stock they draw from. Each one has a status trail, an assigned driver, and a route record. A full chain from order receipt to confirmed delivery.",
             },
             {
               title: "Supplier & procurement",
@@ -93,7 +93,7 @@ export default function ErpDuoPage() {
           heading: "Every document linked. Every action logged.",
           body: [
             "Traceability wasn't negotiable. Duo operates in a context where an external audit, a supplier dispute, or an HR inspection can land at any time, and the cost of not having your documentation in order is high.",
-            "Every object in the system — an order, a delivery, a stock movement, an employee record — carries a full, timestamped history of every change: who made it, when, and from which access level. Documents attach at the record level, not in a generic folder. A delivery note lives on the delivery. A contract lives on the employee. No manual cross-referencing required.",
+            "Every object in the system (an order, a delivery, a stock movement, an employee record) carries a full, timestamped history of every change: who made it, when, and from which access level. Documents attach at the record level, not in a generic folder. A delivery note lives on the delivery. A contract lives on the employee. No manual cross-referencing required.",
           ],
           image: {
             src: "/projects/erp-duo/hr.png",
@@ -160,7 +160,7 @@ export default function ErpDuoPage() {
             },
             {
               title: "Monospaced numerics",
-              body: "All quantitative data — stock counts, currency, timestamps, document IDs — uses a monospace typeface. Not a stylistic choice: it makes columns scannable and stops people from misreading digit-dense strings.",
+              body: "All quantitative data (stock counts, currency, timestamps, document IDs) uses a monospace typeface. Not a stylistic choice: it makes columns scannable and stops people from misreading digit-dense strings.",
             },
           ],
         },

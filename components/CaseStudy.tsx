@@ -638,10 +638,10 @@ function FlowDiagram() {
       {/* Phase header */}
       <div className="grid grid-cols-4 border-b border-border">
         {[
-          "1 — Onboarding",
-          "2 — Discover & Schedule",
-          "3 — Shop & Cook",
-          "4 — Track & Loop",
+          "1 · Onboarding",
+          "2 · Discover & Schedule",
+          "3 · Shop & Cook",
+          "4 · Track & Loop",
         ].map((p, i) => (
           <div
             key={i}

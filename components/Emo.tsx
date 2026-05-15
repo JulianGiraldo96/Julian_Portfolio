@@ -21,7 +21,7 @@ const happyLines = [
 ];
 
 const annoyedLines = [
-  "ok ok, stop poking me —",
+  "ok ok, stop poking me...",
   "that tickles. quit it.",
   "i have feelings too, you know",
 ];
