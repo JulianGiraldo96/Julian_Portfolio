@@ -9,7 +9,7 @@ const experiences = [
     role: "Product Designer",
     company: "Duo Sicilian Ice Cream",
     location: "Berlin",
-    period: "Oct 2024 — Present",
+    period: "Oct 2024 – Present",
     body: [
       "Designed and shipped Duo's internal ERP from zero, used daily across nine locations and six departments.",
       "Owned the full process: discovery with each team, information architecture for 40+ document types, Figma wireframes, prototypes and high-fidelity UI.",
@@ -22,7 +22,7 @@ const experiences = [
     role: "Product Designer",
     company: "Big-O",
     location: "Bogotá (remote)",
-    period: "Oct 2017 — Present",
+    period: "Oct 2017 – Present",
     body: [
       "Lead designer for internal SaaS tools and client applications built from scratch.",
       "Designed the Taurus Ecosystem: a unified workspace combining CRM, knowledge base and encrypted chat tied to a single identity.",
@@ -34,7 +34,7 @@ const experiences = [
     role: "Design Lead",
     company: "Greens Supermarket",
     location: "Swieqi, Malta",
-    period: "Apr 2021 — Nov 2023",
+    period: "Apr 2021 – Nov 2023",
     body: [
       "Designed and launched multiple brand websites for the supermarket chain.",
       "Led the visual identity system across photography, video, animation and packaging.",
