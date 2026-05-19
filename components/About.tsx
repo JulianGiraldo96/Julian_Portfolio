@@ -6,15 +6,16 @@ import { RevealBlock } from "./RevealText";
 
 const experiences = [
   {
-    role: "Product Designer & Operations Lead",
+    role: "Product Designer",
     company: "Duo Sicilian Ice Cream",
     location: "Berlin",
     period: "Oct 2024 — Present",
     body: [
-      "Designed and shipped Duo's internal ERP system, used daily across nine locations and six departments.",
-      "Owned the full process: research with each team, information architecture for 40+ document types, wireframes, prototypes and high-fidelity UI.",
-      "Built a role-based access model so each department only sees the data it owns.",
-      "Defined a status-driven design system (ok / warn / critical) applied across inventory, deliveries, HR compliance and production.",
+      "Designed and shipped Duo's internal ERP from zero, used daily across nine locations and six departments.",
+      "Owned the full process: discovery with each team, information architecture for 40+ document types, Figma wireframes, prototypes and high-fidelity UI.",
+      "Designed a role-based access model so each user only sees the data they own.",
+      "Built a three-state status system (ok / warn / critical) applied across inventory, deliveries, HR compliance and production.",
+      "I also use the system daily as one of the operators, which gives me a continuous feedback loop with the rest of the team.",
     ],
   },
   {
