@@ -20,7 +20,7 @@ const experiences = [
   },
   {
     role: "Product Designer",
-    company: "Cabezona Casa Creativa",
+    company: "Big-O",
     location: "Bogotá (remote)",
     period: "Oct 2017 — Present",
     body: [
