@@ -75,12 +75,23 @@ export function Hero() {
         >
           <span className="text-foreground">role</span>
           <span className="mx-3 opacity-40">→</span>
-          Visual &amp; Experience Designer
+          Product Designer
           <span className="mx-3 opacity-40">·</span>
           <span className="text-foreground">loc</span>
           <span className="mx-3 opacity-40">→</span>
           Berlin, DE
         </motion.p>
+
+        <motion.a
+          href="mailto:application@juliang.de"
+          initial={{ opacity: 0, filter: "blur(10px)" }}
+          animate={{ opacity: 1, filter: "blur(0px)" }}
+          transition={{ duration: 1, delay: 1.4, ease: [0.22, 1, 0.36, 1] }}
+          data-cursor-hover
+          className="mt-4 inline-block font-mono text-[11px] md:text-xs lowercase tracking-[0.18em] text-foreground/70 hover:text-foreground transition-colors border-b border-transparent hover:border-foreground/40 pb-0.5"
+        >
+          application@juliang.de
+        </motion.a>
       </motion.div>
 
       <motion.div
