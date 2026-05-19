@@ -81,8 +81,8 @@ export function Contact() {
               <a
                 key={s.label}
                 href={s.href}
-                target={s.href.startsWith("http") ? "_blank" : undefined}
-                rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                target={s.href.startsWith("http") || s.href.endsWith(".pdf") ? "_blank" : undefined}
+                rel={s.href.startsWith("http") || s.href.endsWith(".pdf") ? "noopener noreferrer" : undefined}
                 data-cursor-hover
                 className="group relative w-64 inline-flex items-center justify-center gap-2.5 font-mono text-xs md:text-sm uppercase tracking-[0.18em] border border-border px-6 py-4 hover:border-foreground hover:text-foreground text-muted transition-all duration-300"
               >
