@@ -1,8 +1,47 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
+import { useRef, useState } from "react";
 import { RevealBlock } from "./RevealText";
+
+const experiences = [
+  {
+    role: "Product Designer",
+    company: "Duo Sicilian Ice Cream",
+    location: "Berlin",
+    period: "Oct 2024 — Present",
+    body: [
+      "Designed and shipped Duo's internal ERP from zero, used daily across nine locations and six departments.",
+      "Owned the full process: discovery with each team, information architecture for 40+ document types, Figma wireframes, prototypes and high-fidelity UI.",
+      "Designed a role-based access model so each user only sees the data they own.",
+      "Built a three-state status system (ok / warn / critical) applied across inventory, deliveries, HR compliance and production.",
+      "I also use the system daily as one of the operators, which gives me a continuous feedback loop with the rest of the team.",
+    ],
+  },
+  {
+    role: "Product Designer",
+    company: "Cabezona Casa Creativa",
+    location: "Bogotá (remote)",
+    period: "Oct 2017 — Present",
+    body: [
+      "Lead designer for internal SaaS tools and client applications built from scratch.",
+      "Designed the Taurus Ecosystem: a unified workspace combining CRM, knowledge base and encrypted chat tied to a single identity.",
+      "Defined product strategy, user flows, IA and visual design for each module.",
+      "Created pitch decks that turned technical decisions into a clear value story for stakeholders.",
+    ],
+  },
+  {
+    role: "Design Lead",
+    company: "Greens Supermarket",
+    location: "Swieqi, Malta",
+    period: "Apr 2021 — Nov 2023",
+    body: [
+      "Designed and launched multiple brand websites for the supermarket chain.",
+      "Led the visual identity system across photography, video, animation and packaging.",
+      "Built design guidelines to keep output consistent across the creative team and parallel campaigns.",
+    ],
+  },
+];
 
 export function About() {
   const ref = useRef<HTMLDivElement>(null);
@@ -16,6 +55,8 @@ export function About() {
     [18, 0, 0, 18]
   );
   const headingFilter = useTransform(headingBlur, (v) => `blur(${v}px)`);
+
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
     <section
@@ -76,6 +117,60 @@ export function About() {
                 Outside of design, I&apos;m into physics, AI tools and building
                 small automations that make work and life less annoying.
               </p>
+            </RevealBlock>
+
+            <RevealBlock delay={0.45}>
+              <div className="pt-8 mt-2 border-t border-border">
+                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
+                  // experience
+                </span>
+                <div className="mt-4">
+                  {experiences.map((exp, i) => {
+                    const isOpen = openIndex === i;
+                    return (
+                      <div key={exp.company} className="border-b border-border">
+                        <button
+                          onClick={() => setOpenIndex(isOpen ? null : i)}
+                          data-cursor-hover
+                          className="w-full flex items-center justify-between gap-4 py-5 text-left group"
+                        >
+                          <div className="flex-1">
+                            <h3 className="font-display font-light text-lg md:text-2xl tracking-[-0.01em] leading-tight">
+                              {exp.role}
+                            </h3>
+                            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                              {exp.company} · {exp.location} · {exp.period}
+                            </p>
+                          </div>
+                          <span className="relative w-5 h-5 shrink-0 flex items-center justify-center">
+                            <span className="absolute h-px w-3.5 bg-foreground" />
+                            <span
+                              className={`absolute h-3.5 w-px bg-foreground transition-transform duration-300 ${isOpen ? "scale-y-0" : "scale-y-100"}`}
+                            />
+                          </span>
+                        </button>
+                        <AnimatePresence initial={false}>
+                          {isOpen && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                              className="overflow-hidden"
+                            >
+                              <div className="pb-6 space-y-3 text-sm md:text-base leading-relaxed text-muted">
+                                {exp.body.map((line, j) => (
+                                  <p key={j}>{line}</p>
+                                ))}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </RevealBlock>
           </div>
 
