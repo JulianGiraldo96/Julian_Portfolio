@@ -40,3 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 projects_res/
+
+# AI tooling config
+CLAUDE.md
+AGENTS.md
+.claude/
+
