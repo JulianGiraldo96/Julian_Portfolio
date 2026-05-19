@@ -1,47 +1,8 @@
 "use client";
 
-import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
-import { useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useRef } from "react";
 import { RevealBlock } from "./RevealText";
-
-const experiences = [
-  {
-    role: "Product Designer",
-    company: "Duo Sicilian Ice Cream",
-    location: "Berlin",
-    period: "Oct 2024 — Present",
-    body: [
-      "Designed and shipped Duo's internal ERP from zero, used daily across nine locations and six departments.",
-      "Owned the full process: discovery with each team, information architecture for 40+ document types, Figma wireframes, prototypes and high-fidelity UI.",
-      "Designed a role-based access model so each user only sees the data they own.",
-      "Built a three-state status system (ok / warn / critical) applied across inventory, deliveries, HR compliance and production.",
-      "I also use the system daily as one of the operators, which gives me a continuous feedback loop with the rest of the team.",
-    ],
-  },
-  {
-    role: "Product Designer",
-    company: "Cabezona Casa Creativa",
-    location: "Bogotá (remote)",
-    period: "Oct 2017 — Present",
-    body: [
-      "Lead designer for internal SaaS tools and client applications built from scratch.",
-      "Designed the Taurus Ecosystem: a unified workspace combining CRM, knowledge base and encrypted chat tied to a single identity.",
-      "Defined product strategy, user flows, IA and visual design for each module.",
-      "Created pitch decks that turned technical decisions into a clear value story for stakeholders.",
-    ],
-  },
-  {
-    role: "Design Lead",
-    company: "Greens Supermarket",
-    location: "Swieqi, Malta",
-    period: "Apr 2021 — Nov 2023",
-    body: [
-      "Designed and launched multiple brand websites for the supermarket chain.",
-      "Led the visual identity system across photography, video, animation and packaging.",
-      "Built design guidelines to keep output consistent across the creative team and parallel campaigns.",
-    ],
-  },
-];
 
 export function About() {
   const ref = useRef<HTMLDivElement>(null);
@@ -88,25 +49,32 @@ export function About() {
             <RevealBlock delay={0.05}>
               <p>
                 I&apos;m{" "}
-                <span className="font-medium">Julian Giraldo</span>, a
-                Colombian visual and experience designer based in Berlin, with
-                a strong interest in product design and UX/UI.
+                <span className="font-medium">Julian Giraldo</span>, a Product
+                Designer based in Berlin focused on B2B SaaS, internal tools and
+                data-heavy interfaces. The kind of work where dense information
+                has to feel calm and usable.
               </p>
             </RevealBlock>
             <RevealBlock delay={0.15}>
               <p className="text-muted">
-                My background is mainly in visual identity, branding, video
-                editing, and product design. I like creating work that looks
-                good, feels clear, and actually makes sense for the people
-                using it.
+                My differentiator: I design products I also use myself. The ERP
+                I designed at Duo Sicilian Ice Cream is in daily production
+                across nine locations and six departments, and I&apos;m one of
+                the operators using it. That feedback loop is hard to fake.
               </p>
             </RevealBlock>
             <RevealBlock delay={0.25}>
               <p className="text-muted">
-                Outside of design, I&apos;m into physics, AI tools, and
-                building automations that make work and life less annoying. I
-                also spend a lot of time studying how product designers think
-                about systems, usability, and digital experiences.
+                I work end-to-end: research, information architecture, Figma,
+                design systems, prototyping and shipping with engineering. I
+                hold a Master&apos;s in Visual and Experience Design from UE
+                Berlin, with 8+ years across product, brand and visual design.
+              </p>
+            </RevealBlock>
+            <RevealBlock delay={0.35}>
+              <p className="text-muted">
+                Outside of design, I&apos;m into physics, AI tools and building
+                small automations that make work and life less annoying.
               </p>
             </RevealBlock>
           </div>
@@ -138,74 +106,7 @@ export function About() {
             </RevealBlock>
           </div>
         </div>
-
-        <ExperienceList />
       </div>
     </section>
-  );
-}
-
-function ExperienceList() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-
-  return (
-    <div className="mt-20 md:mt-28 grid grid-cols-12 gap-6 md:gap-10">
-      <div className="col-span-12 md:col-span-2">
-        <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
-          // experience
-        </span>
-      </div>
-      <div className="col-span-12 md:col-span-10 border-t border-border">
-        {experiences.map((exp, i) => {
-          const isOpen = openIndex === i;
-          return (
-            <div key={exp.company} className="border-b border-border">
-              <button
-                onClick={() => setOpenIndex(isOpen ? null : i)}
-                data-cursor-hover
-                className="w-full flex items-center justify-between gap-6 py-6 md:py-8 text-left group"
-              >
-                <div className="flex-1 flex flex-col md:flex-row md:items-baseline md:gap-6">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted md:w-16 shrink-0">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="flex-1">
-                    <h3 className="font-display font-light text-xl md:text-3xl tracking-[-0.01em] leading-tight">
-                      {exp.role}
-                    </h3>
-                    <p className="mt-1 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.18em] text-muted">
-                      {exp.company} · {exp.location} · {exp.period}
-                    </p>
-                  </div>
-                </div>
-                <span className="relative w-6 h-6 shrink-0 flex items-center justify-center">
-                  <span className="absolute h-px w-4 bg-foreground" />
-                  <span
-                    className={`absolute h-4 w-px bg-foreground transition-transform duration-300 ${isOpen ? "scale-y-0" : "scale-y-100"}`}
-                  />
-                </span>
-              </button>
-              <AnimatePresence initial={false}>
-                {isOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                    className="overflow-hidden"
-                  >
-                    <div className="pb-8 md:pl-[5.5rem] space-y-3 max-w-3xl text-sm md:text-base leading-relaxed text-muted">
-                      {exp.body.map((line, j) => (
-                        <p key={j}>{line}</p>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          );
-        })}
-      </div>
-    </div>
   );
 }
