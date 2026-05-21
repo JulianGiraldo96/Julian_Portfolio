@@ -15,6 +15,9 @@ const html = `<!doctype html>
 <head>
 <meta charset="utf-8" />
 <title>Julian David Giraldo Rojas — CV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet" />
 <style>
   @page { size: A4; margin: 12mm 16mm; }
   * { box-sizing: border-box; }
@@ -28,12 +31,14 @@ const html = `<!doctype html>
     font-variant-ligatures: none;
   }
   h1 {
-    font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 19pt;
-    font-weight: 600;
+    font-family: "Outfit", -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 24pt;
+    font-weight: 200;
+    text-transform: uppercase;
     text-align: center;
-    margin: 0 0 3px 0;
-    letter-spacing: -0.015em;
+    margin: 0 0 6px 0;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
   }
   .title {
     text-align: center;
@@ -176,6 +181,9 @@ const html = `<!doctype html>
 const browser = await chromium.launch();
 const page = await browser.newPage();
 await page.setContent(html, { waitUntil: "networkidle" });
+await page.evaluate(async () => {
+  await document.fonts.ready;
+});
 const pdfBuffer = await page.pdf({
   format: "A4",
   printBackground: true,
