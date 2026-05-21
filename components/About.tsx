@@ -23,8 +23,9 @@ const experiences = [
     company: "Big-O",
     location: "Bogotá (remote)",
     period: "Oct 2017 – Present",
+    freelance: true,
     body: [
-      "Lead designer for internal SaaS tools and client applications built from scratch.",
+      "Freelance lead designer for internal SaaS tools and client applications built from scratch.",
       "Designed the Taurus Ecosystem: a unified workspace combining CRM, knowledge base and encrypted chat tied to a single identity.",
       "Defined product strategy, user flows, IA and visual design for each module.",
       "Created pitch decks that turned technical decisions into a clear value story for stakeholders.",
@@ -135,8 +136,13 @@ export function About() {
                           className="w-full flex items-center justify-between gap-4 py-5 text-left group"
                         >
                           <div className="flex-1">
-                            <h3 className="font-display font-light text-lg md:text-2xl tracking-[-0.01em] leading-tight">
+                            <h3 className="font-display font-light text-lg md:text-2xl tracking-[-0.01em] leading-tight flex items-center gap-3 flex-wrap">
                               {exp.role}
+                              {exp.freelance && (
+                                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted border border-border px-2 py-0.5 rounded-full">
+                                  Freelance
+                                </span>
+                              )}
                             </h3>
                             <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
                               {exp.company} · {exp.location} · {exp.period}
