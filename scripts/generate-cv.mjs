@@ -16,53 +16,53 @@ const html = `<!doctype html>
 <meta charset="utf-8" />
 <title>Julian David Giraldo Rojas — CV</title>
 <style>
-  @page { size: A4; margin: 11mm 14mm; }
+  @page { size: A4; margin: 12mm 16mm; }
   * { box-sizing: border-box; }
   html, body {
     font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 8.6pt;
-    line-height: 1.28;
+    font-size: 8.4pt;
+    line-height: 1.38;
     color: #111;
     margin: 0;
     -webkit-font-smoothing: antialiased;
     font-variant-ligatures: none;
   }
   h1 {
-    font-family: "Times New Roman", Times, serif;
-    font-size: 20pt;
-    font-weight: 700;
+    font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 19pt;
+    font-weight: 600;
     text-align: center;
     margin: 0 0 3px 0;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
   }
   .title {
     text-align: center;
-    font-size: 9pt;
-    margin-bottom: 2px;
+    font-size: 8.4pt;
+    margin-bottom: 3px;
   }
   .contact {
     text-align: center;
-    font-size: 9pt;
-    margin-bottom: 2px;
+    font-size: 8.4pt;
+    margin-bottom: 3px;
   }
   .links {
     text-align: center;
-    font-size: 9pt;
+    font-size: 8.4pt;
     font-weight: 600;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
   }
   h2 {
-    font-size: 8.4pt;
+    font-size: 8pt;
     font-weight: 700;
     letter-spacing: 0.22em;
     border-bottom: 0.6pt solid #111;
-    padding-bottom: 2px;
-    margin: 7px 0 4px 0;
+    padding-bottom: 3px;
+    margin: 9px 0 6px 0;
     text-transform: uppercase;
   }
   .job-header {
-    margin-top: 4px;
-    margin-bottom: 1px;
+    margin-top: 8px;
+    margin-bottom: 3px;
   }
   .job-header b { font-weight: 700; }
   .job-header .meta { color: #222; font-style: italic; }
@@ -86,7 +86,7 @@ const html = `<!doctype html>
   ul li {
     position: relative;
     padding-left: 8px;
-    margin-bottom: 1px;
+    margin-bottom: 3px;
   }
   ul li::before {
     content: "–";
@@ -100,13 +100,13 @@ const html = `<!doctype html>
   }
   table.skills td {
     vertical-align: top;
-    padding: 2px 8px 2px 0;
+    padding: 4px 8px 4px 0;
   }
   table.skills td.label {
     width: 95px;
     font-weight: 700;
   }
-  .edu p { margin: 2px 0; }
+  .edu p { margin: 4px 0; }
   .edu b { font-weight: 700; }
   .lang { display: flex; gap: 28px; font-size: 9.2pt; margin-top: 2px; }
   .lang b { font-weight: 700; }
