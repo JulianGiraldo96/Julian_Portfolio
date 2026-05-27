@@ -110,7 +110,7 @@ export function About() {
                 I work end-to-end: research, information architecture, Figma,
                 design systems, prototyping and shipping with engineering. I
                 hold a Master&apos;s in Visual and Experience Design from UE
-                Berlin, with 8+ years across product, brand and visual design.
+                Berlin, with <b className="text-foreground">9+ years of experience</b> across product, brand and visual design.
               </p>
             </RevealBlock>
             <RevealBlock delay={0.35}>
