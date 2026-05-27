@@ -22,7 +22,7 @@ export function Hero() {
     >
       <div
         aria-hidden
-        className="absolute top-24 left-6 md:left-10 font-mono text-[10px] uppercase tracking-[0.18em] text-muted leading-relaxed"
+        className="absolute top-24 left-6 md:left-10 font-mono text-[11px] uppercase tracking-[0.18em] text-muted leading-relaxed"
       >
         <div>[ index / 00 ]</div>
         <div>52.5200°N · 13.4050°E</div>
@@ -30,7 +30,7 @@ export function Hero() {
 
       <div
         aria-hidden
-        className="absolute top-24 right-6 md:right-10 font-mono text-[10px] uppercase tracking-[0.18em] text-muted leading-relaxed text-right"
+        className="absolute top-24 right-6 md:right-10 font-mono text-[11px] uppercase tracking-[0.18em] text-muted leading-relaxed text-right"
       >
         <div>v.2026.04</div>
         <div>portfolio / jg</div>
@@ -48,7 +48,7 @@ export function Hero() {
         />
 
         <h1
-          className="font-display font-extralight uppercase tracking-[-0.04em] leading-[0.88] text-[clamp(4rem,15vw,14.5rem)]"
+          className="font-display font-extralight uppercase tracking-[-0.04em] leading-[0.88] text-[clamp(3.5rem,14vw,13rem)]"
           aria-label="Julian Giraldo"
         >
           <BlurLine delay={0.35}>Julian</BlurLine>
@@ -61,7 +61,7 @@ export function Hero() {
           transition={{ duration: 0.9, delay: 0.95, ease: [0.22, 1, 0.36, 1] }}
           className="mt-6 flex justify-center"
         >
-          <span className="inline-flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.2em] text-foreground/60 bg-foreground/5 border border-border px-3 py-1.5 rounded-sm">
+          <span className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/60 bg-foreground/5 border border-border px-3 py-1.5 rounded-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
             open for work
           </span>
@@ -71,7 +71,7 @@ export function Hero() {
           initial={{ opacity: 0, filter: "blur(10px)" }}
           animate={{ opacity: 1, filter: "blur(0px)" }}
           transition={{ duration: 1, delay: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-8 font-mono text-[11px] md:text-xs uppercase tracking-[0.22em] text-muted"
+          className="mt-8 font-mono text-[12px] md:text-sm uppercase tracking-[0.22em] text-muted"
         >
           <span className="text-foreground">role</span>
           <span className="mx-3 opacity-40">→</span>
@@ -88,7 +88,7 @@ export function Hero() {
           animate={{ opacity: 1, filter: "blur(0px)" }}
           transition={{ duration: 1, delay: 1.4, ease: [0.22, 1, 0.36, 1] }}
           data-cursor-hover
-          className="mt-4 inline-block font-mono text-[11px] md:text-xs lowercase tracking-[0.18em] text-foreground/70 hover:text-foreground transition-colors border-b border-transparent hover:border-foreground/40 pb-0.5"
+          className="mt-4 inline-block font-mono text-[12px] md:text-sm lowercase tracking-[0.18em] text-foreground/70 hover:text-foreground transition-colors border-b border-transparent hover:border-foreground/40 pb-0.5"
         >
           application@juliang.de
         </motion.a>
@@ -98,7 +98,7 @@ export function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.6, duration: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-muted"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] text-muted"
       >
         <span>scroll ↓</span>
         <motion.span

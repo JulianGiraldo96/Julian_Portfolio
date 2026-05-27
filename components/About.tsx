@@ -67,14 +67,14 @@ export function About() {
     >
       <div className="mx-auto max-w-[1600px]">
         <div className="mb-10 md:mb-16">
-          <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted mb-6">
+          <div className="font-mono text-[12px] uppercase tracking-[0.22em] text-muted mb-6">
             <span className="text-foreground">[ 02 ]</span>
             <span className="mx-3 opacity-40">/</span>
             about
           </div>
           <motion.h2
             style={{ filter: headingFilter }}
-            className="font-display font-extralight uppercase tracking-[-0.035em] text-[clamp(3.5rem,11vw,9rem)] leading-[0.9] will-change-[filter]"
+            className="font-display font-extralight uppercase tracking-[-0.035em] text-[clamp(3rem,10vw,8rem)] leading-[0.9] will-change-[filter]"
           >
             About
           </motion.h2>
@@ -82,7 +82,7 @@ export function About() {
 
         <div className="grid grid-cols-12 gap-6 md:gap-10">
           <div className="col-span-12 md:col-span-2">
-            <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
+            <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
               // what I do
             </span>
           </div>
@@ -122,7 +122,7 @@ export function About() {
 
             <RevealBlock delay={0.45}>
               <div className="pt-8 mt-2 border-t border-border">
-                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
+                <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
                   // experience
                 </span>
                 <div className="mt-4">
@@ -139,12 +139,12 @@ export function About() {
                             <h3 className="font-display font-light text-lg md:text-2xl tracking-[-0.01em] leading-tight flex items-center gap-3 flex-wrap">
                               {exp.role}
                               {exp.freelance && (
-                                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted border border-border px-2 py-0.5 rounded-full">
+                                <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted border border-border px-2 py-0.5 rounded-full">
                                   Freelance
                                 </span>
                               )}
                             </h3>
-                            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                            <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
                               {exp.company} · {exp.location} · {exp.period}
                             </p>
                           </div>
@@ -199,7 +199,7 @@ export function About() {
                     backgroundSize: "200% 200%",
                   }}
                 />
-                <div className="absolute inset-0 flex items-end justify-between p-6 font-mono text-[10px] uppercase tracking-[0.22em] text-foreground/80">
+                <div className="absolute inset-0 flex items-end justify-between p-6 font-mono text-[11px] uppercase tracking-[0.22em] text-foreground/80">
                   <span>julian · 2026</span>
                   <span>IMG_001</span>
                 </div>

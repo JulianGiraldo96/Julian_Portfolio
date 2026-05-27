@@ -23,7 +23,7 @@ export function BerlinClock() {
   }, []);
 
   return (
-    <span className="font-mono text-xs md:text-sm tabular-nums tracking-tight">
+    <span className="font-mono text-sm md:text-sm tabular-nums tracking-tight">
       BER {time || "--:--:--"}
     </span>
   );

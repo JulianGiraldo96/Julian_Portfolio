@@ -57,7 +57,7 @@ export function Contact() {
       className="relative px-6 md:px-10 pt-24 md:pt-40 pb-10 border-t border-border overflow-hidden"
     >
       <div className="mx-auto max-w-[1600px]">
-        <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted mb-8">
+        <div className="font-mono text-[12px] uppercase tracking-[0.22em] text-muted mb-8">
           <span className="text-foreground">[ 03 ]</span>
           <span className="mx-3 opacity-40">/</span>
           contact
@@ -66,7 +66,7 @@ export function Contact() {
         <div className="flex items-center justify-between gap-8">
           <motion.h2
             style={{ filter: headingFilter, opacity }}
-            className="font-display font-extralight uppercase tracking-[-0.045em] leading-[0.88] text-[clamp(3.5rem,14vw,13.5rem)] will-change-[filter,opacity]"
+            className="font-display font-extralight uppercase tracking-[-0.045em] leading-[0.88] text-[clamp(3rem,13vw,12rem)] will-change-[filter,opacity]"
             aria-label="Get in touch"
           >
             <span className="block">Get in</span>
@@ -84,7 +84,7 @@ export function Contact() {
                 target={s.href.startsWith("http") || s.href.endsWith(".pdf") ? "_blank" : undefined}
                 rel={s.href.startsWith("http") || s.href.endsWith(".pdf") ? "noopener noreferrer" : undefined}
                 data-cursor-hover
-                className="group relative w-64 inline-flex items-center justify-center gap-2.5 font-mono text-xs md:text-sm uppercase tracking-[0.18em] border border-border px-6 py-4 hover:border-foreground hover:text-foreground text-muted transition-all duration-300"
+                className="group relative w-64 inline-flex items-center justify-center gap-2.5 font-mono text-sm md:text-sm uppercase tracking-[0.18em] border border-border px-6 py-4 hover:border-foreground hover:text-foreground text-muted transition-all duration-300"
               >
                 {s.icon}
                 {s.label}
@@ -95,7 +95,7 @@ export function Contact() {
         </div>
 
         <div className="mt-16 md:mt-24 flex flex-col md:flex-row md:items-end md:justify-end gap-10 border-t border-border pt-8">
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
+          <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
             © {new Date().getFullYear()} · julian giraldo · v.2026.04
           </span>
         </div>

@@ -181,7 +181,7 @@ export function Emo() {
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 exit={{ opacity: 0, y: 4, filter: "blur(4px)" }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="font-mono text-[10px] uppercase tracking-[0.18em] border border-foreground bg-background text-foreground px-3 py-2 whitespace-nowrap"
+                className="font-mono text-[11px] uppercase tracking-[0.18em] border border-foreground bg-background text-foreground px-3 py-2 whitespace-nowrap"
               >
                 {message}
               </motion.div>

@@ -72,7 +72,7 @@ export function Nav() {
           <Link
             href="/"
             onClick={(e) => go(e, "#top")}
-            className="font-mono text-[11px] tracking-[0.18em] uppercase justify-self-start"
+            className="font-mono text-[12px] tracking-[0.18em] uppercase justify-self-start"
             data-cursor-hover
           >
             Julian
@@ -80,7 +80,7 @@ export function Nav() {
           </Link>
 
           {/* Desktop links */}
-          <ul className="hidden md:flex items-center justify-center gap-8 font-mono text-[11px] md:text-xs uppercase tracking-[0.18em]">
+          <ul className="hidden md:flex items-center justify-center gap-8 font-mono text-[12px] md:text-sm uppercase tracking-[0.18em]">
             {links.map((l) => (
               <li key={l.hash}>
                 <a
@@ -174,7 +174,7 @@ export function Nav() {
                   open: { y: 0, opacity: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
                   closed: { y: 20, opacity: 0, transition: { duration: 0.3 } },
                 }}
-                className="mt-10 font-mono text-[11px] tracking-[0.18em] uppercase opacity-70"
+                className="mt-10 font-mono text-[12px] tracking-[0.18em] uppercase opacity-70"
               >
                 <BerlinClock />
               </motion.li>
