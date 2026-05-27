@@ -1070,6 +1070,7 @@ const IFRAME_H = 900;
 function DemoFrame({ url }: { url: string }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
+  const [active, setActive] = useState(false);
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -1080,6 +1081,13 @@ function DemoFrame({ url }: { url: string }) {
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (!active) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setActive(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [active]);
 
   const containerHeight = Math.round(IFRAME_H * scale);
 
@@ -1095,17 +1103,33 @@ function DemoFrame({ url }: { url: string }) {
         <span className="font-mono text-[12px] uppercase tracking-[0.22em] text-muted">
           interactive demo · 1440px viewport
         </span>
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-mono text-[12px] uppercase tracking-[0.18em] text-foreground hover:text-muted transition-colors"
-          data-cursor-hover
-        >
-          open full ↗
-        </a>
+        <div className="flex items-center gap-4">
+          {active && (
+            <button
+              type="button"
+              onClick={() => setActive(false)}
+              className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted hover:text-foreground transition-colors"
+              data-cursor-hover
+            >
+              × exit (esc)
+            </button>
+          )}
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-[12px] uppercase tracking-[0.18em] text-foreground hover:text-muted transition-colors"
+            data-cursor-hover
+          >
+            open full ↗
+          </a>
+        </div>
       </div>
-      <div ref={wrapRef} style={{ height: `${containerHeight}px`, overflow: "hidden" }}>
+      <div
+        ref={wrapRef}
+        className="relative"
+        style={{ height: `${containerHeight}px`, overflow: "hidden" }}
+      >
         <iframe
           src={url}
           title="Duo ERP Dashboard — live demo"
@@ -1116,8 +1140,26 @@ function DemoFrame({ url }: { url: string }) {
             transformOrigin: "top left",
             border: "none",
             display: "block",
+            pointerEvents: active ? "auto" : "none",
           }}
         />
+        {!active && (
+          <button
+            type="button"
+            onClick={() => setActive(true)}
+            className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-foreground/[0.06] backdrop-blur-[2px] hover:bg-foreground/[0.10] transition-colors group"
+            data-cursor-hover
+            aria-label="Activate demo"
+          >
+            <span className="inline-flex items-center gap-2 font-mono text-[11px] md:text-[12px] uppercase tracking-[0.22em] text-foreground bg-background border border-border px-4 py-2.5 rounded-sm group-hover:border-foreground transition-colors">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              click to use the ERP
+            </span>
+            <span className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.18em] text-muted">
+              press esc or × exit to release scroll
+            </span>
+          </button>
+        )}
       </div>
     </motion.div>
   );
