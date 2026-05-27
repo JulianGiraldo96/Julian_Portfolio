@@ -93,7 +93,7 @@ export function About() {
                 I&apos;m{" "}
                 <span className="font-medium">Julian Giraldo</span>, a Product
                 Designer based in Berlin focused on B2B SaaS, internal tools and
-                data-heavy interfaces. The kind of work where dense information
+                data-heavy interfaces, with <b className="text-foreground">7+ years as a Product Designer</b> and <b className="text-foreground">8+ years as a designer overall</b>. The kind of work where dense information
                 has to feel calm and usable.
               </p>
             </RevealBlock>
@@ -110,7 +110,7 @@ export function About() {
                 I work end-to-end: research, information architecture, Figma,
                 design systems, prototyping and shipping with engineering. I
                 hold a Master&apos;s in Visual and Experience Design from UE
-                Berlin, with <b className="text-foreground">9+ years of experience</b> across product, brand and visual design.
+                Berlin, with <b className="text-foreground">8+ years</b> across product, brand and visual design.
               </p>
             </RevealBlock>
             <RevealBlock delay={0.35}>

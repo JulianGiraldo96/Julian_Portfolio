@@ -218,7 +218,7 @@ const html = `<!doctype html>
 
   <section>
     <h2 data-num="01">Profile</h2>
-    <p class="summary">Product Designer based in Berlin. MA in Visual and Experience Design from UE Berlin, 9+ years of experience across product, brand, and visual design. Focused on B2B software, internal tools, and data-heavy interfaces where dense information has to feel calm and usable. Designed and shipped the internal ERP at Duo Sicilian Ice Cream, used daily across 9 locations, 6 departments, 23+ staff — also one of the operators, which creates a tight feedback loop end-to-end.</p>
+    <p class="summary">Product Designer based in Berlin. MA in Visual and Experience Design from UE Berlin. 7+ years as a Product Designer, 8+ years as a designer overall. Focused on B2B software, internal tools, and data-heavy interfaces where dense information has to feel calm and usable. Designed and shipped the internal ERP at Duo Sicilian Ice Cream, used daily across 9 locations, 6 departments, 23+ staff — also one of the operators, which creates a tight feedback loop end-to-end.</p>
   </section>
 
   <section>
