@@ -21,7 +21,7 @@ export default function ErpDuoPage() {
         status: "Live · 2026",
       }}
       cover={{
-        src: "/projects/erp-duo/cover.png",
+        src: "/projects/erp-duo/cover.webp",
         alt: "Duo ERP Dashboard on iMac",
       }}
       sections={[
@@ -96,7 +96,7 @@ export default function ErpDuoPage() {
             "Every object in the system (an order, a delivery, a stock movement, an employee record) carries a full, timestamped history of every change: who made it, when, and from which access level. Documents attach at the record level, not in a generic folder. A delivery note lives on the delivery. A contract lives on the employee. No manual cross-referencing required.",
           ],
           image: {
-            src: "/projects/erp-duo/hr.png",
+            src: "/projects/erp-duo/hr.webp",
             alt: "ERP Duo — Staff Shifts with HR compliance alerts",
             position: "right",
             bg: "bg-[#f5f5f3]",
@@ -174,7 +174,7 @@ export default function ErpDuoPage() {
           ],
           images: [
             {
-              src: "/projects/erp-duo/gps.png",
+              src: "/projects/erp-duo/gps.webp",
               alt: "ERP Duo — Logistics GPS module · 7 routes · Berlin",
               caption: "Logistics GPS · live routes · Berlin",
             },
@@ -189,6 +189,15 @@ export default function ErpDuoPage() {
             "The demo below shows the dashboard, inventory, and flavours modules. Use the left sidebar to navigate. All data in this preview is fictional and exists only to show the interface in a realistic context. None of it reflects real company data.",
           ],
           url: "/projects/erp-duo/demo.html",
+        },
+        {
+          kind: "flow",
+          variant: "erp",
+          label: "08 · Order flow",
+          heading: "From new document to production.",
+          body: [
+            "End-to-end flow for the most-used path in the ERP: creating a new document (order, delivery, invoice), filling customer and item data, running auto stock checks, surfacing critical items via the three-state status system, and sending to production through role-based review.",
+          ],
         },
       ]}
     />

@@ -21,7 +21,7 @@ export default function SaveePage() {
         note: "Developed as part of a Master's project focused on sustainability and technology.",
       }}
       cover={{
-        src: "/projects/savee/cover.png",
+        src: "/projects/savee/cover.webp",
         alt: "Savee app, three device views (dark, light, color)",
       }}
       sections={[
@@ -35,7 +35,7 @@ export default function SaveePage() {
             "The result is an app that doesn't just inspire cooking. It closes the loop between what you watch, what you buy, and what you actually eat.",
           ],
           image: {
-            src: "/projects/savee/logo.png",
+            src: "/projects/savee/logo.webp",
             alt: "Savee app - launch screen",
             position: "right",
           },
@@ -159,7 +159,7 @@ export default function SaveePage() {
             "The calendar is the connective tissue of the app. It links discovery (the feed) to action (shopping and cooking) and feeds back into the daily reminders.",
           ],
           image: {
-            src: "/projects/savee/home-1.png",
+            src: "/projects/savee/home-1.webp",
             alt: "Savee calendar scheduling view",
             position: "right",
             bg: "bg-[#0a0a0a]",
@@ -209,7 +209,7 @@ export default function SaveePage() {
             "If food does get wasted, Savee logs it on your profile so you can spot patterns over time and adjust your shopping frequency or portion sizes. Awareness is the last resort. Prevention is the whole point.",
           ],
           image: {
-            src: "/projects/savee/shopping-list.png",
+            src: "/projects/savee/shopping-list.webp",
             alt: "Savee shopping list with expiry alerts",
             position: "right",
             bg: "bg-[#0a0a0a]",
@@ -305,27 +305,27 @@ export default function SaveePage() {
           ],
           images: [
             {
-              src: "/projects/savee/1.png",
+              src: "/projects/savee/1.webp",
               alt: "Savee — Screen 1",
             },
             {
-              src: "/projects/savee/2.png",
+              src: "/projects/savee/2.webp",
               alt: "Savee — Screen 2",
             },
             {
-              src: "/projects/savee/3.png",
+              src: "/projects/savee/3.webp",
               alt: "Savee — Screen 3",
             },
             {
-              src: "/projects/savee/4.png",
+              src: "/projects/savee/4.webp",
               alt: "Savee — Screen 4",
             },
             {
-              src: "/projects/savee/5.png",
+              src: "/projects/savee/5.webp",
               alt: "Savee — Screen 5",
             },
             {
-              src: "/projects/savee/6.png",
+              src: "/projects/savee/6.webp",
               alt: "Savee — Screen 6",
             },
           ],
@@ -334,6 +334,7 @@ export default function SaveePage() {
         /* ─── 12 User flow ─── */
         {
           kind: "flow",
+          variant: "savee",
           label: "12 · User flow",
           heading: "End-to-end journey.",
           body: [

@@ -25,7 +25,7 @@ const projects: Project[] = [
     tagline: "A social planner that cuts household food waste.",
     types: ["Mobile", "UX", "Sustainability"],
     year: "2025",
-    image: "/projects/savee/cover.png",
+    image: "/projects/savee/cover.webp",
   },
   {
     slug: "erp-duo",
@@ -34,7 +34,7 @@ const projects: Project[] = [
     tagline: "Bespoke ERP for a Sicilian gelato chain.",
     types: ["Web", "B2B", "ERP"],
     year: "2026",
-    image: "/projects/erp-duo/cover.png",
+    image: "/projects/erp-duo/cover.webp",
   },
   {
     title: "Tierra Viva",

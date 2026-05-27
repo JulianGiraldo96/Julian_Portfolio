@@ -59,6 +59,7 @@ type FlowSection = {
   label: string;
   heading: string;
   body?: string[];
+  variant?: "savee" | "erp";
 };
 
 type DemoSection = {
@@ -372,7 +373,7 @@ function SectionBlock({ section }: { section: Section }) {
                   {p}
                 </p>
               ))}
-            <FlowDiagram />
+            <FlowDiagram variant={section.variant} />
           </>
         )}
 
@@ -605,28 +606,109 @@ function ScreensGrid({ images }: { images: Array<{ src: string; alt: string }> }
   );
 }
 
-/* ─── Light-theme flow diagram ─────────────────────────────────────────────── */
+/* ─── Flow diagrams (ERP-Duo style) ────────────────────────────────────────── */
 
 const F = {
   bg: "#ffffff",
+  panel: "#f3f4f6",
   subtle: "#f5f5f2",
-  border: "rgba(10,10,10,0.12)",
+  border: "rgba(10,10,10,0.18)",
+  borderSoft: "rgba(10,10,10,0.12)",
   dark: "#0a0a0a",
   white: "#ffffff",
-  muted: "#8a8a88",
-  diamond: "#fdf9ed",
-  diamondBorder: "rgba(10,10,10,0.18)",
-  alert: "#fdfbf0",
-  alertBorder: "rgba(160,120,0,0.35)",
-  alertText: "#6b4f00",
-  arrowMain: "#0a0a0a",
-  arrowBack: "rgba(10,10,10,0.28)",
-  arrowAlert: "rgba(160,120,0,0.7)",
-  divider: "rgba(10,10,10,0.07)",
-  loop: "rgba(10,10,10,0.18)",
+  muted: "#6f6f6e",
+  diamondFill: "#ffffff",
+  yellow: "#fbf2cd",
+  yellowBorder: "#d9c270",
+  blue: "#d9ebfc",
+  blueBorder: "#5fa3d8",
+  blueText: "#0a0a0a",
+  alert: "#fde6e3",
+  alertBorder: "#d97a6d",
+  alertText: "#7a2a1f",
+  arrow: "#5a5a59",
+  arrowDashed: "#5fa3d8",
+  chipBg: "#ffffff",
+  chipBorder: "rgba(10,10,10,0.18)",
 };
 
-function FlowDiagram() {
+// Shape helpers as plain SVG fragments
+function Box({
+  x, y, w, h, title, sub, kind = "default",
+}: {
+  x: number; y: number; w: number; h: number;
+  title: string; sub?: string;
+  kind?: "default" | "start" | "end" | "alert";
+}) {
+  const fill =
+    kind === "start" || kind === "end" ? F.blue
+      : kind === "alert" ? F.alert
+        : F.bg;
+  const stroke =
+    kind === "start" || kind === "end" ? F.blueBorder
+      : kind === "alert" ? F.alertBorder
+        : F.borderSoft;
+  const txt = kind === "alert" ? F.alertText : F.dark;
+  const subTxt = kind === "alert" ? F.alertText : F.muted;
+  const lines = title.split("\n");
+  const totalH = lines.length * 14 + (sub ? 14 : 0);
+  const startY = y + (h - totalH) / 2 + 11;
+  return (
+    <g>
+      <rect x={x} y={y} width={w} height={h} rx="6" fill={fill} stroke={stroke} strokeWidth={kind === "start" || kind === "end" ? 1.5 : 1} />
+      {lines.map((ln, i) => (
+        <text key={i} x={x + w / 2} y={startY + i * 14} textAnchor="middle" fill={txt} fontSize="12" fontWeight={kind === "start" || kind === "end" ? 700 : 600} fontFamily="-apple-system,sans-serif">{ln}</text>
+      ))}
+      {sub && <text x={x + w / 2} y={startY + lines.length * 14} textAnchor="middle" fill={subTxt} fontSize="10" fontFamily="-apple-system,sans-serif">{sub}</text>}
+    </g>
+  );
+}
+
+function Fill({ x, y, w, h, lines }: { x: number; y: number; w: number; h: number; lines: string[] }) {
+  return (
+    <g>
+      <rect x={x} y={y} width={w} height={h} rx="4" fill={F.bg} stroke={F.borderSoft} strokeWidth="1" />
+      <text x={x + 10} y={y + 18} fill={F.dark} fontSize="11" fontWeight="700" fontFamily="-apple-system,sans-serif">FILL IN:</text>
+      {lines.map((ln, i) => (
+        <text key={i} x={x + 10} y={y + 34 + i * 13} fill={F.dark} fontSize="11" fontFamily="-apple-system,sans-serif">{ln}</text>
+      ))}
+    </g>
+  );
+}
+
+function Auto({ x, y, w, h, title, sub }: { x: number; y: number; w: number; h: number; title: string; sub?: string }) {
+  const skew = 14;
+  const pts = `${x + skew},${y} ${x + w},${y} ${x + w - skew},${y + h} ${x},${y + h}`;
+  return (
+    <g>
+      <polygon points={pts} fill={F.yellow} stroke={F.yellowBorder} strokeWidth="1" />
+      <text x={x + w / 2} y={y + h / 2 - 2} textAnchor="middle" fill={F.dark} fontSize="12" fontWeight="600" fontFamily="-apple-system,sans-serif">{title}</text>
+      {sub && <text x={x + w / 2} y={y + h / 2 + 14} textAnchor="middle" fill={F.muted} fontSize="10" fontFamily="-apple-system,sans-serif">{sub}</text>}
+    </g>
+  );
+}
+
+function Diamond({ cx, cy, w, h, title }: { cx: number; cy: number; w: number; h: number; title: string }) {
+  const pts = `${cx},${cy - h / 2} ${cx + w / 2},${cy} ${cx},${cy + h / 2} ${cx - w / 2},${cy}`;
+  const lines = title.split("\n");
+  const startY = cy - (lines.length - 1) * 7;
+  return (
+    <g>
+      <polygon points={pts} fill={F.diamondFill} stroke={F.border} strokeWidth="1" />
+      {lines.map((ln, i) => (
+        <text key={i} x={cx} y={startY + i * 14 + 4} textAnchor="middle" fill={F.dark} fontSize="11.5" fontWeight="600" fontFamily="-apple-system,sans-serif">{ln}</text>
+      ))}
+    </g>
+  );
+}
+
+function YesNo({ x, y, label }: { x: number; y: number; label: string }) {
+  return (
+    <text x={x} y={y} textAnchor="middle" fill={F.muted} fontSize="11" fontStyle="italic" fontFamily="-apple-system,sans-serif">{label}</text>
+  );
+}
+
+function FlowFrame({ phases, children, viewWidth, viewHeight }: { phases: string[]; children: React.ReactNode; viewWidth: number; viewHeight: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 24, filter: "blur(12px)" }}
@@ -635,297 +717,350 @@ function FlowDiagram() {
       transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
       className="w-full border border-border overflow-hidden"
     >
-      {/* Phase header */}
-      <div className="grid grid-cols-4 border-b border-border">
-        {[
-          "1 · Onboarding",
-          "2 · Discover & Schedule",
-          "3 · Shop & Cook",
-          "4 · Track & Loop",
-        ].map((p, i) => (
-          <div
-            key={i}
-            className={`px-5 py-4 font-mono text-[11px] md:text-[12px] uppercase tracking-[0.2em] text-muted ${i < 3 ? "border-r border-border" : ""
-              }`}
-          >
-            {p}
-          </div>
+      <div className={`grid border-b border-border`} style={{ gridTemplateColumns: `repeat(${phases.length}, minmax(0, 1fr))` }}>
+        {phases.map((p, i) => (
+          <div key={i} className={`px-5 py-4 font-mono text-[11px] md:text-[12px] uppercase tracking-[0.2em] text-muted ${i < phases.length - 1 ? "border-r border-border" : ""}`}>{p}</div>
         ))}
       </div>
-
-      {/* SVG canvas */}
-      <div className="w-full overflow-x-auto bg-background">
-        <svg
-          viewBox="0 0 3300 760"
-          width="3300"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ display: "block", minWidth: "3300px" }}
-        >
+      <div className="w-full overflow-x-auto" style={{ background: F.panel }}>
+        <svg viewBox={`0 0 ${viewWidth} ${viewHeight}`} width={viewWidth} xmlns="http://www.w3.org/2000/svg" style={{ display: "block", minWidth: `${viewWidth}px` }}>
           <defs>
-            {/* Arrow markers */}
-            <marker
-              id="lf-arrow"
-              viewBox="0 0 10 10"
-              refX="9"
-              refY="5"
-              markerWidth="6"
-              markerHeight="6"
-              orient="auto-start-reverse"
-            >
-              <path d="M0,1 L9,5 L0,9 z" fill={F.arrowMain} />
+            <marker id="fd-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,1 L9,5 L0,9 z" fill={F.arrow} />
             </marker>
-            <marker
-              id="lf-arrowBack"
-              viewBox="0 0 10 10"
-              refX="9"
-              refY="5"
-              markerWidth="6"
-              markerHeight="6"
-              orient="auto-start-reverse"
-            >
-              <path d="M0,1 L9,5 L0,9 z" fill={F.arrowBack} />
-            </marker>
-            <marker
-              id="lf-arrowAlert"
-              viewBox="0 0 10 10"
-              refX="9"
-              refY="5"
-              markerWidth="6"
-              markerHeight="6"
-              orient="auto-start-reverse"
-            >
-              <path d="M0,1 L9,5 L0,9 z" fill={F.arrowAlert} />
+            <marker id="fd-arrow-dash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,1 L9,5 L0,9 z" fill={F.arrowDashed} />
             </marker>
           </defs>
-
-          {/* Phase dividers */}
-          <g stroke={F.divider} strokeWidth="1" strokeDasharray="3 9">
-            <line x1="760" y1="0" x2="760" y2="760" />
-            <line x1="1720" y1="0" x2="1720" y2="760" />
-            <line x1="2520" y1="0" x2="2520" y2="760" />
-          </g>
-
-          {/* ═══ PHASE 1: ONBOARDING ═══ */}
-
-          {/* Open Savee — filled dark */}
-          <rect x="40" y="330" width="155" height="82" rx="6" fill={F.dark} />
-          <text x="117" y="366" textAnchor="middle" fill={F.white} fontSize="13" fontWeight="700" fontFamily="-apple-system,sans-serif">Open Savee</text>
-          <text x="117" y="385" textAnchor="middle" fill="rgba(255,255,255,0.45)" fontSize="10" fontFamily="-apple-system,sans-serif">launch app</text>
-
-          {/* Sign up / Log in */}
-          <rect x="226" y="330" width="174" height="82" rx="6" fill={F.subtle} stroke={F.border} strokeWidth="1" />
-          <text x="313" y="366" textAnchor="middle" fill={F.dark} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">Sign up / Log in</text>
-          <text x="313" y="385" textAnchor="middle" fill={F.muted} fontSize="10" fontFamily="-apple-system,sans-serif">Email · Apple · Google</text>
-
-          {/* Preferences — circle */}
-          <circle cx="522" cy="371" r="72" fill={F.bg} stroke={F.border} strokeWidth="1.2" />
-          <text x="522" y="361" textAnchor="middle" fill={F.dark} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">Answer</text>
-          <text x="522" y="379" textAnchor="middle" fill={F.dark} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">preferences</text>
-          <text x="522" y="397" textAnchor="middle" fill={F.muted} fontSize="10" fontFamily="-apple-system,sans-serif">diet · skill · goals</text>
-
-          {/* Profile ready — filled dark */}
-          <rect x="622" y="330" width="98" height="82" rx="6" fill={F.dark} />
-          <text x="671" y="366" textAnchor="middle" fill={F.white} fontSize="12" fontWeight="700" fontFamily="-apple-system,sans-serif">Profile</text>
-          <text x="671" y="385" textAnchor="middle" fill={F.white} fontSize="12" fontWeight="700" fontFamily="-apple-system,sans-serif">ready ✓</text>
-
-          {/* Phase 1 arrows */}
-          <g stroke={F.arrowMain} strokeWidth="1.5" fill="none" markerEnd="url(#lf-arrow)">
-            <line x1="196" y1="371" x2="220" y2="371" />
-            <line x1="400" y1="371" x2="444" y2="371" />
-            <line x1="597" y1="371" x2="616" y2="371" />
-            <line x1="721" y1="371" x2="762" y2="371" />
-          </g>
-
-          {/* ═══ PHASE 2: DISCOVER & SCHEDULE ═══ */}
-
-          {/* Home Feed — filled dark */}
-          <rect x="776" y="330" width="154" height="82" rx="6" fill={F.dark} />
-          <text x="853" y="366" textAnchor="middle" fill={F.white} fontSize="13" fontWeight="700" fontFamily="-apple-system,sans-serif">Home Feed</text>
-          <text x="853" y="385" textAnchor="middle" fill="rgba(255,255,255,0.45)" fontSize="10" fontFamily="-apple-system,sans-serif">video scroll</text>
-
-          {/* Watch recipe — circle */}
-          <circle cx="1024" cy="371" r="66" fill={F.bg} stroke={F.border} strokeWidth="1.2" />
-          <text x="1024" y="363" textAnchor="middle" fill={F.dark} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">Watch</text>
-          <text x="1024" y="381" textAnchor="middle" fill={F.dark} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">recipe video</text>
-
-          {/* Interested? — diamond */}
-          <polygon points="1150,371 1232,293 1314,371 1232,449" fill={F.diamond} stroke={F.diamondBorder} strokeWidth="1.2" />
-          <text x="1232" y="366" textAnchor="middle" fill={F.dark} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">Interested?</text>
-          <text x="1232" y="384" textAnchor="middle" fill={F.muted} fontSize="11" fontFamily="-apple-system,sans-serif">♥</text>
-
-          {/* ♥ Like */}
-          <rect x="1152" y="170" width="162" height="66" rx="6" fill={F.subtle} stroke={F.border} strokeWidth="1" />
-          <text x="1233" y="199" textAnchor="middle" fill={F.dark} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">♥ Like</text>
-          <text x="1233" y="218" textAnchor="middle" fill={F.muted} fontSize="10" fontFamily="-apple-system,sans-serif">feeds algorithm</text>
-
-          {/* 🔖 Save */}
-          <rect x="1152" y="506" width="162" height="66" rx="6" fill={F.subtle} stroke={F.border} strokeWidth="1" />
-          <text x="1233" y="535" textAnchor="middle" fill={F.dark} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">Save</text>
-          <text x="1233" y="554" textAnchor="middle" fill={F.muted} fontSize="10" fontFamily="-apple-system,sans-serif">for later</text>
-
-          {/* Add to list — filled dark */}
-          <rect x="1358" y="330" width="164" height="82" rx="6" fill={F.dark} />
-          <text x="1440" y="366" textAnchor="middle" fill={F.white} fontSize="13" fontWeight="700" fontFamily="-apple-system,sans-serif">🍴+ Add recipe</text>
-          <text x="1440" y="385" textAnchor="middle" fill="rgba(255,255,255,0.45)" fontSize="10" fontFamily="-apple-system,sans-serif">to shopping list</text>
-
-          {/* Pick date — circle */}
-          <circle cx="1622" cy="371" r="66" fill={F.bg} stroke={F.border} strokeWidth="1.2" />
-          <text x="1622" y="357" textAnchor="middle" fill={F.dark} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">Pick cooking</text>
-          <text x="1622" y="375" textAnchor="middle" fill={F.dark} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">date</text>
-          <text x="1622" y="393" textAnchor="middle" fill={F.muted} fontSize="10" fontFamily="-apple-system,sans-serif">calendar view</text>
-
-          {/* Phase 2 arrows */}
-          <g stroke={F.arrowMain} strokeWidth="1.5" fill="none" markerEnd="url(#lf-arrow)">
-            <line x1="930" y1="371" x2="954" y2="371" />
-            <line x1="1090" y1="371" x2="1144" y2="371" />
-            <line x1="1314" y1="371" x2="1352" y2="371" />
-            <line x1="1522" y1="371" x2="1550" y2="371" />
-            {/* branch up to ♥ Like */}
-            <path d="M 1232 293 L 1232 240" />
-            {/* branch down to 🔖 Save */}
-            <path d="M 1232 449 L 1232 503" />
-          </g>
-
-          {/* NO — back to watch */}
-          <g stroke={F.arrowBack} strokeWidth="1.3" fill="none" strokeDasharray="5 5" markerEnd="url(#lf-arrowBack)">
-            <path d="M 1232 449 Q 1232 625 1024 625 Q 1024 625 1024 440" />
-          </g>
-          <rect x="1090" y="612" width="44" height="22" rx="3" fill={F.subtle} stroke={F.border} strokeWidth="1" />
-          <text x="1112" y="628" textAnchor="middle" fill={F.muted} fontSize="10" fontWeight="700" fontFamily="-apple-system,sans-serif">NO</text>
-
-          {/* ═══ PHASE 3: SHOP & COOK ═══ */}
-
-          {/* Shopping list auto-updated */}
-          <rect x="1700" y="330" width="172" height="82" rx="6" fill={F.dark} />
-          <text x="1786" y="366" textAnchor="middle" fill={F.white} fontSize="13" fontWeight="700" fontFamily="-apple-system,sans-serif">Shopping list</text>
-          <text x="1786" y="385" textAnchor="middle" fill="rgba(255,255,255,0.45)" fontSize="10" fontFamily="-apple-system,sans-serif">auto-updated</text>
-
-          {/* Shopping day notification */}
-          <rect x="1900" y="330" width="170" height="82" rx="6" fill={F.subtle} stroke={F.border} strokeWidth="1" />
-          <text x="1985" y="366" textAnchor="middle" fill={F.dark} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">Shopping day</text>
-          <text x="1985" y="385" textAnchor="middle" fill={F.muted} fontSize="10" fontFamily="-apple-system,sans-serif">notification</text>
-
-          {/* Buy & check — circle */}
-          <circle cx="2158" cy="371" r="66" fill={F.bg} stroke={F.border} strokeWidth="1.2" />
-          <text x="2158" y="361" textAnchor="middle" fill={F.dark} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">Buy &amp; check</text>
-          <text x="2158" y="379" textAnchor="middle" fill={F.dark} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">items</text>
-          <text x="2158" y="397" textAnchor="middle" fill={F.muted} fontSize="10" fontFamily="-apple-system,sans-serif">→ pantry updated</text>
-
-          {/* Cook-today reminder */}
-          <rect x="2256" y="330" width="172" height="82" rx="6" fill={F.subtle} stroke={F.border} strokeWidth="1" />
-          <text x="2342" y="366" textAnchor="middle" fill={F.dark} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">Cook-today</text>
-          <text x="2342" y="385" textAnchor="middle" fill={F.muted} fontSize="10" fontFamily="-apple-system,sans-serif">reminder</text>
-
-          {/* ⚠ Ingredient expiring — alert */}
-          <rect x="1902" y="504" width="266" height="82" rx="6" fill={F.alert} stroke={F.alertBorder} strokeWidth="1.2" />
-          <text x="2035" y="534" textAnchor="middle" fill={F.alertText} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">⚠ Ingredient expiring</text>
-          <text x="2035" y="552" textAnchor="middle" fill={F.alertText} fontSize="11" fontFamily="-apple-system,sans-serif">suggest recipe today</text>
-          <text x="2035" y="570" textAnchor="middle" fill={F.muted} fontSize="9" fontFamily="-apple-system,sans-serif">anti-waste trigger</text>
-
-          {/* Phase 3 arrows */}
-          <g stroke={F.arrowMain} strokeWidth="1.5" fill="none" markerEnd="url(#lf-arrow)">
-            <line x1="1688" y1="371" x2="1694" y2="371" />
-            <line x1="1872" y1="371" x2="1894" y2="371" />
-            <line x1="2070" y1="371" x2="2086" y2="371" />
-            <line x1="2224" y1="371" x2="2250" y2="371" />
-            <line x1="2428" y1="371" x2="2462" y2="371" />
-          </g>
-          {/* Alert → cook today */}
-          <g stroke={F.arrowAlert} strokeWidth="1.3" fill="none" strokeDasharray="5 5" markerEnd="url(#lf-arrowAlert)">
-            <path d="M 2168 546 Q 2295 546 2342 416" />
-          </g>
-
-          {/* ═══ PHASE 4: TRACK & LOOP ═══ */}
-
-          {/* Follow recipe — filled dark */}
-          <rect x="2465" y="330" width="170" height="82" rx="6" fill={F.dark} />
-          <text x="2550" y="366" textAnchor="middle" fill={F.white} fontSize="13" fontWeight="700" fontFamily="-apple-system,sans-serif">Follow recipe</text>
-          <text x="2550" y="385" textAnchor="middle" fill="rgba(255,255,255,0.45)" fontSize="10" fontFamily="-apple-system,sans-serif">adjust portions</text>
-
-          {/* Cooked? — diamond */}
-          <polygon points="2677,371 2759,293 2841,371 2759,449" fill={F.diamond} stroke={F.diamondBorder} strokeWidth="1.2" />
-          <text x="2759" y="366" textAnchor="middle" fill={F.dark} fontSize="13" fontWeight="600" fontFamily="-apple-system,sans-serif">Cooked?</text>
-          <text x="2759" y="384" textAnchor="middle" fill={F.muted} fontSize="10" fontFamily="-apple-system,sans-serif">mark complete</text>
-
-          {/* Move to Cooked */}
-          <rect x="2889" y="190" width="168" height="82" rx="6" fill={F.dark} />
-          <text x="2973" y="222" textAnchor="middle" fill={F.white} fontSize="13" fontWeight="700" fontFamily="-apple-system,sans-serif">Move to</text>
-          <text x="2973" y="241" textAnchor="middle" fill={F.white} fontSize="13" fontWeight="700" fontFamily="-apple-system,sans-serif">&quot;Cooked&quot;</text>
-          <text x="2973" y="259" textAnchor="middle" fill="rgba(255,255,255,0.45)" fontSize="10" fontFamily="-apple-system,sans-serif">+ rate recipe</text>
-
-          {/* Waste saved */}
-          <rect x="2889" y="490" width="168" height="82" rx="6" fill={F.dark} />
-          <text x="2973" y="522" textAnchor="middle" fill={F.white} fontSize="13" fontWeight="700" fontFamily="-apple-system,sans-serif">Waste saved</text>
-          <text x="2973" y="541" textAnchor="middle" fill={F.white} fontSize="13" fontWeight="700" fontFamily="-apple-system,sans-serif">logged</text>
-          <text x="2973" y="559" textAnchor="middle" fill="rgba(255,255,255,0.45)" fontSize="10" fontFamily="-apple-system,sans-serif">profile stats</text>
-
-          {/* Phase 4 arrows */}
-          <g stroke={F.arrowMain} strokeWidth="1.5" fill="none" markerEnd="url(#lf-arrow)">
-            <line x1="2635" y1="371" x2="2671" y2="371" />
-            {/* YES — up to Cooked */}
-            <path d="M 2759 293 Q 2759 232 2883 232" />
-            {/* Cooked → Waste saved */}
-            <path d="M 2973 272 L 2973 485" />
-          </g>
-
-          {/* YES label */}
-          <rect x="2777" y="242" width="44" height="22" rx="3" fill={F.bg} stroke={F.border} strokeWidth="1" />
-          <text x="2799" y="258" textAnchor="middle" fill={F.dark} fontSize="10" fontWeight="700" fontFamily="-apple-system,sans-serif">YES</text>
-
-          {/* NO — back to Follow recipe */}
-          <g stroke={F.arrowBack} strokeWidth="1.3" fill="none" strokeDasharray="5 5" markerEnd="url(#lf-arrowBack)">
-            <path d="M 2759 449 Q 2759 530 2630 530 Q 2550 530 2550 416" />
-          </g>
-          <rect x="2614" y="518" width="44" height="22" rx="3" fill={F.subtle} stroke={F.border} strokeWidth="1" />
-          <text x="2636" y="534" textAnchor="middle" fill={F.muted} fontSize="10" fontWeight="700" fontFamily="-apple-system,sans-serif">NO</text>
-
-          {/* ═══ DAILY LOOP — back to feed ═══ */}
-          <g stroke={F.loop} strokeWidth="2" fill="none" strokeDasharray="10 7" markerEnd="url(#lf-arrowBack)">
-            <path d="M 2973 572 Q 2973 690 1860 690 Q 900 690 853 690 Q 853 690 853 416" />
-          </g>
-          <rect x="1632" y="672" width="262" height="30" rx="4" fill={F.bg} stroke={F.border} strokeWidth="1" />
-          <text x="1763" y="692" textAnchor="middle" fill={F.muted} fontSize="10" fontWeight="700" letterSpacing="2" fontFamily="-apple-system,sans-serif">DAILY LOOP  ·  BACK TO FEED</text>
+          {children}
         </svg>
       </div>
-
-      {/* Legend */}
-      <div className="flex flex-wrap gap-x-8 gap-y-3 px-6 py-5 border-t border-border bg-background">
-        {[
-          { fill: F.dark, label: "Primary action / screen" },
-          { fill: F.subtle, border: F.border, label: "System state" },
-          { fill: F.bg, border: F.border, label: "User activity", circle: true },
-          { fill: F.diamond, border: F.diamondBorder, label: "Decision point" },
-          { fill: F.alert, border: F.alertBorder, label: "Anti-waste alert" },
-        ].map((item, i) => (
-          <div key={i} className="flex items-center gap-2">
-            {item.circle ? (
-              <svg width="16" height="16" viewBox="0 0 16 16">
-                <circle
-                  cx="8"
-                  cy="8"
-                  r="6.5"
-                  fill={item.fill}
-                  stroke={item.border}
-                  strokeWidth="1"
-                />
-              </svg>
-            ) : (
-              <span
-                className="w-4 h-4 flex-shrink-0"
-                style={{
-                  background: item.fill,
-                  border: item.border ? `1px solid ${item.border}` : undefined,
-                  borderRadius: "3px",
-                }}
-              />
-            )}
-            <span className="font-mono text-[12px] uppercase tracking-[0.18em] text-muted">
-              {item.label}
-            </span>
-          </div>
-        ))}
-      </div>
     </motion.div>
+  );
+}
+
+function FlowDiagram({ variant }: { variant?: "savee" | "erp" }) {
+  if (variant === "erp") return <ErpFlow />;
+  return <SaveeFlow />;
+}
+
+/* ═══════════════ SAVEE FLOW ═══════════════ */
+function SaveeFlow() {
+  return (
+    <FlowFrame
+      viewWidth={2000}
+      viewHeight={920}
+      phases={["1 · Onboarding", "2 · Discover", "3 · Plan & Shop", "4 · Cook & Loop"]}
+    >
+      {/* Phase dividers */}
+      <g stroke="rgba(10,10,10,0.06)" strokeWidth="1" strokeDasharray="3 8">
+        <line x1="500" y1="0" x2="500" y2="920" />
+        <line x1="1000" y1="0" x2="1000" y2="920" />
+        <line x1="1500" y1="0" x2="1500" y2="920" />
+      </g>
+
+      {/* ── ROW 1 ── */}
+      {/* Start */}
+      <Box x={40} y={240} w={140} h={70} title="OPEN APP" kind="start" />
+      {/* Logged in? */}
+      <Diamond cx={290} cy={275} w={160} h={110} title="Logged in?" />
+      {/* yes → home (line continues right) */}
+      <YesNo x={400} y={265} label="yes" />
+      {/* no ↓ */}
+      <YesNo x={300} y={355} label="no" />
+      {/* Fill in sign up */}
+      <Fill x={220} y={400} w={170} h={70} lines={["email", "password,", "name"]} />
+      {/* Auto-fill preferences */}
+      <Auto x={420} y={400} w={170} h={70} title="Auto-fill" sub="profile defaults" />
+      {/* Set preferences? diamond */}
+      <Diamond cx={680} cy={275} w={170} h={120} title={"Set diet,\nskill, goals?"} />
+      <YesNo x={680} y={205} label="yes" />
+      <YesNo x={780} y={265} label="no" />
+      {/* Fill in preferences (above) */}
+      <Fill x={595} y={70} w={170} h={88} lines={["diet, skill,", "household,", "weekly goals"]} />
+      {/* HOME FEED */}
+      <Box x={830} y={240} w={150} h={70} title="HOME FEED" kind="start" />
+
+      {/* Phase 2: Discover */}
+      <Diamond cx={1090} cy={275} w={150} h={110} title="Interested?" />
+      <YesNo x={1100} y={205} label="yes" />
+      <YesNo x={1200} y={265} label="no" />
+      {/* Like / Save */}
+      <Fill x={1015} y={70} w={170} h={70} lines={["♥ like or", "🔖 save"]} />
+      {/* No → loop back arrow handled later */}
+      {/* Add to plan? */}
+      <Diamond cx={1320} cy={275} w={160} h={110} title="Add to plan?" />
+      <YesNo x={1430} y={265} label="yes" />
+      <YesNo x={1320} y={400} label="no" />
+      {/* Save for later (below) */}
+      <Box x={1245} y={420} w={160} h={60} title="Save for later" sub="recipe library" />
+      {/* Pick date FILL IN */}
+      <Fill x={1450} y={240} w={170} h={70} lines={["cooking date,", "servings"]} />
+
+      {/* ADD TO LIST (right end of row 1) */}
+      <Box x={1670} y={240} w={170} h={70} title="ADD TO LIST" kind="end" />
+
+      {/* Arrows row 1 */}
+      <g stroke={F.arrow} strokeWidth="1.4" fill="none" markerEnd="url(#fd-arrow)">
+        {/* Start → Logged in? */}
+        <line x1="180" y1="275" x2="210" y2="275" />
+        {/* yes → Set prefs diamond */}
+        <line x1="370" y1="275" x2="595" y2="275" />
+        {/* no ↓ Fill */}
+        <path d="M 290 330 L 290 400" />
+        {/* Fill → Auto */}
+        <line x1="390" y1="435" x2="420" y2="435" />
+        {/* Auto → Set prefs (up + right) */}
+        <path d="M 590 435 L 680 435 L 680 335" />
+        {/* yes ↑ Fill diet */}
+        <path d="M 680 215 L 680 158" />
+        {/* Fill diet → back down (merge to HOME) */}
+        <path d="M 765 105 L 905 105 L 905 240" />
+        {/* no → HOME */}
+        <line x1="765" y1="275" x2="830" y2="275" />
+        {/* HOME → Interested? */}
+        <line x1="980" y1="275" x2="1015" y2="275" />
+        {/* yes ↑ Like/Save */}
+        <path d="M 1090 220 L 1090 140" />
+        {/* Like/Save → Add to plan (right + down) */}
+        <path d="M 1185 105 L 1240 105 L 1240 240" />
+        {/* no → Add to plan */}
+        <line x1="1165" y1="275" x2="1240" y2="275" />
+        {/* yes → Pick date */}
+        <line x1="1400" y1="275" x2="1450" y2="275" />
+        {/* no → save for later */}
+        <path d="M 1320 330 L 1320 420" />
+        {/* Pick date → ADD TO LIST */}
+        <line x1="1620" y1="275" x2="1670" y2="275" />
+      </g>
+
+      {/* Interested? "no" loop back to HOME */}
+      <g stroke={F.arrow} strokeWidth="1.3" fill="none" strokeDasharray="4 4" markerEnd="url(#fd-arrow)">
+        <path d="M 1090 330 L 1090 380 L 905 380 L 905 310" />
+      </g>
+
+      {/* Cross-row dashed connector ADD TO LIST → SHOPPING */}
+      <g stroke={F.arrowDashed} strokeWidth="1.6" fill="none" strokeDasharray="6 4" markerEnd="url(#fd-arrow-dash)">
+        <path d="M 1755 310 L 1755 550 L 150 550 L 150 615" />
+      </g>
+
+      {/* ── ROW 2 ── */}
+      {/* Shopping list start */}
+      <Box x={70} y={615} w={170} h={70} title="SHOPPING LIST" kind="start" />
+      {/* Shopping day? */}
+      <Diamond cx={350} cy={650} w={150} h={110} title="Shopping day?" />
+      <YesNo x={460} y={640} label="yes" />
+      <YesNo x={350} y={770} label="no" />
+      {/* Wait (loop) */}
+      <Box x={275} y={790} w={150} h={50} title="Wait" sub="notify later" />
+      {/* Buy & check FILL IN */}
+      <Fill x={500} y={615} w={170} h={70} lines={["check items", "as bought"]} />
+      {/* Auto pantry update */}
+      <Auto x={700} y={615} w={170} h={70} title="Auto-update" sub="pantry stock" />
+      {/* Expiring? */}
+      <Diamond cx={970} cy={650} w={160} h={110} title="Expiring soon?" />
+      <YesNo x={970} y={580} label="yes" />
+      <YesNo x={1075} y={640} label="no" />
+      {/* Urgent recipe alert */}
+      <Box x={885} y={460} w={180} h={68} title="⚠ Urgent recipe" sub="anti-waste suggest" kind="alert" />
+      {/* Cook reminder */}
+      <Box x={1180} y={615} w={160} h={70} title="Cook today" sub="reminder" />
+      {/* FILL IN rating, waste */}
+      <Fill x={1370} y={605} w={180} h={88} lines={["mark cooked,", "rating,", "waste logged"]} />
+      {/* Week complete diamond */}
+      <Diamond cx={1700} cy={650} w={160} h={110} title={"Week\ncomplete?"} />
+      <YesNo x={1800} y={640} label="yes" />
+      <YesNo x={1700} y={770} label="no" />
+      {/* SAVED WEEK end */}
+      <Box x={1830} y={615} w={150} h={70} title="SAVED ✓" kind="end" />
+
+      {/* Arrows row 2 */}
+      <g stroke={F.arrow} strokeWidth="1.4" fill="none" markerEnd="url(#fd-arrow)">
+        {/* Shopping list → Shopping day? */}
+        <line x1="240" y1="650" x2="275" y2="650" />
+        {/* yes → Buy */}
+        <line x1="425" y1="650" x2="500" y2="650" />
+        {/* no ↓ Wait */}
+        <path d="M 350 705 L 350 790" />
+        {/* Buy → Auto pantry */}
+        <line x1="670" y1="650" x2="700" y2="650" />
+        {/* Auto → Expiring? */}
+        <line x1="870" y1="650" x2="895" y2="650" />
+        {/* yes ↑ Urgent recipe */}
+        <path d="M 970 595 L 970 528" />
+        {/* Urgent recipe → Cook today (right & down merge) */}
+        <path d="M 1065 494 L 1260 494 L 1260 615" />
+        {/* no → Cook today */}
+        <line x1="1050" y1="650" x2="1180" y2="650" />
+        {/* Cook today → FILL IN */}
+        <line x1="1340" y1="650" x2="1370" y2="650" />
+        {/* FILL IN → Week complete? */}
+        <line x1="1550" y1="650" x2="1625" y2="650" />
+        {/* yes → SAVED */}
+        <line x1="1775" y1="650" x2="1830" y2="650" />
+      </g>
+
+      {/* Week complete? "no" loop back to home/feed (dashed) */}
+      <g stroke={F.arrowDashed} strokeWidth="1.3" fill="none" strokeDasharray="4 4" markerEnd="url(#fd-arrow-dash)">
+        <path d="M 1700 705 L 1700 860 L 70 860 L 70 685" />
+      </g>
+
+      {/* Wait loop back to Shopping day */}
+      <g stroke={F.arrow} strokeWidth="1.2" fill="none" strokeDasharray="3 5" markerEnd="url(#fd-arrow)">
+        <path d="M 425 815 L 470 815 L 470 705" />
+      </g>
+    </FlowFrame>
+  );
+}
+
+/* ═══════════════ ERP DUO FLOW ═══════════════ */
+function ErpFlow() {
+  return (
+    <FlowFrame
+      viewWidth={2100}
+      viewHeight={980}
+      phases={["1 · New document", "2 · Items & status", "3 · Role-based review", "4 · Production"]}
+    >
+      <g stroke="rgba(10,10,10,0.06)" strokeWidth="1" strokeDasharray="3 8">
+        <line x1="540" y1="0" x2="540" y2="980" />
+        <line x1="1080" y1="0" x2="1080" y2="980" />
+        <line x1="1600" y1="0" x2="1600" y2="980" />
+      </g>
+
+      {/* ── ROW 1 ── */}
+      <Box x={40} y={240} w={160} h={70} title="NEW DOCUMENT" kind="start" />
+      <Diamond cx={310} cy={275} w={180} h={130} title={"Existing\ndocument type?"} />
+      <YesNo x={420} y={265} label="yes" />
+      <YesNo x={310} y={425} label="no" />
+      {/* yes → autofill template */}
+      <Auto x={460} y={240} w={180} h={70} title="Auto-load" sub="template fields" />
+      {/* no → pick from 40+ */}
+      <Fill x={235} y={465} w={170} h={70} lines={["choose from", "40+ doc types"]} />
+      {/* Customer/supplier exists? */}
+      <Diamond cx={780} cy={275} w={180} h={130} title={"Customer or\nsupplier exists?"} />
+      <YesNo x={780} y={205} label="yes" />
+      <YesNo x={890} y={265} label="no" />
+      {/* yes → autofill customer */}
+      <Auto x={695} y={70} w={180} h={70} title="Auto-fill" sub="contact data" />
+      {/* no → fill in customer */}
+      <Fill x={910} y={240} w={170} h={88} lines={["tax #, legal", "name, address,", "contact"]} />
+      {/* Contract based? */}
+      <Diamond cx={1190} cy={275} w={170} h={120} title={"Contract\nbased?"} />
+      <YesNo x={1190} y={205} label="yes" />
+      <YesNo x={1300} y={265} label="no" />
+      {/* yes → fill contract # */}
+      <Fill x={1105} y={80} w={170} h={70} lines={["contract #,", "validity"]} />
+      {/* Always fill: invoice info */}
+      <Fill x={1370} y={245} w={170} h={70} lines={["invoice #,", "due dates"]} />
+      {/* ADD ITEMS */}
+      <Box x={1600} y={240} w={160} h={70} title="ADD ITEMS" kind="start" />
+
+      {/* Arrows row 1 */}
+      <g stroke={F.arrow} strokeWidth="1.4" fill="none" markerEnd="url(#fd-arrow)">
+        <line x1="200" y1="275" x2="220" y2="275" />
+        {/* yes → Auto-load */}
+        <line x1="400" y1="275" x2="460" y2="275" />
+        {/* no ↓ Fill choose */}
+        <path d="M 310 340 L 310 465" />
+        {/* Fill choose → Auto-load (right + up) */}
+        <path d="M 405 500 L 550 500 L 550 310" />
+        {/* Auto-load → Customer? */}
+        <line x1="640" y1="275" x2="690" y2="275" />
+        {/* yes ↑ Auto-fill contact */}
+        <path d="M 780 210 L 780 140" />
+        {/* Auto-fill contact → Contract? (right + down) */}
+        <path d="M 875 105 L 1085 105 L 1085 215" />
+        {/* no → Fill customer */}
+        <line x1="870" y1="275" x2="910" y2="275" />
+        {/* Fill customer → Contract? */}
+        <line x1="1080" y1="285" x2="1105" y2="275" />
+        {/* yes ↑ contract # */}
+        <path d="M 1190 215 L 1190 150" />
+        {/* contract → invoice (right + down) */}
+        <path d="M 1275 115 L 1370 115 L 1370 245" />
+        {/* no → invoice */}
+        <line x1="1275" y1="275" x2="1370" y2="280" />
+        {/* invoice → ADD ITEMS */}
+        <line x1="1540" y1="280" x2="1600" y2="275" />
+      </g>
+
+      {/* Cross-row dashed connector */}
+      <g stroke={F.arrowDashed} strokeWidth="1.6" fill="none" strokeDasharray="6 4" markerEnd="url(#fd-arrow-dash)">
+        <path d="M 1680 310 L 1680 600 L 150 600 L 150 665" />
+      </g>
+
+      {/* ── ROW 2 ── */}
+      <Box x={70} y={665} w={160} h={70} title="ADD ITEMS" kind="start" />
+      {/* Fill item details */}
+      <Fill x={265} y={665} w={180} h={88} lines={["product,", "qty, unit,", "price"]} />
+      {/* Stock check auto */}
+      <Auto x={480} y={665} w={180} h={70} title="Auto stock" sub="check available" />
+      {/* Diamond status */}
+      <Diamond cx={770} cy={710} w={170} h={130} title={"Stock\nstatus?"} />
+      <YesNo x={770} y={620} label="ok" />
+      <YesNo x={770} y={810} label="warn / critical" />
+      {/* OK ↑ next */}
+      <Box x={700} y={510} w={150} h={60} title="OK ✓" sub="proceed" />
+      {/* Warn ↓ alert */}
+      <Box x={685} y={840} w={180} h={68} title="⚠ Low / Expiring" sub="surface to user" kind="alert" />
+      {/* More items? */}
+      <Diamond cx={1020} cy={710} w={170} h={120} title={"More\nitems?"} />
+      <YesNo x={1020} y={635} label="yes" />
+      <YesNo x={1130} y={700} label="no" />
+      {/* Special requests? */}
+      <Diamond cx={1260} cy={710} w={170} h={120} title={"Special\nrequests?"} />
+      <YesNo x={1260} y={635} label="yes" />
+      <YesNo x={1370} y={700} label="no" />
+      <Fill x={1175} y={520} w={170} h={70} lines={["packaging,", "equipment"]} />
+      {/* SAVE / Role view */}
+      <Box x={1460} y={680} w={150} h={70} title="SAVE DRAFT" kind="start" />
+      {/* Approval needed? */}
+      <Diamond cx={1730} cy={715} w={170} h={120} title={"Needs\napproval?"} />
+      <YesNo x={1730} y={640} label="yes" />
+      <YesNo x={1840} y={705} label="no" />
+      {/* Manager review */}
+      <Fill x={1645} y={525} w={170} h={70} lines={["manager", "reviews & signs"]} />
+      {/* SEND TO PRODUCTION */}
+      <Box x={1900} y={680} w={170} h={70} title="SEND TO PROD" kind="end" />
+
+      {/* Arrows row 2 */}
+      <g stroke={F.arrow} strokeWidth="1.4" fill="none" markerEnd="url(#fd-arrow)">
+        <line x1="230" y1="700" x2="265" y2="700" />
+        <line x1="445" y1="700" x2="480" y2="700" />
+        <line x1="660" y1="700" x2="685" y2="700" />
+        {/* OK ↑ */}
+        <path d="M 770 645 L 770 570" />
+        {/* warn ↓ */}
+        <path d="M 770 775 L 770 840" />
+        {/* OK → More items (right + down) */}
+        <path d="M 850 540 L 1020 540 L 1020 650" />
+        {/* warn → More items (right + up) */}
+        <path d="M 865 874 L 1020 874 L 1020 770" />
+        {/* yes ↑ loop back to ADD ITEMS */}
+        <path d="M 1020 650 L 1020 460 L 155 460 L 155 665" />
+        {/* no → Special? */}
+        <line x1="1105" y1="710" x2="1175" y2="710" />
+        {/* yes ↑ Fill */}
+        <path d="M 1260 650 L 1260 590" />
+        {/* Fill → SAVE (right + down) */}
+        <path d="M 1345 555 L 1490 555 L 1490 680" />
+        {/* no → SAVE */}
+        <line x1="1345" y1="710" x2="1460" y2="710" />
+        {/* SAVE → Approval? */}
+        <line x1="1610" y1="715" x2="1645" y2="715" />
+        {/* yes ↑ Manager */}
+        <path d="M 1730 655 L 1730 595" />
+        {/* Manager → SEND (right + down) */}
+        <path d="M 1815 560 L 1935 560 L 1935 680" />
+        {/* no → SEND */}
+        <line x1="1815" y1="715" x2="1900" y2="715" />
+      </g>
+
+      {/* Stock warn → loop back (dashed) */}
+      <g stroke={F.arrowDashed} strokeWidth="1.2" fill="none" strokeDasharray="4 4" markerEnd="url(#fd-arrow-dash)">
+        <path d="M 775 908 L 155 908 L 155 735" />
+      </g>
+    </FlowFrame>
   );
 }
 
@@ -995,7 +1130,7 @@ const allMoreWorkProjects = [
     types: ["Mobile", "UX", "Sustainability"],
     year: "2025",
     slug: "savee" as string | null,
-    image: "/projects/savee/cover.png",
+    image: "/projects/savee/cover.webp",
     tone: "",
     accent: "",
   },
@@ -1005,7 +1140,7 @@ const allMoreWorkProjects = [
     types: ["Web", "B2B", "ERP"],
     year: "2026",
     slug: "erp-duo" as string | null,
-    image: "/projects/erp-duo/cover.png",
+    image: "/projects/erp-duo/cover.webp",
     tone: "",
     accent: "",
   },
