@@ -112,7 +112,7 @@ export function CaseStudy({
     <main className="relative pb-24">
       <header className="px-6 md:px-10 pt-28 md:pt-40 pb-10 md:pb-16">
         <div className="mx-auto max-w-[1400px]">
-          <div className="font-mono text-[12px] uppercase tracking-[0.22em] text-muted mb-6">
+          <div className="font-mono text-[13px] uppercase tracking-[0.22em] text-muted mb-6">
             <span className="text-foreground">[ {meta.index} ]</span>
             <span className="mx-3 opacity-40">/</span>
             case study
@@ -126,7 +126,7 @@ export function CaseStudy({
             {meta.subtitle}
           </p>
 
-          <dl className="mt-12 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 font-mono text-[11px] md:text-[12px] uppercase tracking-[0.22em] border-t border-border pt-8">
+          <dl className="mt-12 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 font-mono text-[12px] md:text-[13px] uppercase tracking-[0.22em] border-t border-border pt-8">
             <MetaItem label="Year" value={meta.year} />
             <MetaItem label="Role" value={meta.role} />
             <MetaItem label="Tags" value={meta.tags.join(" · ")} />
@@ -134,7 +134,7 @@ export function CaseStudy({
           </dl>
 
           {meta.note && (
-            <p className="mt-10 max-w-3xl font-mono text-[11px] md:text-[12px] uppercase tracking-[0.18em] text-muted border-l border-border pl-4">
+            <p className="mt-10 max-w-3xl font-mono text-[12px] md:text-[13px] uppercase tracking-[0.18em] text-muted border-l border-border pl-4">
               // {meta.note}
             </p>
           )}
@@ -154,7 +154,7 @@ export function CaseStudy({
       <MoreWork currentSlug={currentSlug} />
 
       <footer className="mt-16 px-6 md:px-10 border-t border-border pt-10 pb-10">
-        <div className="mx-auto max-w-[1400px] flex flex-col md:flex-row md:items-center md:justify-between gap-6 font-mono text-[11px] md:text-[12px] uppercase tracking-[0.22em]">
+        <div className="mx-auto max-w-[1400px] flex flex-col md:flex-row md:items-center md:justify-between gap-6 font-mono text-[12px] md:text-[13px] uppercase tracking-[0.22em]">
           <Link
             href="/#work"
             className="inline-flex items-center gap-2 hover:text-muted transition-colors"
@@ -213,7 +213,7 @@ function SectionBlock({ section }: { section: Section }) {
   return (
     <section className="grid grid-cols-12 gap-6 md:gap-10">
       <div className="col-span-12 md:col-span-3 md:sticky md:top-28 md:self-start">
-        <span className="font-mono text-[11px] md:text-[12px] uppercase tracking-[0.22em] text-muted">
+        <span className="font-mono text-[12px] md:text-[13px] uppercase tracking-[0.22em] text-muted">
           {section.label}
         </span>
       </div>
@@ -287,7 +287,7 @@ function SectionBlock({ section }: { section: Section }) {
                   }}
                   className="grid grid-cols-12 gap-4 md:gap-10 py-7 md:py-9"
                 >
-                  <span className="col-span-2 md:col-span-1 font-mono text-[11px] md:text-[12px] uppercase tracking-[0.22em] text-muted">
+                  <span className="col-span-2 md:col-span-1 font-mono text-[12px] md:text-[13px] uppercase tracking-[0.22em] text-muted">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <h3 className="col-span-10 md:col-span-4 font-display font-light text-lg md:text-2xl tracking-[-0.01em]">
@@ -351,7 +351,7 @@ function SectionBlock({ section }: { section: Section }) {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={img.src} alt={img.alt} className="block w-full h-auto" />
                   {img.caption && (
-                    <p className="px-4 py-3 font-mono text-[11px] uppercase tracking-[0.18em] text-muted border-t border-border">
+                    <p className="px-4 py-3 font-mono text-[12px] uppercase tracking-[0.18em] text-muted border-t border-border">
                       {img.caption}
                     </p>
                   )}
@@ -420,7 +420,7 @@ function StatsRow({ stats }: { stats: Stat[] }) {
           <span className="font-display font-extralight text-5xl md:text-6xl tracking-[-0.03em] leading-none">
             {s.number}
           </span>
-          <span className="font-mono text-[11px] md:text-[12px] uppercase tracking-[0.18em] text-muted leading-relaxed">
+          <span className="font-mono text-[12px] md:text-[13px] uppercase tracking-[0.18em] text-muted leading-relaxed">
             {s.caption}
           </span>
         </motion.div>
@@ -544,7 +544,7 @@ function SectionMedia({ image }: { image: SectionImage }) {
     >
       {content}
       {image.caption && (
-        <figcaption className="mt-3 font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+        <figcaption className="mt-3 font-mono text-[12px] uppercase tracking-[0.18em] text-muted">
           {image.caption}
         </figcaption>
       )}
@@ -564,13 +564,13 @@ function QuestionsGrid({ items }: { items: QuestionItem[] }) {
           transition={{ duration: 0.7, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
           className="bg-background p-6 md:p-8 flex flex-col gap-5"
         >
-          <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
+          <span className="font-mono text-[12px] uppercase tracking-[0.22em] text-muted">
             {String(i + 1).padStart(2, "0")}
           </span>
           <p className="font-display font-light text-lg md:text-xl tracking-[-0.01em] leading-snug">
             {item.question}
           </p>
-          <span className="mt-auto font-mono text-[10px] md:text-[11px] uppercase tracking-[0.2em] text-muted border-t border-border pt-4">
+          <span className="mt-auto font-mono text-[11px] md:text-[12px] uppercase tracking-[0.2em] text-muted border-t border-border pt-4">
             {item.hint}
           </span>
         </motion.div>
@@ -645,7 +645,7 @@ function FlowDiagram() {
         ].map((p, i) => (
           <div
             key={i}
-            className={`px-5 py-4 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.2em] text-muted ${i < 3 ? "border-r border-border" : ""
+            className={`px-5 py-4 font-mono text-[11px] md:text-[12px] uppercase tracking-[0.2em] text-muted ${i < 3 ? "border-r border-border" : ""
               }`}
           >
             {p}
@@ -919,7 +919,7 @@ function FlowDiagram() {
                 }}
               />
             )}
-            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+            <span className="font-mono text-[12px] uppercase tracking-[0.18em] text-muted">
               {item.label}
             </span>
           </div>
@@ -957,14 +957,14 @@ function DemoFrame({ url }: { url: string }) {
       className="w-full border border-border overflow-hidden"
     >
       <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-subtle">
-        <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
+        <span className="font-mono text-[12px] uppercase tracking-[0.22em] text-muted">
           interactive demo · 1440px viewport
         </span>
         <a
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-mono text-[11px] uppercase tracking-[0.18em] text-foreground hover:text-muted transition-colors"
+          className="font-mono text-[12px] uppercase tracking-[0.18em] text-foreground hover:text-muted transition-colors"
           data-cursor-hover
         >
           open full ↗
@@ -1038,7 +1038,7 @@ function MoreWork({ currentSlug }: { currentSlug?: string }) {
   return (
     <div className="mt-24 md:mt-40 px-6 md:px-10 border-t border-border pt-16 pb-8">
       <div className="mx-auto max-w-[1400px]">
-        <div className="flex items-end justify-between mb-10 md:mb-14 font-mono text-[11px] md:text-[12px] uppercase tracking-[0.22em]">
+        <div className="flex items-end justify-between mb-10 md:mb-14 font-mono text-[12px] md:text-[13px] uppercase tracking-[0.22em]">
           <span className="text-muted">
             <span className="text-foreground">[ more ]</span>
             <span className="mx-3 opacity-40">/</span>
@@ -1073,19 +1073,19 @@ function MoreWork({ currentSlug }: { currentSlug?: string }) {
                     <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none" />
                     {/* top row */}
                     <div className="absolute top-5 left-5 right-5 flex items-start justify-between gap-3">
-                      <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/60">
+                      <span className="font-mono text-[12px] uppercase tracking-[0.22em] text-white/60">
                         {String(allMoreWorkProjects.findIndex(x => x.title === p.title) + 1).padStart(2, "0")} /{" "}
                         {String(allMoreWorkProjects.length).padStart(2, "0")}
                       </span>
                       <div className="flex gap-1.5 flex-wrap justify-end">
                         {p.slug ? (
                           p.types.map((t) => (
-                            <span key={t} className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/80 bg-black/25 backdrop-blur-sm px-2 py-0.5 rounded-sm">
+                            <span key={t} className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/80 bg-black/25 backdrop-blur-sm px-2 py-0.5 rounded-sm">
                               {t}
                             </span>
                           ))
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-white/60 bg-black/25 px-2 py-1 rounded-sm">
+                          <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-white/60 bg-black/25 px-2 py-1 rounded-sm">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
                             coming soon
                           </span>
@@ -1095,7 +1095,7 @@ function MoreWork({ currentSlug }: { currentSlug?: string }) {
                     {/* bottom row */}
                     {p.slug && (
                       <div className="absolute bottom-5 left-5 right-5">
-                        <span className="block font-mono text-[10px] uppercase tracking-[0.18em] text-white/60 mb-1.5">
+                        <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-white/60 mb-1.5">
                           {p.title} · {p.year}
                         </span>
                         <h3 className="font-display font-light text-lg md:text-2xl text-white tracking-[-0.02em] leading-tight drop-shadow-lg">

@@ -57,7 +57,7 @@ export function Contact() {
       className="relative px-6 md:px-10 pt-24 md:pt-40 pb-10 border-t border-border overflow-hidden"
     >
       <div className="mx-auto max-w-[1600px]">
-        <div className="font-mono text-[12px] uppercase tracking-[0.22em] text-muted mb-8">
+        <div className="font-mono text-[13px] uppercase tracking-[0.22em] text-muted mb-8">
           <span className="text-foreground">[ 03 ]</span>
           <span className="mx-3 opacity-40">/</span>
           contact
@@ -95,7 +95,7 @@ export function Contact() {
         </div>
 
         <div className="mt-16 md:mt-24 flex flex-col md:flex-row md:items-end md:justify-end gap-10 border-t border-border pt-8">
-          <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
+          <span className="font-mono text-[12px] uppercase tracking-[0.22em] text-muted">
             © {new Date().getFullYear()} · julian giraldo · v.2026.04
           </span>
         </div>
