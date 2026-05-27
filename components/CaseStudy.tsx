@@ -118,11 +118,11 @@ export function CaseStudy({
             case study
           </div>
           <HeadingReveal>
-            <h1 className="font-display font-extralight uppercase tracking-[-0.04em] leading-[0.9] text-[clamp(3rem,11vw,9rem)]">
+            <h1 className="font-display font-extralight uppercase tracking-[-0.04em] leading-[0.9] text-[clamp(3.5rem,12vw,10rem)]">
               {meta.title}
             </h1>
           </HeadingReveal>
-          <p className="mt-6 md:mt-10 max-w-2xl font-display font-light text-xl md:text-2xl tracking-[-0.01em] text-muted">
+          <p className="mt-6 md:mt-10 max-w-2xl font-display font-light text-2xl md:text-3xl tracking-[-0.01em] text-muted">
             {meta.subtitle}
           </p>
 
@@ -220,7 +220,7 @@ function SectionBlock({ section }: { section: Section }) {
 
       <div className={`col-span-12 space-y-8 md:space-y-12 ${section.kind === "demo" ? "" : "md:col-span-9"}`}>
         <HeadingReveal>
-          <h2 className="font-display font-extralight tracking-[-0.025em] leading-[1.05] text-[clamp(1.75rem,3.6vw,3rem)] max-w-3xl">
+          <h2 className="font-display font-extralight tracking-[-0.025em] leading-[1.05] text-[clamp(2rem,4vw,3.5rem)] max-w-3xl">
             {section.heading}
           </h2>
         </HeadingReveal>

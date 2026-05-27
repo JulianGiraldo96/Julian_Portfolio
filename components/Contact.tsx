@@ -66,7 +66,7 @@ export function Contact() {
         <div className="flex items-center justify-between gap-8">
           <motion.h2
             style={{ filter: headingFilter, opacity }}
-            className="font-display font-extralight uppercase tracking-[-0.045em] leading-[0.88] text-[clamp(3rem,13vw,12rem)] will-change-[filter,opacity]"
+            className="font-display font-extralight uppercase tracking-[-0.045em] leading-[0.88] text-[clamp(3.5rem,14vw,13.5rem)] will-change-[filter,opacity]"
             aria-label="Get in touch"
           >
             <span className="block">Get in</span>

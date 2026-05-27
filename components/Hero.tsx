@@ -48,7 +48,7 @@ export function Hero() {
         />
 
         <h1
-          className="font-display font-extralight uppercase tracking-[-0.04em] leading-[0.88] text-[clamp(3.5rem,14vw,13rem)]"
+          className="font-display font-extralight uppercase tracking-[-0.04em] leading-[0.88] text-[clamp(4rem,15vw,14.5rem)]"
           aria-label="Julian Giraldo"
         >
           <BlurLine delay={0.35}>Julian</BlurLine>

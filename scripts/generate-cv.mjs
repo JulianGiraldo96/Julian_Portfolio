@@ -14,105 +14,290 @@ const html = `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Julian David Giraldo Rojas - CV</title>
+<title>Julian David Giraldo Rojas — CV</title>
 <style>
-  @page { size: A4; margin: 10mm 12mm; }
+  @page { size: A4; margin: 11mm 14mm; }
   * { box-sizing: border-box; }
+  :root {
+    --fg: #0a0a0a;
+    --muted: #8a8a88;
+    --border: rgba(10,10,10,0.10);
+    --subtle: #e9e9e6;
+  }
   html, body {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 8.4pt;
-    line-height: 1.28;
-    color: #000;
+    font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 9pt;
+    line-height: 1.42;
+    color: var(--fg);
     margin: 0;
+    font-weight: 400;
   }
-  h1 {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 15pt;
-    font-weight: 700;
-    text-align: left;
-    margin: 0 0 1px 0;
+  .display {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    line-height: 1;
   }
-  .title { font-size: 9pt; font-weight: 700; margin-bottom: 1px; }
-  .contact { font-size: 8.4pt; margin-bottom: 1px; }
-  .links { font-size: 8.4pt; margin-bottom: 4px; }
-  h2 {
-    font-size: 9.5pt;
-    font-weight: 700;
-    border-bottom: 0.6pt solid #000;
-    padding-bottom: 1px;
-    margin: 5px 0 2px 0;
+  .mono {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
     text-transform: uppercase;
+    letter-spacing: 0.10em;
+    font-size: 7.2pt;
+    color: var(--muted);
   }
-  h3 {
-    font-size: 8.8pt;
-    font-weight: 700;
+  .header { margin-bottom: 6px; }
+  .rule-top {
+    height: 1px;
+    width: 40px;
+    background: var(--fg);
+    opacity: 0.4;
+    margin: 0 0 6px 0;
+  }
+  h1.name {
+    font-size: 22pt;
+    margin: 0 0 4px 0;
+  }
+  .role-line {
     margin: 4px 0 0 0;
   }
-  .meta { font-size: 8.2pt; font-weight: 400; margin: 0 0 1px 0; }
-  ul {
-    margin: 1px 0 2px 0;
-    padding-left: 14px;
-    list-style: disc;
+  .role-line .sep { opacity: 0.35; margin: 0 6px; }
+  .role-line .key { color: var(--fg); }
+  .contact-line {
+    margin-top: 3px;
+    font-size: 8.4pt;
+    color: var(--fg);
   }
-  ul li { margin-bottom: 1px; }
-  p { margin: 1px 0; }
-  .skills-row { margin: 2px 0; }
-  .skills-row b { font-weight: 700; }
-  b, strong { font-weight: 700; }
+  .contact-line a { color: var(--fg); text-decoration: none; }
+  .contact-line .dot { color: var(--muted); margin: 0 5px; }
+
+  section { margin-top: 8px; }
+  h2 {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 8pt;
+    color: var(--fg);
+    border-top: 0.6pt solid var(--border);
+    padding-top: 5px;
+    margin: 8px 0 5px 0;
+    font-weight: 500;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  h2::before {
+    content: attr(data-num);
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  p.summary {
+    font-size: 9pt;
+    line-height: 1.45;
+    margin: 0;
+    color: var(--fg);
+  }
+
+  .job { margin-top: 6px; }
+  .job:first-of-type { margin-top: 0; }
+  .job-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 1px;
+  }
+  .job-title {
+    font-size: 9.4pt;
+    font-weight: 500;
+  }
+  .job-title .at { color: var(--muted); font-weight: 400; }
+  .job-date {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 7pt;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .job-loc {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 6.8pt;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  ul {
+    margin: 2px 0 0 0;
+    padding-left: 0;
+    list-style: none;
+  }
+  ul li {
+    position: relative;
+    padding-left: 12px;
+    margin-bottom: 2px;
+    font-size: 8.8pt;
+    line-height: 1.38;
+  }
+  ul li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+    font-size: 7.5pt;
+    top: 1px;
+  }
+
+  .edu-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 2px;
+  }
+  .edu-row .degree { font-size: 9pt; font-weight: 500; }
+  .edu-row .school { color: var(--muted); }
+  .edu-row .date {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 7pt;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .skills-grid { margin-top: 0; }
+  .skill-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 3px;
+    align-items: baseline;
+  }
+  .skill-row .label {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 6.8pt;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--muted);
+    width: 70px;
+    flex-shrink: 0;
+  }
+  .skill-row .val {
+    font-size: 8.8pt;
+    color: var(--fg);
+    flex: 1;
+    line-height: 1.4;
+  }
+
+  .lang-row {
+    display: flex;
+    gap: 32px;
+    margin-top: 2px;
+  }
+  .lang-row .lang b {
+    font-weight: 500;
+    color: var(--fg);
+  }
+  .lang-row .lang .lvl { color: var(--muted); margin-left: 4px; }
+
+  b, strong { font-weight: 500; }
 </style>
 </head>
 <body>
-  <h1>Julian David Giraldo Rojas</h1>
-  <p class="title">Product Designer - End-to-end UX/UI for B2B Software and Internal Tools</p>
-  <p class="contact">Email: application@juliang.de | Phone: +49 15158844518 | Location: Berlin, Germany</p>
-  <p class="links">Website: juliang.de | LinkedIn: linkedin.com/in/julian-gr | Portfolio: behance.net/JulianGR</p>
+  <div class="header">
+    <div class="rule-top"></div>
+    <h1 class="name display">Julian David Giraldo Rojas</h1>
+    <p class="role-line mono">
+      <span class="key">role</span><span class="sep">→</span>Product Designer<span class="sep">·</span><span class="key">loc</span><span class="sep">→</span>Berlin, DE<span class="sep">·</span><span class="key">focus</span><span class="sep">→</span>B2B SaaS, Internal Tools
+    </p>
+    <p class="contact-line">
+      application@juliang.de<span class="dot">·</span>+49 151 5884 4518<span class="dot">·</span>juliang.de<span class="dot">·</span>linkedin.com/in/julian-gr<span class="dot">·</span>behance.net/JulianGR
+    </p>
+  </div>
 
-  <h2>Professional Summary</h2>
-  <p>Product Designer based in Berlin, MA in Visual and Experience Design (UE Berlin), 8+ years across product, brand, and visual design. Focused on B2B software, internal tools, and data-heavy interfaces. Designed and shipped the internal ERP at Duo Sicilian Ice Cream, used daily across 9 locations, 6 departments, 23+ staff. End-to-end skills: user research, information architecture, Figma, design systems, prototyping, engineering handoff.</p>
+  <section>
+    <h2 data-num="01">Profile</h2>
+    <p class="summary">Product Designer based in Berlin. MA in Visual and Experience Design from UE Berlin, 8+ years across product, brand, and visual design. Focused on B2B software, internal tools, and data-heavy interfaces where dense information has to feel calm and usable. Designed and shipped the internal ERP at Duo Sicilian Ice Cream, used daily across 9 locations, 6 departments, 23+ staff — also one of the operators, which creates a tight feedback loop end-to-end.</p>
+  </section>
 
-  <h2>Professional Experience</h2>
+  <section>
+    <h2 data-num="02">Experience</h2>
 
-  <h3>Product Designer - Duo Sicilian Ice Cream, Berlin, Germany</h3>
-  <p class="meta">October 2024 - Present</p>
-  <ul>
-    <li>Designed and shipped Duo's internal ERP from zero, used daily across 9 locations and 6 departments (operations, logistics, production, HR, finance, management).</li>
-    <li>Owned the full product process end-to-end: discovery interviews, information architecture for 40+ document types, wireframes, Figma prototypes, high-fidelity UI, design system, developer handoff, post-launch iteration.</li>
-    <li>Designed a role-based access model with six distinct roles, reducing onboarding friction and preventing accidental edits across modules.</li>
-    <li>Built a three-state status system (ok, warn, critical) applied consistently across inventory, expiring items, HR compliance, deliveries, and production.</li>
-    <li>Shipped 13 modules: dashboard, inventory, flavours and stock, expiring items, movements, orders, deliveries, logistics GPS, suppliers, production, staff, reports, settings.</li>
-    <li>Use the system daily as an operator, creating a continuous feedback loop with users.</li>
-  </ul>
+    <div class="job">
+      <div class="job-head">
+        <div class="job-title">Product Designer <span class="at">— Duo Sicilian Ice Cream</span></div>
+        <div class="job-date">Oct 2024 — Present</div>
+      </div>
+      <div class="job-loc">Berlin, Germany · On-site</div>
+      <ul>
+        <li>Designed and shipped Duo's internal ERP from zero, used daily across 9 locations and 6 departments (operations, logistics, production, HR, finance, management).</li>
+        <li>End-to-end ownership: discovery interviews, information architecture for 40+ document types, wireframes, Figma prototypes, high-fidelity UI, design system, dev handoff, post-launch iteration.</li>
+        <li>Designed a role-based access model with six distinct roles, cutting onboarding friction and preventing accidental edits across modules.</li>
+        <li>Built a three-state status system (ok / warn / critical) applied consistently across inventory, expiring items, HR compliance, deliveries, production.</li>
+        <li>Shipped 13 modules: dashboard, inventory, flavours &amp; stock, expiring items, movements, orders, deliveries, logistics GPS, suppliers, production, staff, reports, settings.</li>
+      </ul>
+    </div>
 
-  <h3>Product Designer (Freelance) - TaurusWebs, Bogota, Colombia (Remote)</h3>
-  <p class="meta">February 2019 - Present</p>
-  <ul>
-    <li>Lead designer for custom internal platforms and client-facing applications built from scratch.</li>
-    <li>Designed the Taurus Ecosystem, a unified internal workspace combining CRM (Twenty), knowledge base (AppFlowy), encrypted chat (Matrix), tied through single SSO identity. Owned discovery, IA, user flows, Figma UI, prototype, stakeholder pitch.</li>
-    <li>Translated complex technical and infrastructure decisions (data sovereignty, hosting, security) into product narratives for non-technical stakeholders.</li>
-    <li>Led brand identity, web design, and creative direction for client work across Latin America and the USA.</li>
-  </ul>
+    <div class="job">
+      <div class="job-head">
+        <div class="job-title">Product Designer <span class="at">— TaurusWebs (Freelance)</span></div>
+        <div class="job-date">Feb 2019 — Present</div>
+      </div>
+      <div class="job-loc">Bogotá, Colombia · Remote</div>
+      <ul>
+        <li>Lead designer for custom internal platforms and client-facing applications, built from scratch.</li>
+        <li>Designed the Taurus Ecosystem: a unified internal workspace combining CRM (Twenty), knowledge base (AppFlowy) and encrypted chat (Matrix), tied through single SSO. Owned discovery, IA, user flows, Figma UI, prototype, stakeholder pitch.</li>
+        <li>Translated complex technical and infrastructure decisions (data sovereignty, hosting, security) into product narratives non-technical stakeholders could sign off on.</li>
+        <li>Led brand identity, web design and creative direction for client work spanning Latin America and the USA.</li>
+      </ul>
+    </div>
 
-  <h3>Senior Graphic Designer and Lead Designer - Greens Group (Greens Supermarket, Fresh To Go, Blok Foods), Swieqi, Malta</h3>
-  <p class="meta">August 2019 - November 2023</p>
-  <ul>
-    <li>Led visual identity and digital design across three food brands. Promoted from Graphic Designer (Aug 2019 - Aug 2021) to Senior Graphic Designer (Sep 2021 - Nov 2023). Lead Designer on contract for Blok Foods (Feb 2022 - Nov 2023).</li>
-    <li>Designed and shipped multiple brand websites for the supermarket chain, from concept to live deployment.</li>
-    <li>Built a multi-channel design system across web, photography, video, animation, packaging, and in-store communications, keeping a multi-person creative team consistent across parallel campaigns.</li>
-  </ul>
+    <div class="job">
+      <div class="job-head">
+        <div class="job-title">Senior Graphic Designer / Lead Designer <span class="at">— Greens Group</span></div>
+        <div class="job-date">Aug 2019 — Nov 2023</div>
+      </div>
+      <div class="job-loc">Greens Supermarket · Fresh To Go · Blok Foods — Swieqi, Malta · On-site</div>
+      <ul>
+        <li>Led visual identity and digital design across three food brands. Promoted from Graphic Designer (Aug 2019 — Aug 2021) to Senior Graphic Designer (Sep 2021 — Nov 2023). Lead Designer on contract for Blok Foods (Feb 2022 — Nov 2023).</li>
+        <li>Designed and shipped multiple brand websites for the chain, concept to live deployment.</li>
+        <li>Built a multi-channel design system across web, photography, video, animation, packaging and in-store communications, keeping a multi-person creative team consistent across parallel campaigns.</li>
+      </ul>
+    </div>
+  </section>
 
-  <h2>Education</h2>
-  <p><b>Master of Arts, Visual and Experience Design</b> - UE University of Applied Sciences, Berlin, Germany (2023 - 2025)</p>
-  <p><b>Bachelor of Arts, Marketing and Advertising</b> - Politecnico Grancolombiano, Bogota, Colombia (2015 - 2019)</p>
+  <section>
+    <h2 data-num="03">Education</h2>
+    <div class="edu-row">
+      <div><span class="degree">MA Visual &amp; Experience Design</span> <span class="school">— UE University of Applied Sciences, Berlin</span></div>
+      <div class="date">2023 — 2025</div>
+    </div>
+    <div class="edu-row">
+      <div><span class="degree">BA Marketing &amp; Advertising</span> <span class="school">— Politécnico Grancolombiano, Bogotá</span></div>
+      <div class="date">2015 — 2019</div>
+    </div>
+  </section>
 
-  <h2>Skills</h2>
-  <p class="skills-row"><b>Design:</b> Product Design, UX Design, UI Design, Interaction Design, Information Architecture, End-to-end Product Design, Systems Thinking, Visual Design, Brand Identity, Web Design, Motion Design</p>
-  <p class="skills-row"><b>Process:</b> User Research, Usability Testing, Discovery, Jobs-to-be-Done, Wireframing, Prototyping, Design Systems, Design Tokens, Accessibility (WCAG 2.1 AA)</p>
-  <p class="skills-row"><b>Tools:</b> Figma, Framer, Adobe Creative Suite (Photoshop, Illustrator, InDesign, After Effects), HTML, CSS, Next.js, Notion, Linear</p>
-  <p class="skills-row"><b>Domains:</b> B2B SaaS, Internal Tools, Data-heavy Interfaces, CRM, ERP, Brand, Web</p>
-  <p class="skills-row"><b>Collaboration:</b> Cross-functional Work, Agile, Stakeholder Management, Pitch Decks, Developer Handoff</p>
+  <section>
+    <h2 data-num="04">Skills</h2>
+    <div class="skills-grid">
+      <div class="skill-row"><div class="label">Design</div><div class="val">Product Design · UX/UI · Interaction Design · Information Architecture · End-to-end Product Design · Systems Thinking · Visual Design · Brand Identity · Web Design · Motion Design</div></div>
+      <div class="skill-row"><div class="label">Process</div><div class="val">User Research · Usability Testing · Discovery · JTBD · Wireframing · Prototyping · Design Systems · Design Tokens · Accessibility (WCAG 2.1 AA)</div></div>
+      <div class="skill-row"><div class="label">Tools</div><div class="val">Figma · Framer · Adobe Creative Suite · HTML · CSS · Next.js (basics) · Notion · Linear</div></div>
+      <div class="skill-row"><div class="label">Domains</div><div class="val">B2B SaaS · Internal Tools · Data-heavy Interfaces · CRM · ERP · Brand · Web</div></div>
+      <div class="skill-row"><div class="label">Collab</div><div class="val">Cross-functional Work · Agile · Stakeholder Management · Pitch Decks · Dev Handoff</div></div>
+    </div>
+  </section>
 
-  <h2>Languages</h2>
-  <p>Spanish (Native), English (C1 - Fluent), German (A2 - Studying)</p>
+  <section>
+    <h2 data-num="05">Languages</h2>
+    <div class="lang-row">
+      <div class="lang"><b>Spanish</b><span class="lvl">— Native</span></div>
+      <div class="lang"><b>English</b><span class="lvl">— C1 Fluent</span></div>
+      <div class="lang"><b>German</b><span class="lvl">— A2 Studying</span></div>
+    </div>
+  </section>
 </body>
 </html>`;
 

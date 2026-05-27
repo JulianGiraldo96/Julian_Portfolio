@@ -74,7 +74,7 @@ export function About() {
           </div>
           <motion.h2
             style={{ filter: headingFilter }}
-            className="font-display font-extralight uppercase tracking-[-0.035em] text-[clamp(3rem,10vw,8rem)] leading-[0.9] will-change-[filter]"
+            className="font-display font-extralight uppercase tracking-[-0.035em] text-[clamp(3.5rem,11vw,9rem)] leading-[0.9] will-change-[filter]"
           >
             About
           </motion.h2>

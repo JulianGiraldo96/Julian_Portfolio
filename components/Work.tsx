@@ -172,7 +172,7 @@ function ProjectCard({
               <span className="block font-mono text-[9px] uppercase tracking-[0.18em] text-white/60 mb-2">
                 {project.title} · {project.year}
               </span>
-              <h3 className="font-display font-light text-2xl md:text-4xl text-white tracking-[-0.02em] leading-tight drop-shadow-lg">
+              <h3 className="font-display font-light text-3xl md:text-5xl text-white tracking-[-0.02em] leading-tight drop-shadow-lg">
                 {project.headline}
               </h3>
             </div>
@@ -180,7 +180,7 @@ function ProjectCard({
         </div>
         {!project.slug && (
           <div className="mt-5">
-            <p className="font-display font-light text-2xl md:text-3xl tracking-[-0.02em] text-foreground/30">
+            <p className="font-display font-light text-3xl md:text-4xl tracking-[-0.02em] text-foreground/30">
               Project incoming
             </p>
           </div>
