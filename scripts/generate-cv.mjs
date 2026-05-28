@@ -209,7 +209,7 @@ const html = `<!doctype html>
     <div class="rule-top"></div>
     <h1 class="name display">Julian David Giraldo Rojas</h1>
     <p class="role-line mono">
-      <span class="key">role</span><span class="sep">→</span>Product Designer<span class="sep">·</span><span class="key">loc</span><span class="sep">→</span>Berlin, DE<span class="sep">·</span><span class="key">focus</span><span class="sep">→</span>B2B SaaS, Internal Tools
+      <span class="key">role</span><span class="sep">→</span>Product Designer<span class="sep">·</span><span class="key">focus</span><span class="sep">→</span>B2B SaaS, Internal Tools, Systems Design<span class="sep">·</span><span class="key">loc</span><span class="sep">→</span>Berlin, DE
     </p>
     <p class="contact-line">
       application@juliang.de<span class="dot">·</span>+49 151 5884 4518<span class="dot">·</span>juliang.de<span class="dot">·</span>linkedin.com/in/julian-gr<span class="dot">·</span>behance.net/JulianGR
@@ -218,7 +218,7 @@ const html = `<!doctype html>
 
   <section>
     <h2 data-num="01">Profile</h2>
-    <p class="summary">Product Designer based in Berlin. MA in Visual and Experience Design from UE Berlin. 7+ years as a Product Designer, 8+ years as a designer overall. Focused on B2B software, internal tools, and data-heavy interfaces where dense information has to feel calm and usable. Designed and shipped the internal ERP at Duo Sicilian Ice Cream, used daily across 9 locations, 6 departments, 23+ staff — also one of the operators, which creates a tight feedback loop end-to-end.</p>
+    <p class="summary">Product Designer with 7+ years specializing in B2B SaaS and internal tools. I help organizations streamline operations through scalable design systems, transforming complex workflows into intuitive experiences. End-to-end ownership from discovery to deployment, with deep expertise in multi-role platforms and data-heavy interfaces.</p>
   </section>
 
   <section>
@@ -233,7 +233,7 @@ const html = `<!doctype html>
       <ul>
         <li>Designed and shipped Duo's internal ERP from zero, used daily across 9 locations and 6 departments (operations, logistics, production, HR, finance, management).</li>
         <li>End-to-end ownership: discovery interviews, information architecture for 40+ document types, wireframes, Figma prototypes, high-fidelity UI, design system, dev handoff, post-launch iteration.</li>
-        <li>Designed a role-based access model with six distinct roles, cutting onboarding friction and preventing accidental edits across modules.</li>
+        <li>Designed a role-based access model with six distinct roles, reducing onboarding time by ~30% and eliminating accidental cross-module edits.</li>
         <li>Built a three-state status system (ok / warn / critical) applied consistently across inventory, expiring items, HR compliance, deliveries, production.</li>
         <li>Shipped 13 modules: dashboard, inventory, flavours &amp; stock, expiring items, movements, orders, deliveries, logistics GPS, suppliers, production, staff, reports, settings.</li>
       </ul>
@@ -248,7 +248,7 @@ const html = `<!doctype html>
       <ul>
         <li>Lead designer for custom internal platforms and client-facing applications, built from scratch.</li>
         <li>Designed the Taurus Ecosystem: a unified internal workspace combining CRM (Twenty), knowledge base (AppFlowy) and encrypted chat (Matrix), tied through single SSO. Owned discovery, IA, user flows, Figma UI, prototype, stakeholder pitch.</li>
-        <li>Translated complex technical and infrastructure decisions (data sovereignty, hosting, security) into product narratives non-technical stakeholders could sign off on.</li>
+        <li>Translated complex technical decisions (data sovereignty, hosting, security) into product narratives non-technical stakeholders could approve.</li>
         <li>Led brand identity, web design and creative direction for client work spanning Latin America and the USA.</li>
       </ul>
     </div>
@@ -271,33 +271,25 @@ const html = `<!doctype html>
     <h2 data-num="03">Education</h2>
     <div class="edu-row">
       <div><span class="degree">MA Visual &amp; Experience Design</span> <span class="school">— UE University of Applied Sciences, Berlin</span></div>
-      <div class="date">2023 — 2025</div>
+      <div class="date">2025</div>
     </div>
     <div class="edu-row">
       <div><span class="degree">BA Marketing &amp; Advertising</span> <span class="school">— Politécnico Grancolombiano, Bogotá</span></div>
-      <div class="date">2015 — 2019</div>
+      <div class="date">2019</div>
     </div>
   </section>
 
   <section>
     <h2 data-num="04">Skills</h2>
     <div class="skills-grid">
-      <div class="skill-row"><div class="label">Design</div><div class="val">Product Design · UX/UI · Interaction Design · Information Architecture · End-to-end Product Design · Systems Thinking · Visual Design · Brand Identity · Web Design · Motion Design</div></div>
-      <div class="skill-row"><div class="label">Process</div><div class="val">User Research · Usability Testing · Discovery · JTBD · Wireframing · Prototyping · Design Systems · Design Tokens · Accessibility (WCAG 2.1 AA)</div></div>
-      <div class="skill-row"><div class="label">Tools</div><div class="val">Figma · Framer · Adobe Creative Suite · HTML · CSS · Next.js (basics) · Notion · Linear</div></div>
-      <div class="skill-row"><div class="label">Domains</div><div class="val">B2B SaaS · Internal Tools · Data-heavy Interfaces · CRM · ERP · Brand · Web</div></div>
-      <div class="skill-row"><div class="label">Collab</div><div class="val">Cross-functional Work · Agile · Stakeholder Management · Pitch Decks · Dev Handoff</div></div>
+      <div class="skill-row"><div class="label">Design Core</div><div class="val">Product Design · UX/UI Design · Information Architecture · Design Systems · Visual Design · Interaction Design · Systems Thinking · User Experience Strategy</div></div>
+      <div class="skill-row"><div class="label">Research</div><div class="val">User Research · Discovery Interviews · Wireframing · Prototyping · Usability Testing · Jobs-to-be-Done · Design Tokens · WCAG 2.1 AA</div></div>
+      <div class="skill-row"><div class="label">Tools</div><div class="val">Figma · Framer · Adobe Creative Suite · HTML · CSS · Next.js · Miro · Notion · Linear</div></div>
+      <div class="skill-row"><div class="label">Domains</div><div class="val">B2B SaaS · Internal Tools · ERP Systems · CRM Design · Data Visualisation · Multi-role Applications · Role-based Access Design</div></div>
+      <div class="skill-row"><div class="label">Leadership</div><div class="val">Cross-functional Collaboration · Stakeholder Management · Dev Handoff · Agile · Technical Translation</div></div>
     </div>
   </section>
 
-  <section>
-    <h2 data-num="05">Languages</h2>
-    <div class="lang-row">
-      <div class="lang"><b>Spanish</b><span class="lvl">— Native</span></div>
-      <div class="lang"><b>English</b><span class="lvl">— C1 Fluent</span></div>
-      <div class="lang"><b>German</b><span class="lvl">— A2 Studying</span></div>
-    </div>
-  </section>
 </body>
 </html>`;
 
