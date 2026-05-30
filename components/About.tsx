@@ -11,11 +11,11 @@ const experiences = [
     location: "Berlin",
     period: "Oct 2024 – Present",
     body: [
-      "Designed and shipped Duo's internal ERP from zero, used daily across nine locations and six departments.",
-      "Owned the full process: discovery with each team, information architecture for 40+ document types, Figma wireframes, prototypes and high-fidelity UI.",
-      "Designed a role-based access model so each user only sees the data they own.",
-      "Built a three-state status system (ok / warn / critical) applied across inventory, deliveries, HR compliance and production.",
-      "I also use the system daily as one of the operators, which gives me a continuous feedback loop with the rest of the team.",
+      "Designed and shipped Duo's internal ERP from zero, used daily across 9 locations and 6 departments (operations, logistics, production, HR, finance, management).",
+      "End-to-end ownership: discovery interviews, information architecture for 40+ document types, wireframes, Figma prototypes, high-fidelity UI, design system, dev handoff, post-launch iteration.",
+      "Designed a role-based access model with six distinct roles, reducing onboarding time by ~30% and eliminating accidental cross-module edits.",
+      "Built a three-state status system (ok / warn / critical) applied consistently across inventory, expiring items, HR compliance, deliveries, and production.",
+      "Shipped 13 modules: dashboard, inventory, flavours & stock, expiring items, movements, orders, deliveries, logistics GPS, suppliers, production, staff, reports, settings.",
     ],
   },
   {
@@ -25,10 +25,10 @@ const experiences = [
     period: "Feb 2019 – Present",
     freelance: true,
     body: [
-      "Freelance lead designer for internal SaaS tools and client applications built from scratch.",
-      "Designed the Taurus Ecosystem: a unified workspace combining CRM (Twenty), knowledge base (AppFlowy) and encrypted chat (Matrix) tied to a single SSO identity.",
-      "Translated complex technical and infrastructure decisions into clear product narratives for non-technical stakeholders.",
-      "Led brand identity, web design and creative direction for client work across Latin America and the USA.",
+      "Lead designer for custom internal platforms and client-facing applications, built from scratch.",
+      "Designed the Taurus Ecosystem: a unified internal workspace combining CRM (Twenty), knowledge base (AppFlowy) and encrypted chat (Matrix), tied through a single SSO. Owned discovery, IA, user flows, Figma UI, prototype and stakeholder pitch.",
+      "Translated complex technical decisions (data sovereignty, hosting, security) into product narratives non-technical stakeholders could approve.",
+      "Led brand identity, web design and creative direction for client work spanning Latin America and the USA.",
     ],
   },
   {
