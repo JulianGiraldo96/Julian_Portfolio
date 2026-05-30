@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
+import Image from "next/image";
 import { RevealBlock } from "./RevealText";
 
 const experiences = [
@@ -183,24 +184,17 @@ export function About() {
           <div className="col-span-12 md:col-span-4">
             <RevealBlock delay={0.1}>
               <div className="relative aspect-[3/4] w-full overflow-hidden bg-subtle">
-                <motion.div
-                  animate={{
-                    backgroundPosition: ["0% 0%", "100% 100%"],
-                  }}
-                  transition={{
-                    duration: 18,
-                    repeat: Infinity,
-                    repeatType: "reverse",
-                  }}
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "radial-gradient(circle at 30% 30%, #d4d4d0 0%, transparent 50%), radial-gradient(circle at 70% 70%, #a8a8a0 0%, transparent 55%), #e6e6e2",
-                    backgroundSize: "200% 200%",
-                  }}
+                <Image
+                  src="/julian-portrait.webp"
+                  alt="Julian Giraldo, Berlin"
+                  fill
+                  sizes="(min-width: 768px) 33vw, 100vw"
+                  className="object-cover"
+                  priority
                 />
-                <div className="absolute inset-0 flex items-end justify-between p-6 font-mono text-[12px] uppercase tracking-[0.22em] text-foreground/80">
-                  <span>julian · 2026</span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute inset-0 flex items-end justify-between p-6 font-mono text-[12px] uppercase tracking-[0.22em] text-white/80">
+                  <span>julian · berlin</span>
                   <span>IMG_001</span>
                 </div>
               </div>
