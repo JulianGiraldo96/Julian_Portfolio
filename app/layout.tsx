@@ -4,7 +4,6 @@ import "./globals.css";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Cursor } from "@/components/Cursor";
 import { Nav } from "@/components/Nav";
-import { Emo } from "@/components/Emo";
 import { PageTransition } from "@/components/PageTransition";
 
 const geistSans = Geist({
@@ -50,7 +49,6 @@ export default function RootLayout({
           <Cursor />
           <Nav />
           <PageTransition>{children}</PageTransition>
-          <Emo />
         </SmoothScroll>
       </body>
     </html>

@@ -17,6 +17,7 @@ const experiences = [
       "Designed a role-based access model with six distinct roles, reducing onboarding time by ~30% and eliminating accidental cross-module edits.",
       "Built a three-state status system (ok / warn / critical) applied consistently across inventory, expiring items, HR compliance, deliveries, and production.",
       "Shipped 13 modules: dashboard, inventory, flavours & stock, expiring items, movements, orders, deliveries, logistics GPS, suppliers, production, staff, reports, settings.",
+      "Built functional prototypes in HTML, CSS and JavaScript wired to live data, using AI-assisted editors (Cursor, Claude Code) to go from concept to a testable direction fast.",
     ],
   },
   {
@@ -114,7 +115,13 @@ export function About() {
                 Berlin, with <b className="text-foreground">8+ years</b> across product, brand and visual design.
               </p>
             </RevealBlock>
-            <RevealBlock delay={0.35}>
+            <RevealBlock delay={0.32}>
+              <p className="text-muted">
+                <span className="font-mono text-[12px] uppercase tracking-[0.18em] text-foreground mr-2">// ai-native</span>
+                AI-native by default — I start from an LLM to clarify intent, prototype with Cursor and Claude Code, and move fluidly between code and Figma.
+              </p>
+            </RevealBlock>
+            <RevealBlock delay={0.40}>
               <p className="text-muted">
                 Outside of design, I&apos;m into physics, AI tools and building
                 small automations that make work and life less annoying.

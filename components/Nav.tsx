@@ -18,6 +18,14 @@ export function Nav() {
   const router = useRouter();
   const onHome = pathname === "/";
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -66,9 +74,13 @@ export function Nav() {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-        className="fixed inset-x-0 top-0 z-50 px-6 md:px-10 py-6 mix-blend-difference"
+        className={`fixed inset-x-0 top-0 z-[60] px-6 md:px-10 py-5 transition-[background-color,backdrop-filter,border-color] duration-300 ${
+          scrolled
+            ? "bg-background/75 backdrop-blur-md border-b border-border/60"
+            : "mix-blend-difference"
+        }`}
       >
-        <nav className="mx-auto max-w-[1600px] flex items-center justify-between md:grid md:grid-cols-3 text-white">
+        <nav className={`mx-auto max-w-[1600px] flex items-center justify-between md:grid md:grid-cols-3 ${scrolled ? "text-foreground" : "text-white"}`}>
           <Link
             href="/"
             onClick={(e) => go(e, "#top")}
@@ -90,7 +102,7 @@ export function Nav() {
                   data-cursor-hover
                 >
                   <span>{l.label}</span>
-                  <span className="absolute left-0 right-0 -bottom-1 h-px bg-white origin-right scale-x-0 group-hover:origin-left group-hover:scale-x-100 transition-transform duration-500 ease-out" />
+                  <span className={`absolute left-0 right-0 -bottom-1 h-px origin-right scale-x-0 group-hover:origin-left group-hover:scale-x-100 transition-transform duration-500 ease-out ${scrolled ? "bg-foreground" : "bg-white"}`} />
                 </a>
               </li>
             ))}
@@ -113,18 +125,18 @@ export function Nav() {
             <motion.span
               animate={open ? { rotate: 45, y: 7, width: "100%" } : { rotate: 0, y: 0, width: "100%" }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="block h-px bg-white origin-center"
+              className={`block h-px origin-center ${scrolled ? "bg-foreground" : "bg-white"}`}
             />
             <motion.span
               animate={open ? { opacity: 0, x: 10 } : { opacity: 1, x: 0, width: "70%" }}
               transition={{ duration: 0.25, ease: "easeOut" }}
-              className="block h-px bg-white"
+              className={`block h-px ${scrolled ? "bg-foreground" : "bg-white"}`}
               style={{ width: "70%" }}
             />
             <motion.span
               animate={open ? { rotate: -45, y: -7, width: "100%" } : { rotate: 0, y: 0, width: "85%" }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="block h-px bg-white origin-center"
+              className={`block h-px origin-center ${scrolled ? "bg-foreground" : "bg-white"}`}
               style={{ width: "85%" }}
             />
           </button>
