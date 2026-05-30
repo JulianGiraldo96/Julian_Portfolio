@@ -6,8 +6,8 @@ import { motion, useMotionValue, useSpring } from "motion/react";
 export function Cursor() {
   const x = useMotionValue(-100);
   const y = useMotionValue(-100);
-  const sx = useSpring(x, { stiffness: 500, damping: 40, mass: 0.4 });
-  const sy = useSpring(y, { stiffness: 500, damping: 40, mass: 0.4 });
+  const sx = useSpring(x, { stiffness: 1400, damping: 60, mass: 0.18 });
+  const sy = useSpring(y, { stiffness: 1400, damping: 60, mass: 0.18 });
   const [hover, setHover] = useState(false);
   const [enabled, setEnabled] = useState(false);
 
