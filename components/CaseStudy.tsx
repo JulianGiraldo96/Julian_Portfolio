@@ -59,7 +59,7 @@ type FlowSection = {
   label: string;
   heading: string;
   body?: string[];
-  variant?: "savee" | "erp";
+  variant?: "savee" | "erp" | "taurus-before" | "taurus-after";
 };
 
 type DemoSection = {
@@ -768,9 +768,103 @@ function FlowFrame({ phases, children, viewWidth, viewHeight }: { phases: string
   );
 }
 
-function FlowDiagram({ variant }: { variant?: "savee" | "erp" }) {
+function FlowDiagram({ variant }: { variant?: "savee" | "erp" | "taurus-before" | "taurus-after" }) {
   if (variant === "erp") return <ErpFlow />;
+  if (variant === "taurus-before") return <TaurusBeforeFlow />;
+  if (variant === "taurus-after") return <TaurusAfterFlow />;
   return <SaveeFlow />;
+}
+
+/* ═══════════════ TAURUS — BEFORE (one animal at a time) ═══════════════ */
+function TaurusBeforeFlow() {
+  return (
+    <FlowFrame
+      viewWidth={1700}
+      viewHeight={460}
+      phases={["1 · Open form", "2 · Fill one animal", "3 · Save & repeat"]}
+    >
+      <g stroke="rgba(10,10,10,0.06)" strokeWidth="1" strokeDasharray="3 8">
+        <line x1="566" y1="0" x2="566" y2="460" />
+        <line x1="1133" y1="0" x2="1133" y2="460" />
+      </g>
+
+      <Box x={40} y={180} w={150} h={70} title="NEW FARM" kind="start" />
+      <Box x={240} y={180} w={160} h={70} title="Open add-animal" sub="single record form" />
+      <Fill x={620} y={150} w={190} h={120} lines={["tag #, breed,", "sex, birth,", "weight, lot", "(~5 min each)"]} />
+      <Box x={880} y={180} w={140} h={70} title="Save" sub="one animal" />
+      <Diamond cx={1240} cy={215} w={170} h={120} title={"More\nanimals?"} />
+      <YesNo x={1240} y={140} label="yes — 69 more" />
+      <YesNo x={1350} y={205} label="no" />
+      <Box x={1430} y={180} w={150} h={70} title="GAVE UP" kind="alert" />
+
+      <g stroke={F.arrow} strokeWidth="1.4" fill="none" markerEnd="url(#fd-arrow)">
+        <line x1="190" y1="215" x2="240" y2="215" />
+        <line x1="400" y1="215" x2="620" y2="215" />
+        <line x1="810" y1="215" x2="880" y2="215" />
+        <line x1="1020" y1="215" x2="1155" y2="215" />
+        <line x1="1325" y1="215" x2="1430" y2="215" />
+      </g>
+      {/* the tedium loop: more → back to the form */}
+      <g stroke={F.arrowDashed} strokeWidth="1.4" fill="none" strokeDasharray="5 4" markerEnd="url(#fd-arrow-dash)">
+        <path d="M 1240 155 L 1240 90 L 715 90 L 715 150" />
+      </g>
+    </FlowFrame>
+  );
+}
+
+/* ═══════════════ TAURUS — AFTER (one bulk table) ═══════════════ */
+function TaurusAfterFlow() {
+  return (
+    <FlowFrame
+      viewWidth={1820}
+      viewHeight={460}
+      phases={["1 · Open farm", "2 · Fill the table", "3 · Review", "4 · Ingest"]}
+    >
+      <g stroke="rgba(10,10,10,0.06)" strokeWidth="1" strokeDasharray="3 8">
+        <line x1="455" y1="0" x2="455" y2="460" />
+        <line x1="910" y1="0" x2="910" y2="460" />
+        <line x1="1365" y1="0" x2="1365" y2="460" />
+      </g>
+
+      <Box x={40} y={185} w={150} h={70} title="NEW FARM" kind="start" />
+      <Diamond cx={330} cy={220} w={170} h={120} title={"Bulk\neligible?"} />
+      <YesNo x={330} y={145} label="yes" />
+      <YesNo x={440} y={210} label="no" />
+      <Box x={250} y={20} w={160} h={60} title="Single form" sub="fallback" />
+      <Box x={520} y={185} w={160} h={70} title="OPEN TABLE" kind="start" />
+      {/* fill: paste / presets */}
+      <Auto x={740} y={120} w={180} h={70} title="Paste sheet" sub="bulk rows" />
+      <Fill x={740} y={215} w={180} h={88} lines={["breed/lot", "presets,", "fill-down"]} />
+      <Diamond cx={1110} cy={220} w={180} h={130} title={"Valid?\n(tags, weights)"} />
+      <YesNo x={1110} y={140} label="yes" />
+      <YesNo x={1220} y={210} label="no" />
+      <Box x={1010} y={20} w={190} h={60} title="⚠ Fix in row" sub="inline flag" kind="alert" />
+      <Box x={1410} y={185} w={170} h={70} title="Select rows" sub="checkboxes" />
+      <Box x={1640} y={185} w={150} h={70} title="INGEST" kind="end" />
+
+      <g stroke={F.arrow} strokeWidth="1.4" fill="none" markerEnd="url(#fd-arrow)">
+        <line x1="190" y1="220" x2="245" y2="220" />
+        {/* yes → open table */}
+        <line x1="415" y1="220" x2="520" y2="220" />
+        {/* no ↑ single form */}
+        <path d="M 330 160 L 330 80" />
+        {/* table → fill cluster */}
+        <path d="M 680 205 L 720 175" />
+        <path d="M 680 235 L 720 255" />
+        {/* fill → valid? */}
+        <path d="M 920 175 L 1010 205" />
+        <path d="M 920 255 L 1010 235" />
+        {/* yes → select rows */}
+        <line x1="1200" y1="220" x2="1410" y2="220" />
+        {/* select → ingest */}
+        <line x1="1580" y1="220" x2="1640" y2="220" />
+      </g>
+      {/* invalid loops back into the table */}
+      <g stroke={F.arrowDashed} strokeWidth="1.4" fill="none" strokeDasharray="5 4" markerEnd="url(#fd-arrow-dash)">
+        <path d="M 1110 155 L 1110 50 L 1200 50 L 1200 50 M 1010 50 L 830 50 L 830 120" />
+      </g>
+    </FlowFrame>
+  );
 }
 
 /* ═══════════════ SAVEE FLOW ═══════════════ */
@@ -1466,18 +1560,24 @@ function AfterTable() {
 
   return (
     <div>
-      {/* secondary toolbar: presets + paste */}
+      {/* secondary toolbar: search + breed/lot presets (the table actions from testing) */}
       <div className="flex items-center gap-2 px-4 md:px-5 py-3 border-b border-border overflow-x-auto">
-        {["Presets ▾", "Paste from sheet", "Fill down", "Apply lot"].map((c, i) => (
+        <span className="shrink-0 inline-flex items-center gap-2 border border-border rounded-sm px-3 py-1.5 text-[12px] text-muted min-w-[140px] md:min-w-[200px]">
+          <span className="opacity-50">⌕</span> Search herd
+        </span>
+        <span className="ml-auto shrink-0 font-mono text-[10px] uppercase tracking-[0.16em] text-muted hidden sm:inline mr-1">
+          presets →
+        </span>
+        {["Brahman", "Gyr", "Apply lot ▾"].map((c) => (
           <span
             key={c}
-            className={`shrink-0 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.16em] px-2.5 py-1.5 rounded-sm border ${i === 0 ? "border-foreground text-foreground" : "border-border text-muted"}`}
+            className="shrink-0 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.16em] px-2.5 py-1.5 rounded-sm border border-[#5fa3d8] text-[#2b6da3]"
           >
             {c}
           </span>
         ))}
-        <span className="ml-auto shrink-0 font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
-          showing 7 / {TOTAL_ROWS}
+        <span className="shrink-0 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.16em] px-2.5 py-1.5 rounded-sm bg-foreground text-background">
+          Paste sheet
         </span>
       </div>
 

@@ -89,6 +89,16 @@ export default function TaurusPage() {
         },
 
         {
+          kind: "flow",
+          variant: "taurus-before",
+          label: "04b · Before",
+          heading: "The old flow: one animal, then the same form again.",
+          body: [
+            "Every animal meant reopening the single-record form and filling the same six fields. Multiply by a 70-head herd and the loop is the whole problem, so people abandoned it.",
+          ],
+        },
+
+        {
           kind: "questions",
           label: "05 · User stories",
           heading: "What the entry flow actually needed to support.",
@@ -97,28 +107,28 @@ export default function TaurusPage() {
           ],
           items: [
             {
-              question: "As a rancher, I want to load my whole herd at once, not animal by animal.",
-              hint: "Bulk entry · one screen",
+              question: "As a rancher, I want to load my whole herd at once,",
+              hint: "so that I don't enter animals one by one",
             },
             {
-              question: "As a worker, I want to paste what I already have in a spreadsheet.",
-              hint: "Paste from sheet · no retyping",
+              question: "As a worker, I want to paste what I already keep in a spreadsheet,",
+              hint: "so that I'm not retyping the same list again",
             },
             {
-              question: "As an owner, I don't want to repeat the same breed and lot on every row.",
-              hint: "Presets · fill-down",
+              question: "As an owner, I want to set breed and lot once per batch,",
+              hint: "so that I don't repeat them on every row",
             },
             {
-              question: "As a new user, I want to see and fix my mistakes before anything is saved.",
-              hint: "Inline validation · review",
+              question: "As a new user, I want to see my mistakes before saving,",
+              hint: "so that the data that lands is clean",
             },
             {
-              question: "As a multi-farm company, I want each property loaded the same fast way.",
-              hint: "Repeatable · per farm",
+              question: "As a multi-farm company, I want each property loaded the same way,",
+              hint: "so that onboarding is fast and repeatable",
             },
             {
-              question: "As a rancher, I want the full herd in the system, not just the favourites.",
-              hint: "Complete record · trustworthy data",
+              question: "As a rancher, I want the full herd in the system,",
+              hint: "so that the records are complete and worth trusting",
             },
           ],
         },
@@ -133,6 +143,16 @@ export default function TaurusPage() {
           ],
           footer:
             "Recreated in Julian's design for this case study — the live Taurus UI differs, but the interaction model is the one that shipped.",
+        },
+
+        {
+          kind: "flow",
+          variant: "taurus-after",
+          label: "06b · After",
+          heading: "The new flow: one table, filled, checked, ingested.",
+          body: [
+            "Eligible farms open straight into the table. Rows get pasted or filled with presets, validation flags bad data inline, and the whole herd is selected and ingested in a single pass.",
+          ],
         },
 
         {
