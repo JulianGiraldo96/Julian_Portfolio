@@ -32,9 +32,20 @@ const projects: Project[] = [
     title: "ERP Duo",
     headline: "Nine locations. One system. Full control.",
     tagline: "Bespoke ERP for a Sicilian gelato chain.",
-    types: ["Web", "B2B", "ERP"],
+    types: ["Web", "B2B/B2C", "ERP"],
     year: "2026",
     image: "/projects/erp-duo/cover.webp",
+  },
+  {
+    slug: "taurus",
+    title: "Taurus",
+    headline: "From 6 hours to 1: digitizing a whole farm.",
+    tagline: "Bulk farm setup for a livestock SaaS.",
+    types: ["Web", "SaaS", "Agtech"],
+    year: "2025",
+    tone: "bg-gradient-to-br from-[#1f3d2b] via-[#3f6b3f] to-[#a9c46c]",
+    accent:
+      "after:bg-[radial-gradient(circle_at_72%_28%,#cfe08a_0%,transparent_60%)]",
   },
   {
     title: "Tierra Viva",

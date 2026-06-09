@@ -78,6 +78,14 @@ type GallerySection = {
   images: Array<{ src: string; alt: string; caption?: string }>;
 };
 
+type BulkTableSection = {
+  kind: "bulktable";
+  label: string;
+  heading: string;
+  body?: string[];
+  footer?: string;
+};
+
 type Section =
   | TextSection
   | ListSection
@@ -85,7 +93,8 @@ type Section =
   | ScreensSection
   | FlowSection
   | DemoSection
-  | GallerySection;
+  | GallerySection
+  | BulkTableSection;
 
 type Meta = {
   index: string;
@@ -359,6 +368,26 @@ function SectionBlock({ section }: { section: Section }) {
                 </motion.div>
               ))}
             </div>
+          </>
+        )}
+
+        {section.kind === "bulktable" && (
+          <>
+            {section.body &&
+              section.body.map((p, i) => (
+                <p
+                  key={i}
+                  className="max-w-2xl text-base md:text-lg leading-relaxed text-muted"
+                >
+                  {p}
+                </p>
+              ))}
+            <BulkTable />
+            {section.footer && (
+              <p className="max-w-2xl text-sm md:text-base leading-relaxed text-muted border-l border-border pl-4">
+                {section.footer}
+              </p>
+            )}
           </>
         )}
 
@@ -1179,12 +1208,22 @@ const allMoreWorkProjects = [
   {
     title: "ERP Duo",
     headline: "Nine locations. One system. Full control.",
-    types: ["Web", "B2B", "ERP"],
+    types: ["Web", "B2B/B2C", "ERP"],
     year: "2026",
     slug: "erp-duo" as string | null,
     image: "/projects/erp-duo/cover.webp",
     tone: "",
     accent: "",
+  },
+  {
+    title: "Taurus",
+    headline: "From 6 hours to 1: digitizing a whole farm.",
+    types: ["Web", "SaaS", "Agtech"],
+    year: "2025",
+    slug: "taurus" as string | null,
+    image: "",
+    tone: "bg-gradient-to-br from-[#1f3d2b] via-[#3f6b3f] to-[#a9c46c]",
+    accent: "after:bg-[radial-gradient(circle_at_72%_28%,#cfe08a_0%,transparent_60%)]",
   },
   {
     title: "Tierra Viva",
@@ -1293,6 +1332,225 @@ function MoreWork({ currentSlug }: { currentSlug?: string }) {
             );
           })}
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Bulk Farm Setup — the table-actions centerpiece (Taurus) ─────────────── */
+
+type Animal = {
+  tag: string;
+  breed: string;
+  sex: "M" | "H";
+  birth: string;
+  weight: string;
+  lot: string;
+  preset?: boolean;
+};
+
+const HERD: Animal[] = [
+  { tag: "CO-0412", breed: "Brahman", sex: "H", birth: "2022-03-14", weight: "438", lot: "Lote A", preset: true },
+  { tag: "CO-0413", breed: "Brahman", sex: "H", birth: "2022-04-02", weight: "451", lot: "Lote A", preset: true },
+  { tag: "CO-0418", breed: "Gyr", sex: "M", birth: "2021-11-28", weight: "612", lot: "Lote A" },
+  { tag: "CO-0421", breed: "F1 Brahman×Gyr", sex: "H", birth: "2023-01-09", weight: "286", lot: "Lote B", preset: true },
+  { tag: "CO-0426", breed: "Cebú", sex: "H", birth: "2022-08-21", weight: "394", lot: "Lote B" },
+  { tag: "CO-0430", breed: "Brahman", sex: "M", birth: "2021-06-30", weight: "705", lot: "Potrero 3", preset: true },
+  { tag: "CO-0435", breed: "Gyr", sex: "H", birth: "2023-02-17", weight: "248", lot: "Potrero 3" },
+];
+
+const TOTAL_ROWS = 70;
+
+function BulkTable() {
+  const [view, setView] = useState<"before" | "after">("after");
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24, filter: "blur(12px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+      className="w-full border border-border overflow-hidden bg-background"
+    >
+      {/* Toolbar: segmented before/after */}
+      <div className="flex items-center justify-between gap-4 px-4 md:px-5 py-3 border-b border-border bg-subtle">
+        <div className="inline-flex border border-border rounded-sm overflow-hidden font-mono text-[11px] md:text-[12px] uppercase tracking-[0.18em]">
+          <button
+            type="button"
+            onClick={() => setView("before")}
+            data-cursor-hover
+            className={`px-3 md:px-4 py-2 transition-colors ${view === "before" ? "bg-foreground text-background" : "text-muted hover:text-foreground"}`}
+          >
+            Before · one by one
+          </button>
+          <button
+            type="button"
+            onClick={() => setView("after")}
+            data-cursor-hover
+            className={`px-3 md:px-4 py-2 border-l border-border transition-colors ${view === "after" ? "bg-foreground text-background" : "text-muted hover:text-foreground"}`}
+          >
+            After · bulk table
+          </button>
+        </div>
+        <span className="hidden sm:block font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
+          {view === "before" ? "≈ 5 min / animal" : "70 animals · 1 table"}
+        </span>
+      </div>
+
+      {view === "before" ? <BeforeForm /> : <AfterTable />}
+    </motion.div>
+  );
+}
+
+function BeforeForm() {
+  const fields = [
+    { label: "Tag #", value: "CO-0412" },
+    { label: "Breed", value: "Brahman" },
+    { label: "Sex", value: "Hembra" },
+    { label: "Birth date", value: "2022-03-14" },
+    { label: "Weight (kg)", value: "438" },
+    { label: "Lot", value: "Lote A" },
+  ];
+  return (
+    <div className="relative px-5 md:px-8 py-8 md:py-10 bg-[#f5f5f3]">
+      {/* stacked-cards illusion of endless repetition */}
+      <div className="relative mx-auto max-w-md">
+        <div className="absolute -bottom-3 left-3 right-3 h-full border border-border bg-background/60 rounded-sm" aria-hidden />
+        <div className="absolute -bottom-1.5 left-1.5 right-1.5 h-full border border-border bg-background/80 rounded-sm" aria-hidden />
+        <div className="relative border border-border bg-background rounded-sm p-5 md:p-6">
+          <div className="flex items-center justify-between mb-5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
+            <span>Add animal</span>
+            <span>Animal 01 / {TOTAL_ROWS}</span>
+          </div>
+          <div className="space-y-3">
+            {fields.map((f) => (
+              <div key={f.label} className="flex flex-col gap-1.5">
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">{f.label}</span>
+                <div className="border border-border rounded-sm px-3 py-2 text-sm bg-background">{f.value}</div>
+              </div>
+            ))}
+          </div>
+          <button
+            type="button"
+            data-cursor-hover
+            className="mt-6 w-full border border-foreground bg-foreground text-background font-mono text-[11px] uppercase tracking-[0.2em] py-2.5 rounded-sm"
+          >
+            Save & add another
+          </button>
+        </div>
+      </div>
+      <p className="mt-8 text-center font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+        70 animals × 5 min = ~6 h · clients gave up and only loaded a few
+      </p>
+    </div>
+  );
+}
+
+function AfterTable() {
+  const [selected, setSelected] = useState<Set<number>>(() => new Set(HERD.map((_, i) => i)));
+  const allOn = selected.size === HERD.length;
+
+  const toggle = (i: number) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      return next;
+    });
+  const toggleAll = () =>
+    setSelected(allOn ? new Set() : new Set(HERD.map((_, i) => i)));
+
+  const cell = "px-3 py-2.5 text-left align-middle whitespace-nowrap";
+  const head =
+    "px-3 py-3 text-left font-mono text-[10px] uppercase tracking-[0.16em] text-muted whitespace-nowrap";
+
+  return (
+    <div>
+      {/* secondary toolbar: presets + paste */}
+      <div className="flex items-center gap-2 px-4 md:px-5 py-3 border-b border-border overflow-x-auto">
+        {["Presets ▾", "Paste from sheet", "Fill down", "Apply lot"].map((c, i) => (
+          <span
+            key={c}
+            className={`shrink-0 font-mono text-[10px] md:text-[11px] uppercase tracking-[0.16em] px-2.5 py-1.5 rounded-sm border ${i === 0 ? "border-foreground text-foreground" : "border-border text-muted"}`}
+          >
+            {c}
+          </span>
+        ))}
+        <span className="ml-auto shrink-0 font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+          showing 7 / {TOTAL_ROWS}
+        </span>
+      </div>
+
+      <div className="w-full overflow-x-auto">
+        <table className="w-full border-collapse" style={{ minWidth: "720px" }}>
+          <thead>
+            <tr className="border-b border-border bg-subtle">
+              <th className="px-3 py-3 w-10">
+                <button
+                  type="button"
+                  onClick={toggleAll}
+                  data-cursor-hover
+                  aria-label="Select all"
+                  className={`w-4 h-4 rounded-[3px] border flex items-center justify-center ${allOn ? "bg-foreground border-foreground" : "border-border"}`}
+                >
+                  {allOn && <span className="text-background text-[9px] leading-none">✓</span>}
+                </button>
+              </th>
+              <th className={head}>Tag #</th>
+              <th className={head}>Breed</th>
+              <th className={head}>Sex</th>
+              <th className={head}>Birth</th>
+              <th className={head}>Weight kg</th>
+              <th className={head}>Lot</th>
+            </tr>
+          </thead>
+          <tbody>
+            {HERD.map((a, i) => {
+              const on = selected.has(i);
+              return (
+                <tr
+                  key={a.tag}
+                  className={`border-b border-border transition-colors ${on ? "bg-background" : "bg-background opacity-45"} hover:bg-subtle`}
+                >
+                  <td className="px-3 py-2.5">
+                    <button
+                      type="button"
+                      onClick={() => toggle(i)}
+                      data-cursor-hover
+                      aria-label={`Select ${a.tag}`}
+                      className={`w-4 h-4 rounded-[3px] border flex items-center justify-center ${on ? "bg-foreground border-foreground" : "border-border"}`}
+                    >
+                      {on && <span className="text-background text-[9px] leading-none">✓</span>}
+                    </button>
+                  </td>
+                  <td className={`${cell} font-mono text-[13px]`}>{a.tag}</td>
+                  <td className={cell}>
+                    <span className={a.preset ? "border-b border-dashed border-[#5fa3d8]" : ""}>{a.breed}</span>
+                  </td>
+                  <td className={`${cell} font-mono text-[13px]`}>{a.sex}</td>
+                  <td className={`${cell} font-mono text-[13px] text-muted`}>{a.birth}</td>
+                  <td className={`${cell} font-mono text-[13px] text-right tabular-nums`}>{a.weight}</td>
+                  <td className={`${cell} text-[13px]`}>{a.lot}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* action bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 md:px-5 py-4 border-t border-border bg-subtle">
+        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+          <span className="text-foreground">{selected.size}</span> selected ·{" "}
+          <span className="text-foreground">{TOTAL_ROWS}</span> rows ready to ingest
+        </span>
+        <button
+          type="button"
+          data-cursor-hover
+          className="inline-flex items-center justify-center gap-2 border border-foreground bg-foreground text-background font-mono text-[11px] uppercase tracking-[0.2em] px-5 py-2.5 rounded-sm"
+        >
+          Ingest herd →
+        </button>
       </div>
     </div>
   );
