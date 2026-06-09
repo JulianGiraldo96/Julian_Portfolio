@@ -4,7 +4,7 @@ import { CaseStudy } from "@/components/CaseStudy";
 export const metadata: Metadata = {
   title: "Taurus — Julian Giraldo",
   description:
-    "Bulk Farm Setup for TaurusWebs: an editable table that cut herd data entry from ~6 hours to 1 per farm and got ranchers to digitize the whole herd instead of only the key animals.",
+    "Bulk Farm Setup for TaurusWebs: an editable table that cut farm setup from six hours to one and got ranchers to digitize the whole herd instead of only the key animals.",
 };
 
 export default function TaurusPage() {
@@ -15,7 +15,7 @@ export default function TaurusPage() {
         index: "03",
         title: "Taurus",
         subtitle:
-          "An editable table that cut data entry from ~6 hours to 1 per farm — and got ranchers to digitize the whole herd instead of just the key animals.",
+          "An editable table that cut farm setup from six hours to one, and got ranchers to digitize the whole herd instead of just the key animals.",
         year: "2024–2025",
         role: "Product Design · UX · Research",
         tags: ["Web", "SaaS", "Agtech"],
@@ -53,7 +53,7 @@ export default function TaurusPage() {
           label: "03 · Problem",
           heading: "Onboarding meant typing each animal in, one at a time.",
           body: [
-            "The only way to register animals was a single-record form: open it, fill six or seven fields, save, repeat. For one animal that is fine. For a herd, it collapses.",
+            "The only way to register animals was a single-record form: open it, fill six or seven fields, save, repeat. For one animal that's fine. For a herd, it falls apart.",
             "Workers told us a standard farm took the better part of a working day just to load. So they stopped. Clients entered only the animals they cared about most and left the rest out, which meant the data was never complete enough to trust, and the platform never became the source of truth it was meant to be.",
           ],
           stats: [
@@ -103,7 +103,7 @@ export default function TaurusPage() {
           label: "05 · User stories",
           heading: "What the entry flow actually needed to support.",
           body: [
-            "Reframing the problem around the table made the requirements obvious. Each one maps to a real frustration heard in the interviews.",
+            "Once we framed the problem around a table, the requirements were obvious. Each one came from a real frustration in the interviews.",
           ],
           items: [
             {
@@ -142,7 +142,7 @@ export default function TaurusPage() {
             "Toggle below between the old one-by-one form and the table that replaced it.",
           ],
           footer:
-            "Recreated in Julian's design for this case study — the live Taurus UI differs, but the interaction model is the one that shipped.",
+            "Visuals recreated for this case study. The live Taurus UI looks different, but the interaction model is the one that shipped.",
         },
 
         {
@@ -187,8 +187,8 @@ export default function TaurusPage() {
           label: "08 · Result",
           heading: "From a day's work to about an hour.",
           body: [
-            "The table mode took the standard-farm load from roughly six hours to about one, and per-animal entry from five minutes to under one. More importantly, it changed behaviour: clients started loading the full herd and their inventory instead of only the animals they cared most about.",
-            "That completeness is the real win. A half-entered herd is a database nobody trusts; a full one is the source of truth the platform was always supposed to be.",
+            "The table took the standard-farm load from roughly six hours to about one, and per-animal entry from five minutes to under one. The bigger change was behavioural: clients started loading the full herd and their inventory, not just the animals they cared most about.",
+            "The completeness mattered more than the speed. Half a herd is data nobody trusts. A full one is what makes the rest of the platform worth using.",
           ],
           stats: [
             {
@@ -215,10 +215,10 @@ export default function TaurusPage() {
         {
           kind: "text",
           label: "09 · Reflections",
-          heading: "The fastest UI was the one users had already invented.",
+          heading: "Users had already built the fix in Excel.",
           body: [
-            "The fix here wasn't a clever feature. It was noticing that customers had already designed the right interaction in their notebooks and spreadsheets, and that the product was working against it. The job was to remove the funnel and meet them where they already were.",
-            "It also reset how I treat onboarding: the first data load isn't a setup chore to get past, it's the moment a customer decides whether the whole product is worth it. Make that fast and complete, and everything downstream finally has data it can stand on.",
+            "The fix wasn't a clever feature. Customers had already worked out the right interaction in their spreadsheets, and the product was fighting it. My job was to remove the funnel and let them work the way they already did.",
+            "It also changed how I think about onboarding. The first data load isn't a chore to rush past. It's the moment a customer decides whether the whole product is worth it. Get that part fast and complete, and everything after it finally has data it can rely on.",
           ],
         },
       ]}
