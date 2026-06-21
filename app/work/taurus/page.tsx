@@ -23,9 +23,8 @@ export default function TaurusPage() {
         note: "Real product work · no NDA · TaurusWebs livestock platform",
       }}
       cover={{
+        src: "/projects/taurus/hero.webp",
         alt: "Taurus — Bulk Farm Setup table",
-        gradient:
-          "bg-gradient-to-br from-[#16301f] via-[#3f6b3f] to-[#b9d27a]",
       }}
       sections={[
         {
