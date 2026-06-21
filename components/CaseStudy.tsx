@@ -828,7 +828,7 @@ function TaurusBeforeFlow() {
       <Box x={80} y={735} w={150} h={58} title="All 70 done" sub="(rare)" />
       <Diamond cx={470} cy={620} w={160} h={115} title={"Give\nup?"} />
       <YesNo x={560} y={612} label="yes" />
-      <YesNo x={470} y={546} label="no" />
+      <YesNo x={448} y={546} label="no" />
       <Box x={660} y={585} w={170} h={70} title="GAVE UP" sub="only key animals" kind="alert" />
       <Box x={900} y={585} w={190} h={70} title="Tool abandoned" sub="data partial · distrust" kind="alert" />
 
@@ -1154,8 +1154,8 @@ function ErpFlow() {
         <line x1="640" y1="275" x2="690" y2="275" />
         {/* yes ↑ Auto-fill contact */}
         <path d="M 780 210 L 780 140" />
-        {/* Auto-fill contact → Contract? (right + down) */}
-        <path d="M 875 105 L 1085 105 L 1085 215" />
+        {/* Auto-fill contact → merge into Contract? entry */}
+        <path d="M 875 105 L 1090 105 L 1090 275 L 1105 275" />
         {/* no → Fill customer */}
         <line x1="870" y1="275" x2="910" y2="275" />
         {/* Fill customer → Contract? */}
