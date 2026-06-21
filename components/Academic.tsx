@@ -9,7 +9,7 @@ const project = {
   slug: "meinerva",
   title: "Meinerva",
   headline: "Look before you're told: making experimental art legible.",
-  tagline: "Master's thesis — a museum & event companion that delays explanation.",
+  tagline: "Master's thesis. An art companion that delays explanation so you build your own reading.",
   types: ["Research", "UX", "Art & Tech"],
   year: "2025",
   image: "/projects/meinerva/cover.webp",
