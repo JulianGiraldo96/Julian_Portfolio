@@ -43,9 +43,7 @@ const projects: Project[] = [
     tagline: "Bulk farm setup for a livestock SaaS.",
     types: ["Web", "SaaS", "Agtech"],
     year: "2025",
-    tone: "bg-gradient-to-br from-[#1f3d2b] via-[#3f6b3f] to-[#a9c46c]",
-    accent:
-      "after:bg-[radial-gradient(circle_at_72%_28%,#cfe08a_0%,transparent_60%)]",
+    image: "/projects/taurus/cover.webp",
   },
   {
     title: "Tierra Viva",
@@ -56,16 +54,6 @@ const projects: Project[] = [
     tone: "bg-gradient-to-br from-amber-100 via-orange-200 to-yellow-300",
     accent:
       "after:bg-[radial-gradient(circle_at_70%_30%,#f7d89c_0%,transparent_60%)]",
-  },
-  {
-    title: "Casa Nomad",
-    headline: "Artisan craft. Global reach.",
-    tagline: "Weaving artisan stories into a global brand.",
-    types: ["Web", "Identity"],
-    year: "2024",
-    tone: "bg-gradient-to-br from-[#c26f3c] via-[#8f4a24] to-[#d48c5a]",
-    accent:
-      "after:bg-[radial-gradient(circle_at_20%_30%,#e6a46e_0%,transparent_60%)]",
   },
 ];
 
