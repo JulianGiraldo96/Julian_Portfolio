@@ -779,35 +779,74 @@ function FlowDiagram({ variant }: { variant?: "savee" | "erp" | "taurus-before" 
 function TaurusBeforeFlow() {
   return (
     <FlowFrame
-      viewWidth={1700}
-      viewHeight={460}
-      phases={["1 · Open form", "2 · Fill one animal", "3 · Save & repeat"]}
+      viewWidth={1820}
+      viewHeight={820}
+      phases={["1 · New record", "2 · Fill 6 fields", "3 · Save", "4 · Repeat 70×"]}
     >
       <g stroke="rgba(10,10,10,0.06)" strokeWidth="1" strokeDasharray="3 8">
-        <line x1="566" y1="0" x2="566" y2="460" />
-        <line x1="1133" y1="0" x2="1133" y2="460" />
+        <line x1="455" y1="0" x2="455" y2="820" />
+        <line x1="910" y1="0" x2="910" y2="820" />
+        <line x1="1365" y1="0" x2="1365" y2="820" />
       </g>
 
-      <Box x={40} y={180} w={150} h={70} title="NEW FARM" kind="start" />
-      <Box x={240} y={180} w={160} h={70} title="Open add-animal" sub="single record form" />
-      <Fill x={620} y={150} w={190} h={120} lines={["tag #, breed,", "sex, birth,", "weight, lot", "(~5 min each)"]} />
-      <Box x={880} y={180} w={140} h={70} title="Save" sub="one animal" />
-      <Diamond cx={1240} cy={215} w={170} h={120} title={"More\nanimals?"} />
-      <YesNo x={1240} y={140} label="yes — 69 more" />
-      <YesNo x={1350} y={205} label="no" />
-      <Box x={1430} y={180} w={150} h={70} title="GAVE UP" kind="alert" />
+      {/* ── ROW 1 (L→R): add one animal ── */}
+      <Box x={40} y={215} w={150} h={70} title="NEW FARM" kind="start" />
+      <Box x={250} y={215} w={160} h={70} title="Open animals" sub="registry module" />
+      <Box x={520} y={215} w={160} h={70} title="+ Add animal" sub="single form" />
+      <Fill x={740} y={200} w={200} h={110} lines={["tag #, breed,", "sex, birth date,", "weight, lot", "— ~5 min each"]} />
+      <Diamond cx={1140} cy={250} w={180} h={120} title={"All fields\nfilled?"} />
+      <YesNo x={1140} y={172} label="no" />
+      <YesNo x={1252} y={242} label="yes" />
+      <Box x={1045} y={48} w={190} h={62} title="⚠ Missing field" sub="blocks save" kind="alert" />
+      <Box x={1340} y={215} w={150} h={70} title="Save" sub="one record" />
+      <Box x={1560} y={215} w={180} h={70} title="Saved 1 / 70" sub="69 to go…" />
 
       <g stroke={F.arrow} strokeWidth="1.4" fill="none" markerEnd="url(#fd-arrow)">
-        <line x1="190" y1="215" x2="240" y2="215" />
-        <line x1="400" y1="215" x2="620" y2="215" />
-        <line x1="810" y1="215" x2="880" y2="215" />
-        <line x1="1020" y1="215" x2="1155" y2="215" />
-        <line x1="1325" y1="215" x2="1430" y2="215" />
+        <line x1="190" y1="250" x2="250" y2="250" />
+        <line x1="410" y1="250" x2="520" y2="250" />
+        <line x1="680" y1="250" x2="740" y2="250" />
+        <line x1="940" y1="250" x2="1050" y2="250" />
+        <line x1="1230" y1="250" x2="1340" y2="250" />
+        <line x1="1490" y1="250" x2="1560" y2="250" />
+        {/* no ↑ to error */}
+        <path d="M 1140 190 L 1140 110" />
       </g>
-      {/* the tedium loop: more → back to the form */}
+      {/* error loops back into the form (dashed) */}
       <g stroke={F.arrowDashed} strokeWidth="1.4" fill="none" strokeDasharray="5 4" markerEnd="url(#fd-arrow-dash)">
-        <path d="M 1240 155 L 1240 90 L 715 90 L 715 150" />
+        <path d="M 1045 79 L 840 79 L 840 200" />
       </g>
+
+      {/* return path down to row 2 (dashed) */}
+      <g stroke={F.arrowDashed} strokeWidth="1.6" fill="none" strokeDasharray="6 4" markerEnd="url(#fd-arrow-dash)">
+        <path d="M 1650 285 L 1650 440 L 155 440 L 155 562" />
+      </g>
+
+      {/* ── ROW 2 (L→R): repeat, fatigue, abandon ── */}
+      <Diamond cx={155} cy={620} w={170} h={115} title={"More to\nadd?"} />
+      <YesNo x={250} y={612} label="yes" />
+      <YesNo x={155} y={702} label="no" />
+      <Box x={80} y={735} w={150} h={58} title="All 70 done" sub="(rare)" />
+      <Diamond cx={470} cy={620} w={160} h={115} title={"Give\nup?"} />
+      <YesNo x={560} y={612} label="yes" />
+      <YesNo x={470} y={546} label="no" />
+      <Box x={660} y={585} w={170} h={70} title="GAVE UP" sub="only key animals" kind="alert" />
+      <Box x={900} y={585} w={190} h={70} title="Tool abandoned" sub="data partial · distrust" kind="alert" />
+
+      <g stroke={F.arrow} strokeWidth="1.4" fill="none" markerEnd="url(#fd-arrow)">
+        {/* more yes → give up? */}
+        <line x1="240" y1="620" x2="390" y2="620" />
+        {/* more no ↓ all done */}
+        <path d="M 155 677 L 155 735" />
+        {/* give up yes → GAVE UP */}
+        <line x1="550" y1="620" x2="660" y2="620" />
+        {/* GAVE UP → abandoned */}
+        <line x1="830" y1="620" x2="900" y2="620" />
+      </g>
+      {/* the grind: give-up "no" loops all the way back to the form */}
+      <g stroke={F.arrowDashed} strokeWidth="1.6" fill="none" strokeDasharray="6 4" markerEnd="url(#fd-arrow-dash)">
+        <path d="M 470 562 L 470 390 L 600 390 L 600 285" />
+      </g>
+      <text x={605} y={382} textAnchor="start" fill={F.muted} fontSize="11" fontStyle="italic" fontFamily="-apple-system,sans-serif">type the next one · ~5 min</text>
     </FlowFrame>
   );
 }
@@ -816,52 +855,76 @@ function TaurusBeforeFlow() {
 function TaurusAfterFlow() {
   return (
     <FlowFrame
-      viewWidth={1820}
-      viewHeight={460}
-      phases={["1 · Open farm", "2 · Fill the table", "3 · Review", "4 · Ingest"]}
+      viewWidth={2100}
+      viewHeight={820}
+      phases={["1 · Choose paddock", "2 · Source of animals", "3 · Names & detail", "4 · Add to system"]}
     >
       <g stroke="rgba(10,10,10,0.06)" strokeWidth="1" strokeDasharray="3 8">
-        <line x1="455" y1="0" x2="455" y2="460" />
-        <line x1="910" y1="0" x2="910" y2="460" />
-        <line x1="1365" y1="0" x2="1365" y2="460" />
+        <line x1="525" y1="0" x2="525" y2="820" />
+        <line x1="1050" y1="0" x2="1050" y2="820" />
+        <line x1="1575" y1="0" x2="1575" y2="820" />
       </g>
 
-      <Box x={40} y={185} w={150} h={70} title="NEW FARM" kind="start" />
-      <Diamond cx={330} cy={220} w={170} h={120} title={"Bulk\neligible?"} />
-      <YesNo x={330} y={145} label="yes" />
-      <YesNo x={440} y={210} label="no" />
-      <Box x={250} y={20} w={160} h={60} title="Single form" sub="fallback" />
-      <Box x={520} y={185} w={160} h={70} title="OPEN TABLE" kind="start" />
-      {/* fill: paste / presets */}
-      <Auto x={740} y={120} w={180} h={70} title="Paste sheet" sub="bulk rows" />
-      <Fill x={740} y={215} w={180} h={88} lines={["breed/lot", "presets,", "fill-down"]} />
-      <Diamond cx={1110} cy={220} w={180} h={130} title={"Valid?\n(tags, weights)"} />
-      <YesNo x={1110} y={140} label="yes" />
-      <YesNo x={1220} y={210} label="no" />
-      <Box x={1010} y={20} w={190} h={60} title="⚠ Fix in row" sub="inline flag" kind="alert" />
-      <Box x={1410} y={185} w={170} h={70} title="Select rows" sub="checkboxes" />
-      <Box x={1640} y={185} w={150} h={70} title="INGEST" kind="end" />
+      {/* ── Start ── */}
+      <Box x={40} y={350} w={200} h={120} title={"Create or select\npaddock to add\nanimals"} kind="start" />
 
+      {/* ── Move existing animals? ── */}
+      <Diamond cx={440} cy={410} w={200} h={140} title={"Move existing\nanimals?"} />
+      <YesNo x={440} y={300} label="yes" />
+      <YesNo x={415} y={510} label="no" />
+      <Box x={345} y={150} w={190} h={60} title="Select animals" />
+
+      {/* ── Import from sheet? ── */}
+      <Diamond cx={440} cy={620} w={190} h={120} title={"Import from\nsheet?"} />
+      <YesNo x={590} y={608} label="no" />
+      <YesNo x={470} y={712} label="yes" />
+      <Box x={655} y={587} w={215} h={66} title={"Create new animals:\nselect # of animals"} />
+      <Auto x={672} y={375} w={180} h={70} title="Auto fill" sub="names" />
+      <Auto x={672} y={705} w={185} h={70} title="Migrate" sub="information" />
+
+      {/* ── Important note? ── */}
+      <Diamond cx={1390} cy={410} w={210} h={150} title={"Important note\nabout specific\nanimals?"} />
+      <YesNo x={1390} y={300} label="yes" />
+      <YesNo x={1530} y={398} label="no" />
+      <Box x={1560} y={160} w={160} h={60} title="Fill in" />
+
+      {/* ── Add animals ── */}
+      <Box x={1760} y={355} w={230} h={110} title="ADD ANIMALS" kind="end" />
+
+      {/* Solid arrows */}
       <g stroke={F.arrow} strokeWidth="1.4" fill="none" markerEnd="url(#fd-arrow)">
-        <line x1="190" y1="220" x2="245" y2="220" />
-        {/* yes → open table */}
-        <line x1="415" y1="220" x2="520" y2="220" />
-        {/* no ↑ single form */}
-        <path d="M 330 160 L 330 80" />
-        {/* table → fill cluster */}
-        <path d="M 680 205 L 720 175" />
-        <path d="M 680 235 L 720 255" />
-        {/* fill → valid? */}
-        <path d="M 920 175 L 1010 205" />
-        <path d="M 920 255 L 1010 235" />
-        {/* yes → select rows */}
-        <line x1="1200" y1="220" x2="1410" y2="220" />
-        {/* select → ingest */}
-        <line x1="1580" y1="220" x2="1640" y2="220" />
+        {/* start → move existing? */}
+        <line x1="240" y1="410" x2="340" y2="410" />
+        {/* yes ↑ select animals */}
+        <path d="M 440 340 L 440 210" />
+        {/* no ↓ import from sheet? */}
+        <path d="M 440 480 L 440 560" />
+        {/* import no → create new animals */}
+        <line x1="535" y1="620" x2="655" y2="620" />
+        {/* create new ↑ auto fill */}
+        <path d="M 762 587 L 762 445" />
+        {/* import yes ↓→ migrate */}
+        <path d="M 440 680 L 440 740 L 672 740" />
+        {/* merge → important note? */}
+        <line x1="1180" y1="410" x2="1285" y2="410" />
+        {/* important yes ↑→ fill in */}
+        <path d="M 1390 335 L 1390 190 L 1560 190" />
+        {/* fill in →↓ add animals */}
+        <path d="M 1720 190 L 1875 190 L 1875 355" />
+        {/* important no → add animals */}
+        <line x1="1495" y1="410" x2="1760" y2="410" />
       </g>
-      {/* invalid loops back into the table */}
-      <g stroke={F.arrowDashed} strokeWidth="1.4" fill="none" strokeDasharray="5 4" markerEnd="url(#fd-arrow-dash)">
-        <path d="M 1110 155 L 1110 50 L 1200 50 L 1200 50 M 1010 50 L 830 50 L 830 120" />
+
+      {/* Merge feeders (no arrowheads) into vertical at x=1180 */}
+      <g stroke={F.arrow} strokeWidth="1.4" fill="none">
+        <path d="M 535 180 L 1180 180 L 1180 410" />
+        <path d="M 852 410 L 1180 410" />
+        <path d="M 857 740 L 1180 740 L 1180 410" />
+      </g>
+
+      {/* Add animals → continues (dashed) */}
+      <g stroke={F.arrowDashed} strokeWidth="1.6" fill="none" strokeDasharray="6 4" markerEnd="url(#fd-arrow-dash)">
+        <path d="M 1990 410 L 2060 410" />
       </g>
     </FlowFrame>
   );
