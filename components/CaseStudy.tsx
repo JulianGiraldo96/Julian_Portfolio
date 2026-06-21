@@ -1383,6 +1383,16 @@ const allMoreWorkProjects = [
     accent: "",
   },
   {
+    title: "Meinerva",
+    headline: "Look before you're told: making experimental art legible.",
+    types: ["Research", "UX", "Art & Tech"],
+    year: "2025",
+    slug: "meinerva" as string | null,
+    image: "/projects/meinerva/cover.webp",
+    tone: "",
+    accent: "",
+  },
+  {
     title: "Tierra Viva",
     headline: "",
     types: [] as string[],
