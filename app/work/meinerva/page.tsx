@@ -14,13 +14,12 @@ export default function MeinervaPage() {
       meta={{
         index: "A1",
         title: "Meinerva",
-        subtitle:
-          "A museum and event companion that makes experimental art legible — by letting people look first and write their own reading before anyone tells them what it means.",
+        subtitle: "Understanding Artistic Communication in Participatory Media",
         year: "2025",
         role: "Research · Experience Design (Master's thesis)",
         tags: ["Research", "UX", "Art & Tech"],
         status: "Academic · Master's thesis",
-        note: "From Gods to Humans — Understanding Artistic Communication in Participatory Media · University of Europe for Applied Sciences, Potsdam",
+        note: "From Gods to Humans · Master of Visual & Experience Design · University of Europe for Applied Sciences, Potsdam",
       }}
       cover={{
         src: "/projects/meinerva/hero.webp",
@@ -45,8 +44,8 @@ export default function MeinervaPage() {
             "So the meaning gets imported instead of formed. People leave able to repeat what a piece is 'about' without ever having had an experience of it.",
           ],
           stats: [
-            { icon: "bolt", number: "20s", caption: "Minimum looking before the screen unlocks" },
-            { icon: "triangle", number: "3", caption: "Layers revealed only after you write" },
+            { icon: "bolt", number: "0", caption: "Context shown before you've looked and written" },
+            { icon: "triangle", number: "3", caption: "Hint layers that open only after you write" },
             { icon: "dot", number: "1st", caption: "Reading on record is always your own" },
           ],
         },
@@ -77,22 +76,23 @@ export default function MeinervaPage() {
           label: "05 · Concept",
           heading: "Look first. Write your reading. Then compare.",
           body: [
-            "Meinerva (from Minerva — the move 'from gods to humans', meaning carried by people, not handed down) is type-led and deliberately quiet: almost no icons, the writing is the interface. The flow is a sequence of earned reveals.",
-            "Scan the work and the screen goes into Do Not Disturb for a forced stretch of looking. Only then can you write what you see — and only after you've written does the app reveal the artist's intent, the historical context, and what everyone else read into it.",
+            "Meinerva (from Minerva — the move 'from gods to humans', meaning carried by people, not handed down) is type-led and deliberately quiet: a calligraphic wordmark, almost no icons, the writing is the interface. The flow is a sequence of earned reveals.",
+            "Open a work and it stays veiled while you look — context is withheld on purpose. Only then can you write what you see, and only after you've written does the app open up the hints: the artist's intent, the history, and what everyone else read into it.",
           ],
         },
         {
           kind: "screens",
           label: "06 · The app",
-          heading: "Four moments, in order.",
+          heading: "The flow, in order.",
           body: [
-            "Observe, your reading, the reveal, and the community — each unlocked by the one before it. Built for two contexts: scan-an-artwork at an exhibition, and unlock-after-the-event for cinema, theatre and concerts.",
+            "Open, browse, wait, write, reveal — each step earns the next. The interface is type-led and almost wordless on purpose: the work and your reading of it carry the screen, not chrome.",
           ],
           images: [
-            { src: "/projects/meinerva/observe.webp", alt: "Observe — forced looking with a countdown and Do Not Disturb" },
-            { src: "/projects/meinerva/reading.webp", alt: "Your reading — write before any context unlocks" },
-            { src: "/projects/meinerva/reveal.webp", alt: "Reveal — artist intent and context appear after you write" },
-            { src: "/projects/meinerva/community.webp", alt: "Community — readings surfaced by relevance, not just stars" },
+            { src: "/projects/meinerva/s1-intro.webp", alt: "Intro — the Meinerva wordmark on open" },
+            { src: "/projects/meinerva/s2-home.webp", alt: "Home — a feed of artworks, each credited to its maker" },
+            { src: "/projects/meinerva/s3-observe.webp", alt: "The wait — the work stays veiled until you have really looked" },
+            { src: "/projects/meinerva/s4-write.webp", alt: "Write — your own reading, before any context" },
+            { src: "/projects/meinerva/s5-reveal.webp", alt: "Reveal — choose a hint and the context opens up" },
           ],
         },
         {
