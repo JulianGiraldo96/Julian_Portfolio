@@ -1373,14 +1373,14 @@ const allMoreWorkProjects = [
     accent: "",
   },
   {
-    title: "Taurus",
+    title: "TaurusWebs",
     headline: "From 6 hours to 1: digitizing a whole farm.",
     types: ["Web", "SaaS", "Agtech"],
     year: "2025",
     slug: "taurus" as string | null,
-    image: "",
-    tone: "bg-gradient-to-br from-[#1f3d2b] via-[#3f6b3f] to-[#a9c46c]",
-    accent: "after:bg-[radial-gradient(circle_at_72%_28%,#cfe08a_0%,transparent_60%)]",
+    image: "/projects/taurus/cover.webp",
+    tone: "",
+    accent: "",
   },
   {
     title: "Tierra Viva",

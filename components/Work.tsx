@@ -38,7 +38,7 @@ const projects: Project[] = [
   },
   {
     slug: "taurus",
-    title: "Taurus",
+    title: "TaurusWebs",
     headline: "From 6 hours to 1: digitizing a whole farm.",
     tagline: "Bulk farm setup for a livestock SaaS.",
     types: ["Web", "SaaS", "Agtech"],

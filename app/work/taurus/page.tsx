@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CaseStudy } from "@/components/CaseStudy";
 
 export const metadata: Metadata = {
-  title: "Taurus — Julian Giraldo",
+  title: "TaurusWebs — Julian Giraldo",
   description:
     "Bulk Farm Setup for TaurusWebs: an editable table that cut farm setup from six hours to one and got ranchers to digitize the whole herd instead of only the key animals.",
 };
@@ -13,7 +13,7 @@ export default function TaurusPage() {
       currentSlug="taurus"
       meta={{
         index: "03",
-        title: "Taurus",
+        title: "TaurusWebs",
         subtitle:
           "An editable table that cut farm setup from six hours to one, and got ranchers to digitize the whole herd instead of just the key animals.",
         year: "2024–2025",
@@ -24,7 +24,7 @@ export default function TaurusPage() {
       }}
       cover={{
         src: "/projects/taurus/hero.webp",
-        alt: "Taurus — Bulk Farm Setup table",
+        alt: "TaurusWebs — Bulk Farm Setup table",
       }}
       sections={[
         {
@@ -43,7 +43,7 @@ export default function TaurusPage() {
           heading: "Two very different people touch the same data.",
           body: [
             "The owner wants reports, weights, and traceability. The worker, often a ranch hand entering data from a phone in the field, just wants to finish and get back to work. Digital comfort varies a lot between them, and the onboarding moment depends entirely on the size of the herd.",
-            "Onboarding a new farm means entering its entire existing herd plus its inventory before the software is useful at all. That first load is where customers decided whether Taurus was worth it.",
+            "Onboarding a new farm means entering its entire existing herd plus its inventory before the software is useful at all. That first load is where customers decided whether TaurusWebs was worth it.",
           ],
         },
 
@@ -137,11 +137,11 @@ export default function TaurusPage() {
           label: "06 · Solution",
           heading: "One editable table that ingests an entire farm.",
           body: [
-            "Instead of a form per animal, Taurus got a table mode: every animal is a row, every attribute a column, and the whole herd is filled, corrected, and submitted in a single pass. The same surface people already used to think about their cattle became the surface they entered it through.",
+            "Instead of a form per animal, TaurusWebs got a table mode: every animal is a row, every attribute a column, and the whole herd is filled, corrected, and submitted in a single pass. The same surface people already used to think about their cattle became the surface they entered it through.",
             "Toggle below between the old one-by-one form and the table that replaced it.",
           ],
           footer:
-            "Visuals recreated for this case study. The live Taurus UI looks different, but the interaction model is the one that shipped.",
+            "Visuals recreated for this case study. The live TaurusWebs UI looks different, but the interaction model is the one that shipped.",
         },
 
         {
