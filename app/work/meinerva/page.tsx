@@ -81,8 +81,20 @@ export default function MeinervaPage() {
           ],
         },
         {
+          kind: "video",
+          label: "06 · Walkthrough",
+          heading: "The whole thing, in motion.",
+          body: [
+            "A run through the prototype: opening on the name, finding a work, the wait, the piece coming back to colour, the hints, and the critiques. The same flow the screens below break down moment by moment.",
+          ],
+          src: "/projects/meinerva/walkthrough.mp4",
+          poster: "/projects/meinerva/walkthrough-poster.webp",
+          width: "340px",
+          caption: "Prototype walkthrough · recorded in Figma",
+        },
+        {
           kind: "screens",
-          label: "06 · Start",
+          label: "07 · Start",
           heading: "It opens on a name, not a feed.",
           body: [
             "The first thing you meet is the wordmark, set in a calligraphic monogram. It signals the register before anything else does: this is a slow, considered place, closer to a reading room than a social app.",
@@ -93,7 +105,7 @@ export default function MeinervaPage() {
         },
         {
           kind: "screens",
-          label: "07 · Find the work",
+          label: "08 · Find the work",
           heading: "Finding the pieces around you.",
           body: [
             "You can browse by artist, by what's popular, or by what's close by on a map, and pull up the place itself, the Prado, a gallery, a venue. The point is to meet people where the art already is, in a room or at an event, not to replace the encounter with a screen.",
@@ -105,7 +117,7 @@ export default function MeinervaPage() {
         },
         {
           kind: "screens",
-          label: "08 · The wait",
+          label: "09 · The wait",
           heading: "Wait, and actually look or listen.",
           body: [
             "Before anything unlocks, the app asks you to stop. Take a moment to breathe and appreciate the piece. The screen locks for a short while, longer if you want, so you give the work real attention, watching or listening, instead of reaching straight for an opinion. Delaying interpretation is the whole mechanism. The pause is what makes room for reflection.",
@@ -116,7 +128,7 @@ export default function MeinervaPage() {
         },
         {
           kind: "screens",
-          label: "09 · Grey to colour",
+          label: "10 · Grey to colour",
           heading: "Once you've looked, the work comes back to colour.",
           body: [
             "During the wait the piece is held in grey, veiled, almost withheld. After you've given it your attention and written your reading, it returns to full colour. The shift is the reward for looking, and a quiet signal that you've moved from observing to understanding.",
@@ -128,7 +140,7 @@ export default function MeinervaPage() {
         },
         {
           kind: "screens",
-          label: "10 · The hint",
+          label: "11 · The hint",
           heading: "Tap a hint, and the context opens up.",
           body: [
             "Only now do the hints appear, and only if you want them. Tap one and a layer opens: the artist, the history, the technique. Context is offered, never imposed, so it deepens the reading you already made instead of replacing it.",
@@ -139,7 +151,7 @@ export default function MeinervaPage() {
         },
         {
           kind: "screens",
-          label: "11 · The critique",
+          label: "12 · The critique",
           heading: "The critique is the most important part of the whole thing.",
           body: [
             "Everything leads here. You write what you see before anyone tells you what it means, and then you read what others saw. Writing is the act that turns looking into knowledge, and reading other people's critiques sharpens your own thinking against theirs.",
@@ -152,7 +164,7 @@ export default function MeinervaPage() {
         },
         {
           kind: "text",
-          label: "12 · Outcome",
+          label: "13 · Outcome",
           heading: "Concept-driven interaction reads better than more features.",
           body: [
             "Early results from the interview and surveys pointed the same way. Interactive strategies anchored in a strong conceptual rule communicate artistic intent better than open ended tools or more explanation. Delaying the reveal made the meaning feel formed rather than imported.",
@@ -161,7 +173,7 @@ export default function MeinervaPage() {
         },
         {
           kind: "text",
-          label: "13 · Reflection",
+          label: "14 · Reflection",
           heading: "What the thesis taught me as a designer.",
           body: [
             "I came in wanting to add explanation and left convinced the harder, better move was to withhold it, to design the pause. Restraint, sequencing and a single clear rule did more for comprehension than any feature I could have bolted on.",

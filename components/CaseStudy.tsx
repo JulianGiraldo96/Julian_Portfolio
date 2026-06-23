@@ -86,6 +86,18 @@ type BulkTableSection = {
   footer?: string;
 };
 
+type VideoSection = {
+  kind: "video";
+  label: string;
+  heading: string;
+  body?: string[];
+  src: string;
+  poster?: string;
+  /** rendered width of the phone-shaped video, e.g. "340px" */
+  width?: string;
+  caption?: string;
+};
+
 type Section =
   | TextSection
   | ListSection
@@ -94,7 +106,8 @@ type Section =
   | FlowSection
   | DemoSection
   | GallerySection
-  | BulkTableSection;
+  | BulkTableSection
+  | VideoSection;
 
 type Meta = {
   index: string;
@@ -339,6 +352,16 @@ function SectionBlock({ section }: { section: Section }) {
                 </p>
               ))}
             <ScreensGrid images={section.images} />
+          </>
+        )}
+
+        {section.kind === "video" && (
+          <>
+            {section.body &&
+              section.body.map((p, i) => (
+                <p key={i} className="max-w-2xl text-base md:text-lg leading-relaxed text-muted">{p}</p>
+              ))}
+            <VideoPhone src={section.src} poster={section.poster} width={section.width} caption={section.caption} />
           </>
         )}
 
@@ -606,6 +629,67 @@ function QuestionsGrid({ items }: { items: QuestionItem[] }) {
         </motion.div>
       ))}
     </div>
+  );
+}
+
+function VideoPhone({
+  src,
+  poster,
+  width = "340px",
+  caption,
+}: {
+  src: string;
+  poster?: string;
+  width?: string;
+  caption?: string;
+}) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  // Only play while on screen; pause otherwise to save battery/data.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) el.play().catch(() => {});
+        else el.pause();
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <motion.figure
+      initial={{ opacity: 0, y: 24, filter: "blur(12px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+      className="m-0 flex flex-col items-center"
+    >
+      <div
+        className="rounded-[2rem] overflow-hidden border border-border bg-black shadow-[0_30px_80px_rgba(0,0,0,0.18)]"
+        style={{ width }}
+      >
+        <video
+          ref={ref}
+          className="block w-full h-auto"
+          src={src}
+          poster={poster}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          autoPlay
+        />
+      </div>
+      {caption && (
+        <figcaption className="mt-4 font-mono text-[12px] uppercase tracking-[0.18em] text-muted text-center">
+          {caption}
+        </figcaption>
+      )}
+    </motion.figure>
   );
 }
 
