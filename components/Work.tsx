@@ -15,6 +15,7 @@ type Project = {
   image?: string;
   tone?: string;
   accent?: string;
+  wide?: boolean;
 };
 
 const projects: Project[] = [
@@ -44,16 +45,7 @@ const projects: Project[] = [
     types: ["Web", "SaaS", "Agtech"],
     year: "2025",
     image: "/projects/taurus/cover.webp",
-  },
-  {
-    title: "Tierra Viva",
-    headline: "An organic market, reborn.",
-    tagline: "Breathing new life into an organic market.",
-    types: ["Web", "Branding"],
-    year: "2024",
-    tone: "bg-gradient-to-br from-amber-100 via-orange-200 to-yellow-300",
-    accent:
-      "after:bg-[radial-gradient(circle_at_70%_30%,#f7d89c_0%,transparent_60%)]",
+    wide: true,
   },
 ];
 
@@ -116,11 +108,14 @@ function ProjectCard({
         delay: (index % 2) * 0.08,
         ease: [0.22, 1, 0.36, 1],
       }}
+      className={project.wide ? "md:col-span-2" : ""}
     >
       <Wrapper href={href} className="group block" data-cursor-hover>
         <div
           ref={ref}
-          className="relative aspect-[4/3] md:aspect-[5/4] overflow-hidden bg-subtle"
+          className={`relative overflow-hidden bg-subtle ${
+            project.wide ? "aspect-[4/3] md:aspect-[16/9]" : "aspect-[4/3] md:aspect-[5/4]"
+          }`}
         >
           {project.image ? (
             <motion.div style={{ y: imgY }} className="absolute inset-0 scale-110">
@@ -128,7 +123,7 @@ function ProjectCard({
                 src={project.image}
                 alt={project.title}
                 fill
-                sizes="(min-width: 768px) 50vw, 100vw"
+                sizes={project.wide ? "100vw" : "(min-width: 768px) 50vw, 100vw"}
                 className="object-cover"
                 priority={index < 2}
               />
@@ -171,7 +166,7 @@ function ProjectCard({
               <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-white/60 mb-2">
                 {project.title} · {project.year}
               </span>
-              <h3 className="font-display font-light text-2xl md:text-4xl text-white tracking-[-0.02em] leading-tight drop-shadow-lg">
+              <h3 className={`font-display font-light text-white tracking-[-0.02em] leading-tight drop-shadow-lg ${project.wide ? "text-3xl md:text-5xl max-w-3xl" : "text-2xl md:text-4xl"}`}>
                 {project.headline}
               </h3>
             </div>
