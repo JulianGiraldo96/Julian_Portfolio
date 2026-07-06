@@ -2,6 +2,7 @@
 // Run: node scripts/generate-cv.mjs
 
 import { chromium } from "playwright";
+import { PDFDocument } from "pdf-lib";
 import { writeFileSync, mkdirSync } from "fs";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
@@ -66,7 +67,7 @@ const html = `<!doctype html>
   h2 {
     font-family: "Outfit", sans-serif;
     text-transform: uppercase;
-    letter-spacing: 0.09em;
+    letter-spacing: 0.05em;
     font-size: 8pt;
     font-weight: 600;
     color: var(--muted-strong);
@@ -140,7 +141,7 @@ const html = `<!doctype html>
   .skill-row .label {
     font-family: "Outfit", sans-serif;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.04em;
     font-size: 6.9pt;
     font-weight: 500;
     color: var(--muted);
@@ -247,12 +248,24 @@ await page.setContent(html, { waitUntil: "networkidle" });
 await page.evaluate(async () => {
   await document.fonts.ready;
 });
-const pdfBuffer = await page.pdf({
+const rawPdf = await page.pdf({
   format: "A4",
   printBackground: true,
   margin: { top: "14mm", bottom: "14mm", left: "16mm", right: "16mm" },
 });
 await browser.close();
+
+// Strip headless-browser fingerprints; set clean, human-authored metadata.
+const doc = await PDFDocument.load(rawPdf);
+doc.setTitle("Julian David Giraldo Rojas | CV");
+doc.setAuthor("Julian David Giraldo Rojas");
+doc.setSubject("");
+doc.setKeywords([]);
+doc.setCreator("Julian David Giraldo Rojas");
+doc.setProducer("Julian David Giraldo Rojas");
+doc.setCreationDate(new Date());
+doc.setModificationDate(new Date());
+const pdfBuffer = await doc.save();
 
 const outPublic = resolve(projectRoot, "public/Julian_Giraldo_CV.pdf");
 const outPortfolioRoot = resolve(projectRoot, "Julian_Giraldo_CV_ProductDesigner.pdf");
