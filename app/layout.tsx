@@ -23,13 +23,11 @@ const display = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Julian Giraldo — Visual & Experience Designer",
-  description:
-    "Colombian visual and experience designer based in Berlin. Visual identity, branding, video editing, and product design.",
+  title: "Julian Giraldo — Product Designer",
+  description: "Product Designer based in Berlin.",
   openGraph: {
-    title: "Julian Giraldo — Visual & Experience Designer",
-    description:
-      "Colombian visual and experience designer based in Berlin. Visual identity, branding, video editing, and product design.",
+    title: "Julian Giraldo — Product Designer",
+    description: "Product Designer based in Berlin.",
     type: "website",
   },
 };

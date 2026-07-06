@@ -159,7 +159,7 @@ const html = `<!doctype html>
 <body>
   <div class="header">
     <h1 class="name display">Julian David Giraldo Rojas</h1>
-    <p class="role-line">Product Designer · B2B SaaS &amp; Internal Tools · Full-Lifecycle Ownership · Design Systems · AI UX · Berlin, DE</p>
+    <p class="role-line">Product Designer · Berlin, DE</p>
     <p class="contact-line">
       application@juliang.de<span class="dot">·</span>+49 151 5884 4518<span class="dot">·</span>juliang.de<span class="dot">·</span>linkedin.com/in/julian-gr<span class="dot">·</span>behance.net/JulianGR
     </p>
