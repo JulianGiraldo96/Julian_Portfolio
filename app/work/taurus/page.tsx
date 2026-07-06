@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CaseStudy } from "@/components/CaseStudy";
 
 export const metadata: Metadata = {
-  title: "TaurusWebs — Julian Giraldo",
+  title: "TaurusWebs | Julian Giraldo",
   description:
     "Bulk Farm Setup for TaurusWebs: an editable table that cut farm setup from six hours to one and got ranchers to digitize the whole herd instead of only the key animals.",
 };
@@ -24,7 +24,7 @@ export default function TaurusPage() {
       }}
       cover={{
         src: "/projects/taurus/hero.webp",
-        alt: "TaurusWebs — Bulk Farm Setup table",
+        alt: "TaurusWebs · Bulk Farm Setup table",
       }}
       sections={[
         {

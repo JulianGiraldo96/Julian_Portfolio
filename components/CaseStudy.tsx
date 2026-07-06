@@ -877,7 +877,7 @@ function TaurusBeforeFlow() {
       <Box x={40} y={215} w={150} h={70} title="NEW FARM" kind="start" />
       <Box x={250} y={215} w={160} h={70} title="Open animals" sub="registry module" />
       <Box x={520} y={215} w={160} h={70} title="+ Add animal" sub="single form" />
-      <Fill x={740} y={200} w={200} h={110} lines={["tag #, breed,", "sex, birth date,", "weight, lot", "— ~5 min each"]} />
+      <Fill x={740} y={200} w={200} h={110} lines={["tag #, breed,", "sex, birth date,", "weight, lot", "~5 min each"]} />
       <Diamond cx={1140} cy={250} w={180} h={120} title={"All fields\nfilled?"} />
       <YesNo x={1140} y={172} label="no" />
       <YesNo x={1252} y={242} label="yes" />
@@ -1402,7 +1402,7 @@ function DemoFrame({ url }: { url: string }) {
       >
         <iframe
           src={url}
-          title="Duo ERP Dashboard — live demo"
+          title="Duo ERP Dashboard · live demo"
           style={{
             width: `${IFRAME_W}px`,
             height: `${IFRAME_H}px`,

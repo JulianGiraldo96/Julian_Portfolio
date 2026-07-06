@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CaseStudy } from "@/components/CaseStudy";
 
 export const metadata: Metadata = {
-  title: "ERP Duo — Julian Giraldo",
+  title: "ERP Duo | Julian Giraldo",
   description:
     "Custom ERP system for Duo: nine locations, multiple departments, role-based access, and full document traceability across operations, HR, logistics, and client orders.",
 };
@@ -97,7 +97,7 @@ export default function ErpDuoPage() {
           ],
           image: {
             src: "/projects/erp-duo/hr.webp",
-            alt: "ERP Duo — Staff Shifts with HR compliance alerts",
+            alt: "ERP Duo · Staff Shifts with HR compliance alerts",
             position: "right",
             bg: "bg-[#f5f5f3]",
           },
@@ -175,7 +175,7 @@ export default function ErpDuoPage() {
           images: [
             {
               src: "/projects/erp-duo/gps.webp",
-              alt: "ERP Duo — Logistics GPS module · 7 routes · Berlin",
+              alt: "ERP Duo · Logistics GPS module · 7 routes · Berlin",
               caption: "Logistics GPS · live routes · Berlin",
             },
           ],

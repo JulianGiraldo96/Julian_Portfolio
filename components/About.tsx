@@ -10,7 +10,7 @@ const experiences = [
     role: "Product Designer",
     company: "Duo Sicilian Ice Cream",
     location: "Berlin",
-    period: "Oct 2024 – Present",
+    period: "Oct 2024 - Present",
     body: [
       "Designed and shipped Duo's internal ERP from zero, used daily across 9 locations and 6 departments (operations, logistics, production, HR, finance, management).",
       "End-to-end ownership: discovery interviews, information architecture for 40+ document types, wireframes, Figma prototypes, high-fidelity UI, design system, dev handoff, post-launch iteration.",
@@ -24,10 +24,10 @@ const experiences = [
     role: "Product Designer",
     company: "TaurusWebs",
     location: "Bogotá (remote)",
-    period: "Feb 2019 – Present",
+    period: "Feb 2019 - Present",
     freelance: true,
     body: [
-      "Progressed from User Experience Designer (2019 – 2022) to Junior Product Designer (2022 – 2024) to Product Designer (2024 – Present).",
+      "Progressed from User Experience Designer (2019 - 2022) to Junior Product Designer (2022 - 2024) to Product Designer (2024 - Present).",
       "Designer for custom internal platforms and client-facing applications, built from scratch.",
       "Designed the Taurus Ecosystem: a unified internal workspace combining CRM (Twenty), knowledge base (AppFlowy) and encrypted chat (Matrix), tied through a single SSO. Owned discovery, IA, user flows, Figma UI, prototype and stakeholder pitch.",
       "Translated complex technical decisions (data sovereignty, hosting, security) into product narratives non-technical stakeholders could approve.",
@@ -38,9 +38,9 @@ const experiences = [
     role: "Senior Graphic Designer / Lead Designer",
     company: "Greens Group (Greens · Fresh To Go · Blok Foods)",
     location: "Swieqi, Malta",
-    period: "Aug 2019 – Nov 2023",
+    period: "Aug 2019 - Nov 2023",
     body: [
-      "Led visual identity and digital design across three food brands under Greens Group. Promoted from Graphic Designer (Aug 2019 – Aug 2021) to Senior Graphic Designer (Sep 2021 – Nov 2023). Lead Designer on contract for Blok Foods (Feb 2022 – Nov 2023).",
+      "Led visual identity and digital design across three food brands under Greens Group. Promoted from Graphic Designer (Aug 2019 - Aug 2021) to Senior Graphic Designer (Sep 2021 - Nov 2023). Lead Designer on contract for Blok Foods (Feb 2022 - Nov 2023).",
       "Designed and launched multiple brand websites, from concept to live deployment.",
       "Built a multi-channel design system across web, photography, video, animation, packaging and in-store communications.",
     ],
@@ -119,7 +119,7 @@ export function About() {
             <RevealBlock delay={0.32}>
               <p className="text-muted">
                 <span className="font-mono text-[12px] uppercase tracking-[0.18em] text-foreground mr-2">// ai-native</span>
-                AI-native by default — I start from an LLM to clarify intent, prototype with Cursor and Claude Code, and move fluidly between code and Figma.
+                AI-native by default: I start from an LLM to clarify intent, prototype with Cursor and Claude Code, and move fluidly between code and Figma.
               </p>
             </RevealBlock>
             <RevealBlock delay={0.40}>

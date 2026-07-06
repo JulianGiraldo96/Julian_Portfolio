@@ -14,7 +14,7 @@ const html = `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Julian David Giraldo Rojas — CV</title>
+<title>Julian David Giraldo Rojas - CV</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -175,13 +175,13 @@ const html = `<!doctype html>
 
     <div class="job">
       <div class="job-head">
-        <div class="job-title">Product Designer <span class="at">— Duo Sicilian Ice Cream</span></div>
-        <div class="job-date">Oct 2024 — Present</div>
+        <div class="job-title">Product Designer <span class="at">· Duo Sicilian Ice Cream</span></div>
+        <div class="job-date">Oct 2024 - Present</div>
       </div>
       <div class="job-loc">Berlin, Germany · On-site</div>
       <ul>
-        <li>Designed and shipped Duo's internal ERP from zero — a complex platform (13 modules, 40+ document types, 6 permission roles) in daily use across 9 locations and 6 departments, owning the full lifecycle from discovery to final implementation and polish.</li>
-        <li>Shipped 13 interdependent modules (inventory, orders, deliveries, logistics GPS, suppliers, production, staff, reports and more) — translating operational goals into intuitive, user-centered flows, wireframes, high-fidelity mockups and interactive prototypes.</li>
+        <li>Designed and shipped Duo's internal ERP from zero: a complex platform (13 modules, 40+ document types, 6 permission roles) in daily use across 9 locations and 6 departments, owning the full lifecycle from discovery to final implementation and polish.</li>
+        <li>Shipped 13 interdependent modules (inventory, orders, deliveries, logistics GPS, suppliers, production, staff, reports and more), translating operational goals into intuitive, user-centered flows, wireframes, high-fidelity mockups and interactive prototypes.</li>
         <li>Designed a role-based access model with 6 distinct roles; transformed onboarding UX, cutting onboarding time by ~30% and eliminating accidental cross-module edits.</li>
         <li>Built a three-state status system (ok / warn / critical) applied consistently across inventory, expiring items, HR compliance, deliveries and production.</li>
         <li>Contribute to and maintain a scalable design system (components, patterns, design tokens); run usability testing, user feedback loops and data-driven experimentation with real users to rationalize every decision.</li>
@@ -191,10 +191,10 @@ const html = `<!doctype html>
 
     <div class="job">
       <div class="job-head">
-        <div class="job-title">Product Designer <span class="at">— TaurusWebs (Freelance)</span></div>
-        <div class="job-date">Feb 2019 — Present</div>
+        <div class="job-title">Product Designer <span class="at">· TaurusWebs (Freelance)</span></div>
+        <div class="job-date">Feb 2019 - Present</div>
       </div>
-      <div class="job-loc">Bogotá, Colombia · Remote · User Experience Designer (2019–2022) → Junior Product Designer (2022–2024) → Product Designer (2024–Present)</div>
+      <div class="job-loc">Bogotá, Colombia · Remote · User Experience Designer (2019-2022) → Junior Product Designer (2022-2024) → Product Designer (2024-Present)</div>
       <ul>
         <li>Owned end-to-end design of complex B2B platforms and commercial apps, from discovery and flows to high-fidelity UI and interactive prototypes across web and mobile.</li>
         <li>Designed the Taurus Ecosystem: a unified workspace integrating CRM, knowledge base and chat via single sign-on (SSO), with a scalable shared design system.</li>
@@ -204,12 +204,12 @@ const html = `<!doctype html>
 
     <div class="job">
       <div class="job-head">
-        <div class="job-title">Senior Graphic Designer / Lead Designer <span class="at">— Greens Group</span></div>
-        <div class="job-date">Aug 2019 — Nov 2023</div>
+        <div class="job-title">Senior Graphic Designer / Lead Designer <span class="at">· Greens Group</span></div>
+        <div class="job-date">Aug 2019 - Nov 2023</div>
       </div>
-      <div class="job-loc">Greens Supermarket · Fresh To Go · Blok Foods — Swieqi, Malta · On-site</div>
+      <div class="job-loc">Greens Supermarket · Fresh To Go · Blok Foods · Swieqi, Malta · On-site</div>
       <ul>
-        <li>Led visual identity and digital design across three brands, holding a consistently high bar for quality and craft. Promoted Graphic Designer to Senior; Lead Designer on contract for Blok Foods (2022–2023).</li>
+        <li>Led visual identity and digital design across three brands, holding a consistently high bar for quality and craft. Promoted Graphic Designer to Senior; Lead Designer on contract for Blok Foods (2022-2023).</li>
         <li>Built and maintained a multi-channel design system from the ground up for a multi-person team.</li>
       </ul>
     </div>
@@ -218,11 +218,11 @@ const html = `<!doctype html>
   <section>
     <h2>Education</h2>
     <div class="edu-row">
-      <div><span class="degree">MA Visual &amp; Experience Design</span> <span class="school">— UE University of Applied Sciences, Berlin (consumer mobile app thesis)</span></div>
+      <div><span class="degree">MA Visual &amp; Experience Design</span> <span class="school">· UE University of Applied Sciences, Berlin (consumer mobile app thesis)</span></div>
       <div class="date">2025</div>
     </div>
     <div class="edu-row">
-      <div><span class="degree">BA Marketing &amp; Advertising</span> <span class="school">— Politécnico Grancolombiano, Bogotá</span></div>
+      <div><span class="degree">BA Marketing &amp; Advertising</span> <span class="school">· Politécnico Grancolombiano, Bogotá</span></div>
       <div class="date">2019</div>
     </div>
   </section>

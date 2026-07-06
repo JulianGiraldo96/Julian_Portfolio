@@ -23,10 +23,10 @@ const display = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Julian Giraldo — Product Designer",
+  title: "Julian Giraldo | Product Designer",
   description: "Product Designer based in Berlin.",
   openGraph: {
-    title: "Julian Giraldo — Product Designer",
+    title: "Julian Giraldo | Product Designer",
     description: "Product Designer based in Berlin.",
     type: "website",
   },

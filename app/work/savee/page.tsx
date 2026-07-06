@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CaseStudy } from "@/components/CaseStudy";
 
 export const metadata: Metadata = {
-  title: "Savee — Julian Giraldo",
+  title: "Savee | Julian Giraldo",
   description:
     "Social planner that cuts household food waste through smart meal planning, automated shopping lists and proactive expiry alerts.",
 };
@@ -306,27 +306,27 @@ export default function SaveePage() {
           images: [
             {
               src: "/projects/savee/1.webp",
-              alt: "Savee — Screen 1",
+              alt: "Savee · Screen 1",
             },
             {
               src: "/projects/savee/2.webp",
-              alt: "Savee — Screen 2",
+              alt: "Savee · Screen 2",
             },
             {
               src: "/projects/savee/3.webp",
-              alt: "Savee — Screen 3",
+              alt: "Savee · Screen 3",
             },
             {
               src: "/projects/savee/4.webp",
-              alt: "Savee — Screen 4",
+              alt: "Savee · Screen 4",
             },
             {
               src: "/projects/savee/5.webp",
-              alt: "Savee — Screen 5",
+              alt: "Savee · Screen 5",
             },
             {
               src: "/projects/savee/6.webp",
-              alt: "Savee — Screen 6",
+              alt: "Savee · Screen 6",
             },
           ],
         },
