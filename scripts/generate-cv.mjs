@@ -29,8 +29,8 @@ const html = `<!doctype html>
   }
   html, body {
     font-family: "Geist", -apple-system, "Helvetica Neue", Arial, sans-serif;
-    font-size: 9pt;
-    line-height: 1.42;
+    font-size: 8.7pt;
+    line-height: 1.4;
     color: var(--fg);
     margin: 0;
     font-weight: 400;
@@ -62,7 +62,7 @@ const html = `<!doctype html>
   }
   .contact-line .dot { color: var(--muted); margin: 0 5px; }
 
-  section { margin-top: 9px; }
+  section { margin-top: 7px; }
   h2 {
     font-family: "Outfit", sans-serif;
     text-transform: uppercase;
@@ -71,17 +71,17 @@ const html = `<!doctype html>
     font-weight: 600;
     color: var(--muted-strong);
     border-top: 0.6pt solid var(--border);
-    padding-top: 6px;
-    margin: 9px 0 5px 0;
+    padding-top: 4px;
+    margin: 7px 0 4px 0;
   }
 
   p.summary {
-    font-size: 9pt;
-    line-height: 1.45;
+    font-size: 8.7pt;
+    line-height: 1.42;
     margin: 0;
   }
 
-  .job { margin-top: 7px; }
+  .job { margin-top: 5px; }
   .job:first-of-type { margin-top: 0; }
   .job-head {
     display: flex;
@@ -113,9 +113,9 @@ const html = `<!doctype html>
     list-style: disc;
   }
   ul li {
-    margin-bottom: 2px;
-    font-size: 8.8pt;
-    line-height: 1.4;
+    margin-bottom: 1px;
+    font-size: 8.6pt;
+    line-height: 1.38;
     padding-left: 2px;
   }
   ul li::marker { color: var(--muted); }
@@ -148,7 +148,7 @@ const html = `<!doctype html>
     flex-shrink: 0;
   }
   .skill-row .val {
-    font-size: 8.8pt;
+    font-size: 8.6pt;
     flex: 1;
     line-height: 1.4;
   }
