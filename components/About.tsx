@@ -27,7 +27,8 @@ const experiences = [
     period: "Feb 2019 – Present",
     freelance: true,
     body: [
-      "Lead designer for custom internal platforms and client-facing applications, built from scratch.",
+      "Progressed from UX/UI Designer (2019 – 2022) to Junior Product Designer (2022 – 2024) to Product Designer (2024 – Present).",
+      "Designer for custom internal platforms and client-facing applications, built from scratch.",
       "Designed the Taurus Ecosystem: a unified internal workspace combining CRM (Twenty), knowledge base (AppFlowy) and encrypted chat (Matrix), tied through a single SSO. Owned discovery, IA, user flows, Figma UI, prototype and stakeholder pitch.",
       "Translated complex technical decisions (data sovereignty, hosting, security) into product narratives non-technical stakeholders could approve.",
       "Led brand identity, web design and creative direction for client work spanning Latin America and the USA.",
@@ -95,7 +96,7 @@ export function About() {
                 I&apos;m{" "}
                 <span className="font-medium">Julian Giraldo</span>, a Product
                 Designer based in Berlin focused on B2B SaaS, internal tools and
-                data-heavy interfaces, with <b className="text-foreground">7+ years as a Product Designer</b> and <b className="text-foreground">8+ years as a designer overall</b>. The kind of work where dense information
+                data-heavy interfaces, with <b className="text-foreground">4 years as a Product Designer</b> and <b className="text-foreground">8+ years as a designer overall</b>. The kind of work where dense information
                 has to feel calm and usable.
               </p>
             </RevealBlock>

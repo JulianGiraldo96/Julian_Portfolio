@@ -159,7 +159,7 @@ const html = `<!doctype html>
 <body>
   <div class="header">
     <h1 class="name display">Julian David Giraldo Rojas</h1>
-    <p class="role-line">Product Designer (UX/UI) · B2B SaaS &amp; Internal Tools · Full-Lifecycle Ownership · Design Systems · AI UX · Berlin, DE</p>
+    <p class="role-line">Product Designer · B2B SaaS &amp; Internal Tools · Full-Lifecycle Ownership · Design Systems · AI UX · Berlin, DE</p>
     <p class="contact-line">
       application@juliang.de<span class="dot">·</span>+49 151 5884 4518<span class="dot">·</span>juliang.de<span class="dot">·</span>linkedin.com/in/julian-gr<span class="dot">·</span>behance.net/JulianGR
     </p>
@@ -167,7 +167,7 @@ const html = `<!doctype html>
 
   <section>
     <h2>Summary</h2>
-    <p class="summary">Product Designer (UX/UI) with 7+ years owning design across the full product lifecycle, from discovery and conceptualization to final implementation and polish, on complex B2B SaaS platforms and internal tools with many flows, states and feature dependencies. I translate ambitious business and user problems into intuitive, user-centered solutions, and I rationalize every decision with data, research insights and direct customer feedback. I contribute to and maintain scalable design systems that keep the whole interface consistent, run usability testing, user feedback loops and data-driven experimentation, and collaborate tightly in cross-functional squads with PMs, engineers and analysts. I am AI-native: I design AI-powered UX and Copilot-style features, and because I write frontend (Next.js) my prototypes are real and my handoff is buildable. Curious, pragmatic, and a consistently high bar for craft. Berlin-based, open to hybrid across the EU.</p>
+    <p class="summary">Product Designer with 4 years in product design and 7+ years in design overall, owning design across the full product lifecycle, from discovery and conceptualization to final implementation and polish, on complex B2B SaaS platforms and internal tools with many flows, states and feature dependencies. I translate ambitious business and user problems into intuitive, user-centered solutions, and I rationalize every decision with data, research insights and direct customer feedback. I contribute to and maintain scalable design systems that keep the whole interface consistent, run usability testing, user feedback loops and data-driven experimentation, and collaborate tightly in cross-functional squads with PMs, engineers and analysts. I am AI-native: I design AI-powered UX and Copilot-style features, and because I write frontend (Next.js) my prototypes are real and my handoff is buildable. Curious, pragmatic, and a consistently high bar for craft. Berlin-based, open to hybrid across the EU.</p>
   </section>
 
   <section>
@@ -191,10 +191,10 @@ const html = `<!doctype html>
 
     <div class="job">
       <div class="job-head">
-        <div class="job-title">Lead Product Designer <span class="at">— TaurusWebs (Freelance)</span></div>
+        <div class="job-title">Product Designer <span class="at">— TaurusWebs (Freelance)</span></div>
         <div class="job-date">Feb 2019 — Present</div>
       </div>
-      <div class="job-loc">Bogotá, Colombia · Remote</div>
+      <div class="job-loc">Bogotá, Colombia · Remote · UX/UI Designer (2019 – 2022) → Junior Product Designer (2022 – 2024) → Product Designer (2024 – Present)</div>
       <ul>
         <li>Owned end-to-end design of complex B2B platforms and commercial apps, from discovery and flows to high-fidelity UI and interactive prototypes across web and mobile.</li>
         <li>Designed the Taurus Ecosystem: a unified workspace integrating CRM, knowledge base and chat via single sign-on (SSO), with a scalable shared design system.</li>
