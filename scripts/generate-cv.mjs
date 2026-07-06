@@ -194,7 +194,7 @@ const html = `<!doctype html>
         <div class="job-title">Product Designer <span class="at">— TaurusWebs (Freelance)</span></div>
         <div class="job-date">Feb 2019 — Present</div>
       </div>
-      <div class="job-loc">Bogotá, Colombia · Remote · UX/UI Designer (2019 – 2022) → Junior Product Designer (2022 – 2024) → Product Designer (2024 – Present)</div>
+      <div class="job-loc">Bogotá, Colombia · Remote · User Experience Designer (2019 – 2022) → Junior Product Designer (2022 – 2024) → Product Designer (2024 – Present)</div>
       <ul>
         <li>Owned end-to-end design of complex B2B platforms and commercial apps, from discovery and flows to high-fidelity UI and interactive prototypes across web and mobile.</li>
         <li>Designed the Taurus Ecosystem: a unified workspace integrating CRM, knowledge base and chat via single sign-on (SSO), with a scalable shared design system.</li>

@@ -27,7 +27,7 @@ const experiences = [
     period: "Feb 2019 – Present",
     freelance: true,
     body: [
-      "Progressed from UX/UI Designer (2019 – 2022) to Junior Product Designer (2022 – 2024) to Product Designer (2024 – Present).",
+      "Progressed from User Experience Designer (2019 – 2022) to Junior Product Designer (2022 – 2024) to Product Designer (2024 – Present).",
       "Designer for custom internal platforms and client-facing applications, built from scratch.",
       "Designed the Taurus Ecosystem: a unified internal workspace combining CRM (Twenty), knowledge base (AppFlowy) and encrypted chat (Matrix), tied through a single SSO. Owned discovery, IA, user flows, Figma UI, prototype and stakeholder pitch.",
       "Translated complex technical decisions (data sovereignty, hosting, security) into product narratives non-technical stakeholders could approve.",
