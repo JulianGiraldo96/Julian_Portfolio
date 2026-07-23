@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 560" width="800" height="560" font-family="'Helvetica Neue',Arial,sans-serif">
+  <rect width="800" height="560" fill="#f4f4f3"/>
+  <text x="40" y="56" fill="#9a9a95" font-size="13" letter-spacing="3" font-weight="600">VALIDATION · BEFORE INGEST</text>
+  <line x1="40" y1="72" x2="760" y2="72" stroke="#dcdcd6" stroke-width="1"/>
+  <!-- summary bar -->
+  <rect x="40" y="100" width="720" height="40" rx="6" fill="#ffffff" stroke="#c9c9c2" stroke-width="1.5"/>
+  <circle cx="66" cy="120" r="6" fill="#a8bcae"/>
+  <text x="82" y="125" fill="#8a8a82" font-size="13" font-weight="600">68 rows ready</text>
+  <circle cx="250" cy="120" r="6" fill="none" stroke="#c98b6b" stroke-width="2" stroke-dasharray="3 2"/>
+  <text x="266" y="125" fill="#b07a5c" font-size="13" font-weight="600">2 rows need a fix</text>
+  <rect x="620" y="108" width="120" height="26" rx="13" fill="#d8d8d2"/>
+  <text x="646" y="125" fill="#9a9a92" font-size="12" font-weight="600">Add animals →</text>
+  <!-- table -->
+  <rect x="40" y="160" width="720" height="360" fill="#ffffff" stroke="#c9c9c2" stroke-width="1.5"/>
+  <rect x="40" y="160" width="720" height="40" fill="#ecece7" stroke="#c9c9c2" stroke-width="1.5"/>
+  <g fill="#b4b4ad" font-size="12" font-weight="600">
+    <text x="60" y="185">TAG</text><text x="200" y="185">BREED</text><text x="340" y="185">LOT</text><text x="450" y="185">SEX</text><text x="540" y="185">WEIGHT</text><text x="660" y="185">DOB</text>
+  </g>
+  <g stroke="#e4e4de" stroke-width="1">
+    <line x1="180" y1="160" x2="180" y2="520"/><line x1="320" y1="160" x2="320" y2="520"/><line x1="430" y1="160" x2="430" y2="520"/><line x1="520" y1="160" x2="520" y2="520"/><line x1="640" y1="160" x2="640" y2="520"/>
+  </g>
+  <g stroke="#deded8" stroke-width="1">
+    <line x1="40" y1="240" x2="760" y2="240"/><line x1="40" y1="280" x2="760" y2="280"/><line x1="40" y1="320" x2="760" y2="320"/><line x1="40" y1="360" x2="760" y2="360"/><line x1="40" y1="400" x2="760" y2="400"/><line x1="40" y1="440" x2="760" y2="440"/><line x1="40" y1="480" x2="760" y2="480"/>
+  </g>
+  <!-- flagged rows -->
+  <rect x="41" y="280" width="718" height="40" fill="#e9d3c6" opacity="0.5"/>
+  <rect x="520" y="280" width="120" height="40" fill="none" stroke="#c98b6b" stroke-width="2" stroke-dasharray="4 3"/>
+  <rect x="41" y="400" width="718" height="40" fill="#e9d3c6" opacity="0.5"/>
+  <rect x="40" y="400" width="140" height="40" fill="none" stroke="#c98b6b" stroke-width="2" stroke-dasharray="4 3"/>
+  <g fill="#cfcfc8">
+    <rect x="58" y="215" width="70" height="8" rx="4"/><rect x="200" y="215" width="70" height="8" rx="4"/><rect x="340" y="215" width="60" height="8" rx="4"/><rect x="450" y="215" width="40" height="8" rx="4"/><rect x="540" y="215" width="50" height="8" rx="4"/><rect x="660" y="215" width="50" height="8" rx="4"/>
+    <rect x="58" y="255" width="70" height="8" rx="4"/><rect x="200" y="255" width="70" height="8" rx="4"/><rect x="340" y="255" width="60" height="8" rx="4"/><rect x="450" y="255" width="40" height="8" rx="4"/><rect x="540" y="255" width="50" height="8" rx="4"/><rect x="660" y="255" width="50" height="8" rx="4"/>
+    <rect x="58" y="335" width="70" height="8" rx="4"/><rect x="200" y="335" width="70" height="8" rx="4"/><rect x="340" y="335" width="60" height="8" rx="4"/><rect x="450" y="335" width="40" height="8" rx="4"/><rect x="540" y="335" width="50" height="8" rx="4"/><rect x="660" y="335" width="50" height="8" rx="4"/>
+    <rect x="58" y="455" width="70" height="8" rx="4"/><rect x="200" y="455" width="70" height="8" rx="4"/><rect x="340" y="455" width="60" height="8" rx="4"/><rect x="450" y="455" width="40" height="8" rx="4"/><rect x="660" y="455" width="50" height="8" rx="4"/>
+  </g>
+  <!-- error markers -->
+  <text x="548" y="305" fill="#b07a5c" font-size="12" font-weight="700">999 ✕</text>
+  <text x="58" y="425" fill="#b07a5c" font-size="12" font-weight="700">dup tag ✕</text>
+</svg>

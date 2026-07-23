@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/SmoothScroll";
-import { Cursor } from "@/components/Cursor";
 import { Nav } from "@/components/Nav";
 import { PageTransition } from "@/components/PageTransition";
 
@@ -42,9 +41,8 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${display.variable} antialiased`}
     >
-      <body className="bg-background text-foreground has-cursor">
+      <body className="bg-background text-foreground">
         <SmoothScroll>
-          <Cursor />
           <Nav />
           <PageTransition>{children}</PageTransition>
         </SmoothScroll>

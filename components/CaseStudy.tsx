@@ -75,6 +75,10 @@ type GallerySection = {
   label: string;
   heading: string;
   body?: string[];
+  /** "stack" (default) = full-width stacked · "grid" = small tiles, natural ratio */
+  layout?: "stack" | "grid";
+  /** grid columns on desktop (2 or 3), defaults to 3 */
+  columns?: 2 | 3;
   images: Array<{ src: string; alt: string; caption?: string }>;
 };
 
@@ -98,6 +102,16 @@ type VideoSection = {
   caption?: string;
 };
 
+type OverviewSection = {
+  kind: "overview";
+  label: string;
+  heading: string;
+  /** usually three: My role · The challenge · The goal */
+  columns: { title: string; body: string }[];
+  /** optional footer line, e.g. "Product: Web · SaaS · Agtech" */
+  meta?: string;
+};
+
 type Section =
   | TextSection
   | ListSection
@@ -107,7 +121,8 @@ type Section =
   | DemoSection
   | GallerySection
   | BulkTableSection
-  | VideoSection;
+  | VideoSection
+  | OverviewSection;
 
 type Meta = {
   index: string;
@@ -285,6 +300,35 @@ function SectionBlock({ section }: { section: Section }) {
           );
         })()}
 
+        {section.kind === "overview" && (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 border-t border-border pt-8 md:pt-10">
+              {section.columns.map((col, i) => (
+                <motion.div
+                  key={col.title}
+                  initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+                  whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ duration: 0.9, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+                  className="flex flex-col gap-4"
+                >
+                  <span className="font-mono text-[12px] md:text-[13px] uppercase tracking-[0.22em] text-muted">
+                    {col.title}
+                  </span>
+                  <p className="text-base md:text-lg leading-relaxed text-muted">
+                    {col.body}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+            {section.meta && (
+              <p className="font-mono text-[12px] md:text-[13px] uppercase tracking-[0.18em] text-muted border-l border-border pl-4">
+                {section.meta}
+              </p>
+            )}
+          </>
+        )}
+
         {section.kind === "list" && (
           <>
             {section.body &&
@@ -371,20 +415,28 @@ function SectionBlock({ section }: { section: Section }) {
               section.body.map((p, i) => (
                 <p key={i} className="max-w-2xl text-base md:text-lg leading-relaxed text-muted">{p}</p>
               ))}
-            <div className="space-y-4 md:space-y-6">
+            <div
+              className={
+                section.layout === "grid"
+                  ? `grid grid-cols-1 sm:grid-cols-2 ${
+                      section.columns === 2 ? "md:grid-cols-2" : "md:grid-cols-3"
+                    } gap-4 md:gap-5 items-start`
+                  : "space-y-4 md:space-y-6"
+              }
+            >
               {section.images.map((img, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
                   whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   viewport={{ once: true, amount: 0.1 }}
-                  transition={{ duration: 0.85, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ duration: 0.85, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
                   className="w-full overflow-hidden border border-border"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={img.src} alt={img.alt} className="block w-full h-auto" />
                   {img.caption && (
-                    <p className="px-4 py-3 font-mono text-[12px] uppercase tracking-[0.18em] text-muted border-t border-border">
+                    <p className="px-4 py-3 font-mono text-[11px] md:text-[12px] uppercase tracking-[0.16em] text-muted border-t border-border">
                       {img.caption}
                     </p>
                   )}

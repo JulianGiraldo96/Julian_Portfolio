@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 560" width="800" height="560" font-family="'Helvetica Neue',Arial,sans-serif">
+  <rect width="800" height="560" fill="#f4f4f3"/>
+  <text x="40" y="56" fill="#9a9a95" font-size="13" letter-spacing="3" font-weight="600">TABLE MODE · v1</text>
+  <line x1="40" y1="72" x2="760" y2="72" stroke="#dcdcd6" stroke-width="1"/>
+  <!-- toolbar: paste + preset chips -->
+  <rect x="40" y="100" width="150" height="34" rx="6" fill="#ffffff" stroke="#b7b7af" stroke-width="1.5"/>
+  <text x="60" y="122" fill="#8a8a82" font-size="13" font-weight="600">⧉ Paste rows</text>
+  <rect x="206" y="100" width="118" height="34" rx="17" fill="#ececE7" stroke="#c9c9c2" stroke-width="1.5"/>
+  <text x="224" y="122" fill="#9a9a92" font-size="12">Breed: Brahman</text>
+  <rect x="336" y="100" width="92" height="34" rx="17" fill="#ececE7" stroke="#c9c9c2" stroke-width="1.5"/>
+  <text x="354" y="122" fill="#9a9a92" font-size="12">Lot: North</text>
+  <rect x="440" y="100" width="120" height="34" rx="17" fill="#ececE7" stroke="#c9c9c2" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="458" y="122" fill="#9a9a92" font-size="12">Fill down ↓</text>
+  <!-- table -->
+  <rect x="40" y="154" width="720" height="366" fill="#ffffff" stroke="#c9c9c2" stroke-width="1.5"/>
+  <rect x="40" y="154" width="720" height="40" fill="#ecece7" stroke="#c9c9c2" stroke-width="1.5"/>
+  <g fill="#b4b4ad" font-size="12" font-weight="600">
+    <text x="60" y="179">TAG</text><text x="200" y="179">BREED</text><text x="340" y="179">LOT</text><text x="450" y="179">SEX</text><text x="540" y="179">WEIGHT</text><text x="660" y="179">DOB</text>
+  </g>
+  <g stroke="#e4e4de" stroke-width="1">
+    <line x1="180" y1="154" x2="180" y2="520"/><line x1="320" y1="154" x2="320" y2="520"/><line x1="430" y1="154" x2="430" y2="520"/><line x1="520" y1="154" x2="520" y2="520"/><line x1="640" y1="154" x2="640" y2="520"/>
+  </g>
+  <g stroke="#deded8" stroke-width="1">
+    <line x1="40" y1="234" x2="760" y2="234"/><line x1="40" y1="274" x2="760" y2="274"/><line x1="40" y1="314" x2="760" y2="314"/><line x1="40" y1="354" x2="760" y2="354"/><line x1="40" y1="394" x2="760" y2="394"/><line x1="40" y1="434" x2="760" y2="434"/><line x1="40" y1="474" x2="760" y2="474"/>
+  </g>
+  <!-- selected column highlight (breed pre-filled) -->
+  <rect x="180" y="194" width="140" height="326" fill="#c9d8cf" opacity="0.4"/>
+  <g fill="#cfcfc8">
+    <rect x="58" y="209" width="70" height="8" rx="4"/><rect x="340" y="209" width="60" height="8" rx="4"/><rect x="450" y="209" width="40" height="8" rx="4"/><rect x="540" y="209" width="50" height="8" rx="4"/><rect x="660" y="209" width="50" height="8" rx="4"/>
+    <rect x="58" y="249" width="70" height="8" rx="4"/><rect x="340" y="249" width="60" height="8" rx="4"/><rect x="450" y="249" width="40" height="8" rx="4"/><rect x="540" y="249" width="50" height="8" rx="4"/><rect x="660" y="249" width="50" height="8" rx="4"/>
+    <rect x="58" y="289" width="70" height="8" rx="4"/><rect x="340" y="289" width="60" height="8" rx="4"/><rect x="450" y="289" width="40" height="8" rx="4"/><rect x="540" y="289" width="50" height="8" rx="4"/><rect x="660" y="289" width="50" height="8" rx="4"/>
+    <rect x="58" y="329" width="70" height="8" rx="4"/><rect x="340" y="329" width="60" height="8" rx="4"/><rect x="450" y="329" width="40" height="8" rx="4"/><rect x="540" y="329" width="50" height="8" rx="4"/><rect x="660" y="329" width="50" height="8" rx="4"/>
+  </g>
+  <g fill="#7f9b8b" font-size="12" font-weight="600">
+    <text x="200" y="217">Brahman</text><text x="200" y="257">Brahman</text><text x="200" y="297">Brahman</text><text x="200" y="337">Brahman</text>
+  </g>
+</svg>

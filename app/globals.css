@@ -48,10 +48,3 @@ html.lenis body {
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
-
-@media (hover: hover) and (pointer: fine) {
-  body.has-cursor,
-  body.has-cursor * {
-    cursor: none !important;
-  }
-}
