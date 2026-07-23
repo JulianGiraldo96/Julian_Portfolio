@@ -272,6 +272,14 @@ export default function TaurusPage() {
             "The table shipped as part of Bootcamp 4.0, TaurusWebs' technology-in-livestock event, in front of more than 300 ranchers. The company directors presented the new tools on stage and I was there to support the rollout, watching the feature I had designed meet the exact people whose working day it was meant to save.",
             "The moment that stuck with me wasn't the stage. It was afterwards, at the tables at night, ranchers hunched over laptops loading their own herds for the first time, pasting spreadsheets they had kept for years and watching a whole farm land in one pass. That is when an interaction stops being a design decision and becomes someone's afternoon back.",
           ],
+          image: {
+            src: "/projects/taurus/julian-event.jpg",
+            alt: "Julian at a TaurusWebs company event",
+            position: "right",
+            width: "55%",
+            align: "center",
+            caption: "The company's events are always a good time.",
+          },
         },
 
         {
@@ -306,8 +314,9 @@ export default function TaurusPage() {
             src: "/projects/taurus/fedegan-logo.png",
             alt: "Fedegán · Colombia's cattle ranchers' federation",
             position: "below",
-            width: "300px",
-            bg: "bg-white p-10 border border-border",
+            width: "240px",
+            align: "left",
+            bg: "bg-white px-6 py-5 border border-border",
             caption: "Fedegán · ~2,000 records a month, loaded through bulk",
           },
           stats: [

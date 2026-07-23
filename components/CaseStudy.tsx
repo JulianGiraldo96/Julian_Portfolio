@@ -18,6 +18,8 @@ type SectionImage = {
   caption?: string;
   bg?: string;
   width?: string;
+  /** horizontal alignment when a width is set, defaults to "center" */
+  align?: "left" | "center" | "right";
 };
 
 type TextSection = {
@@ -607,36 +609,48 @@ function StatGlyph({ icon }: { icon: StatIcon }) {
 function SectionMedia({ image }: { image: SectionImage }) {
   const beside = image.position === "right" || image.position === "left";
 
+  const alignClass =
+    image.align === "left"
+      ? "mr-auto"
+      : image.align === "right"
+        ? "ml-auto"
+        : "mx-auto";
+
   let content: React.ReactNode;
   if (beside) {
-    // Natural proportions — no fixed container, no letterboxing
+    // Natural proportions — no fixed container, no letterboxing.
+    // A width shrinks the image within its column and can be aligned.
     content = (
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src={image.src}
         alt={image.alt}
-        className="block w-full h-auto"
+        style={image.width ? { width: image.width, maxWidth: image.width } : undefined}
+        className={`block h-auto${image.width ? ` ${alignClass}` : " w-full"}`}
       />
     );
+  } else if (image.bg) {
+    // Below with a background card: the card takes the width, image fills it
+    content = (
+      <div
+        className={`${image.bg}${image.width ? ` ${alignClass}` : " w-full"}`}
+        style={image.width ? { width: image.width } : undefined}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={image.src} alt={image.alt} className="block w-full h-auto" />
+      </div>
+    );
   } else {
-    // Below: full width, bg wrapper hugs the image proportionally
-    const img = (
+    // Below, no card: image sizes to its own width and can be aligned
+    content = (
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src={image.src}
         alt={image.alt}
         style={image.width ? { width: image.width, maxWidth: image.width } : undefined}
-        className={`block h-auto${image.width ? " mx-auto" : " w-full"}`}
+        className={`block h-auto${image.width ? ` ${alignClass}` : " w-full"}`}
       />
     );
-    content = image.bg ? (
-      <div
-        className={`${image.bg}${image.width ? " mx-auto" : " w-full"}`}
-        style={image.width ? { width: image.width } : undefined}
-      >
-        {img}
-      </div>
-    ) : img;
   }
 
   return (
