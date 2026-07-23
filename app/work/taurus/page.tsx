@@ -60,6 +60,8 @@ export default function TaurusPage() {
             src: "/projects/taurus/product-fertilizacion.jpg",
             alt: "TaurusWebs Expert · digital fertilization module with nutrient tables",
             position: "right",
+            width: "55%",
+            align: "center",
             caption: "TaurusWebs Expert · one of the modules the loaded data feeds",
           },
         },
