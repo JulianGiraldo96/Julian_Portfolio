@@ -38,18 +38,19 @@ export type FolderProject = {
 const SPRING = { type: "spring" as const, stiffness: 210, damping: 26, mass: 0.9 };
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-/* Cards are dealt to alternating sides, in percentages of the stage so the
-   spread scales with the column, and they have to clear the screen at its
-   hover size. A phone leaves room beside it, so those cards travel sideways;
-   a desktop window fills the width, so its cards clear it above and below. */
-function deal(i: number, wide: boolean, phone: boolean) {
-  const side = i % 2 === 0 ? -1 : 1;
-  const tier = Math.floor(i / 2);
-  const rotate = -side * (8 + tier * 3);
-  if (phone) {
-    return { x: `${side * (wide ? 38 : 36)}%`, y: `${-19 + tier * 34}%`, rotate };
-  }
-  return { x: `${side * 30}%`, y: `${tier === 0 ? -46 : 46}%`, rotate };
+/* The screen is large enough to span the card, so the cards are dealt into the
+   strip the pocket vacates along the bottom, spread like a hand rather than a
+   row. Offsets are percentages of the stage, so the fan scales with the
+   column. */
+const fan = [
+  { x: "-30%", y: "42%", rotate: -7 },
+  { x: "0%", y: "46%", rotate: 2 },
+  { x: "30%", y: "42%", rotate: 8 },
+  { x: "-15%", y: "48%", rotate: -3 },
+];
+
+function deal(i: number) {
+  return fan[i % fan.length];
 }
 
 /* The folder front and its tab as a single path, so there is no seam where a
@@ -165,11 +166,15 @@ export function ProjectFolder({
   const path = folderPath(pocket.w, pocket.h);
   const stageState = launching || openInView ? "open" : "rest";
 
+  /* The window is deliberately larger than the folder: at rest it already
+     fills most of the card, and on hover it grows past the edges. Its layer is
+     unclipped so nothing cuts it off. It stays inside the card on small
+     screens, where there is no room either side before the viewport edge. */
   const screenSize = phone
-    ? "h-[68%]"
+    ? "h-[70%] md:h-[80%]"
     : wide
-      ? "w-[66%]"
-      : "w-[72%]";
+      ? "w-[82%] md:w-[88%]"
+      : "w-[84%] md:w-[94%]";
 
   return (
     <motion.li
@@ -196,7 +201,7 @@ export function ProjectFolder({
             style={{ backgroundColor: project.bg }}
           >
             {project.tags.map((tag, i) => {
-              const d = deal(i, wide, phone);
+              const d = deal(i);
               return (
                 <motion.div
                   key={tag}
@@ -232,9 +237,9 @@ export function ProjectFolder({
             <motion.div
               variants={{
                 rest: { scale: 1, y: "6%" },
-                open: { scale: 1.16, y: "-9%" },
+                open: { scale: 1.14, y: "-9%" },
               }}
-              animate={launching ? { scale: 1.26, y: "-15%" } : undefined}
+              animate={launching ? { scale: 1.24, y: "-15%" } : undefined}
               transition={launching ? { duration: 0.3, ease: EASE } : SPRING}
               className={`flex items-center justify-center ${screenSize}`}
             >
