@@ -68,6 +68,9 @@ export function Nav() {
     }
   };
 
+  // v2 draft ships its own header
+  if (pathname?.startsWith("/v2")) return null;
+
   return (
     <>
       <motion.header
