@@ -15,9 +15,8 @@ import { screens, type ScreenSlug } from "./ProductScreens";
 /* Each project is a folder. At rest a glass pocket, cut as one continuous
    shape with its tab, covers the lower half of the product screen. On hover or
    keyboard focus the pocket slides out of frame, the screen rises clear of it,
-   and the keyword cards are dealt one at a time from behind it. Clicking lifts
-   the screen out of the folder and expands it to fill the viewport before the
-   case study loads.
+   and the keyword cards are dealt one at a time from behind it. Clicking blurs
+   the page away and the case study arrives in its place.
    The keywords are decoration, aria-hidden: the same words sit in the meta line
    under every card. */
 
@@ -37,57 +36,8 @@ export type FolderProject = {
 
 const SPRING = { type: "spring" as const, stiffness: 210, damping: 26, mass: 0.9 };
 const EASE = [0.22, 1, 0.36, 1] as const;
-/* the curve iOS uses to open an app: slow to leave, long glide into place */
-const ZOOM_EASE = [0.32, 0.72, 0, 1] as const;
-const ZOOM_MS = 620;
-
-type Zoom = {
-  /* where the window starts, as an offset from where it ends */
-  x: number;
-  y: number;
-  scale: number;
-  /* the box it grows into */
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-};
-
-/* Measure the card's window and work out the transform that would place a
-   centred full size copy exactly on top of it. Animating that transform back
-   to identity is one continuous zoom out of the card, rather than a new panel
-   appearing in the middle of the screen. */
-function planZoom(rect: DOMRect, phone: boolean): Zoom {
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  const ratio = phone ? 170 / 320 : 360 / 240;
-
-  let width: number;
-  let height: number;
-  if (phone) {
-    height = Math.min(vh * 0.88, 940);
-    width = height * ratio;
-  } else {
-    width = Math.min(vw * 0.94, 1180);
-    height = width / ratio;
-    if (height > vh * 0.9) {
-      height = vh * 0.9;
-      width = height * ratio;
-    }
-  }
-
-  const left = (vw - width) / 2;
-  const top = (vh - height) / 2;
-  return {
-    width,
-    height,
-    left,
-    top,
-    scale: rect.width / width,
-    x: rect.left + rect.width / 2 - (left + width / 2),
-    y: rect.top + rect.height / 2 - (top + height / 2),
-  };
-}
+/* matches the .v2-leave keyframe in globals.css */
+const LEAVE_MS = 380;
 
 /* The screen is large enough to span the card, so the cards are dealt into the
    strip the pocket vacates along the bottom, spread like a hand rather than a
@@ -147,15 +97,12 @@ export function ProjectFolder({
   const prefersReduced = useReducedMotion();
   const stageRef = useRef<HTMLDivElement>(null);
   const pocketRef = useRef<HTMLDivElement>(null);
-  const screenRef = useRef<HTMLDivElement>(null);
   const [mouse, setMouse] = useState(false);
   const [pocket, setPocket] = useState({ w: 0, h: 0 });
-  const [zoom, setZoom] = useState<Zoom | null>(null);
-  const [zoomed, setZoomed] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const Screen = screens[project.slug];
   const phone = project.shape === "phone";
   const href = `/work/${project.slug}`;
-  const launching = zoom !== null;
 
   /* measure the pocket so the folder outline can be cut in real pixels */
   useEffect(() => {
@@ -201,29 +148,21 @@ export function ProjectFolder({
     cy.set(e.clientY - rect.top);
   };
 
-  /* Click zooms the window out of the card and into the viewport, and the case
-     study lands as that zoom settles. Modified clicks and reduced motion
-     navigate the ordinary way. */
+  /* Click blurs the page away and the case study arrives behind it. Modified
+     clicks and reduced motion navigate the ordinary way. */
   const onClick = useCallback(
     (e: React.MouseEvent) => {
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
       if (prefersReduced) return;
-      const rect = screenRef.current?.getBoundingClientRect();
-      if (!rect || rect.width < 2) return;
       e.preventDefault();
-      setZoom(planZoom(rect, phone));
-      /* The portal keeps this list item's motion context, and a motion child
-         that mounts under an already animated parent skips its `initial`. So
-         the copy mounts on top of the card and only then is told to grow: a
-         change of target always animates. */
-      requestAnimationFrame(() => requestAnimationFrame(() => setZoomed(true)));
-      window.setTimeout(() => router.push(href), ZOOM_MS - 60);
+      setLeaving(true);
+      window.setTimeout(() => router.push(href), LEAVE_MS - 60);
     },
-    [prefersReduced, router, href, phone],
+    [prefersReduced, router, href],
   );
 
   const path = folderPath(pocket.w, pocket.h);
-  const stageState = launching || openInView ? "open" : "rest";
+  const stageState = leaving || openInView ? "open" : "rest";
 
   /* The window is deliberately larger than the folder: at rest it already
      fills most of the card, and on hover it grows past the edges. Its layer is
@@ -267,9 +206,9 @@ export function ProjectFolder({
                   aria-hidden
                   variants={{
                     rest: { x: 0, y: "4%", opacity: 0 },
-                    open: { x: d.x, y: d.y, opacity: launching ? 0 : 1 },
+                    open: { x: d.x, y: d.y, opacity: 1 },
                   }}
-                  transition={{ ...SPRING, delay: launching ? 0 : 0.12 + i * 0.09 }}
+                  transition={{ ...SPRING, delay: 0.12 + i * 0.09 }}
                   className="pointer-events-none absolute inset-0 flex items-center justify-center"
                 >
                   <motion.span
@@ -277,7 +216,7 @@ export function ProjectFolder({
                       rest: { rotate: 0, scale: 0.82 },
                       open: { rotate: d.rotate, scale: 1 },
                     }}
-                    transition={{ ...SPRING, delay: launching ? 0 : 0.12 + i * 0.09 }}
+                    transition={{ ...SPRING, delay: 0.12 + i * 0.09 }}
                     className={`whitespace-nowrap rounded-xl px-3.5 py-2 text-[12px] font-medium shadow-[0_14px_30px_-16px_rgba(0,0,0,0.6)] ${
                       project.dark
                         ? "bg-white/[0.14] text-white/85 backdrop-blur-sm"
@@ -294,15 +233,11 @@ export function ProjectFolder({
           {/* layer 2: the screen, unclipped so it can lift past the folder */}
           <div className="absolute inset-0 z-10 flex items-center justify-center">
             <motion.div
-              ref={screenRef}
               variants={{
                 rest: { scale: 1, y: "6%" },
                 open: { scale: 1.14, y: "-9%" },
               }}
               transition={SPRING}
-              /* the zoomed copy takes over from here, so this one steps aside
-                 without moving anything in the layout */
-              style={{ visibility: launching ? "hidden" : "visible" }}
               className={`flex items-center justify-center ${screenSize}`}
             >
               <Screen className={phone ? "h-full w-auto" : "h-auto w-full"} />
@@ -388,7 +323,7 @@ export function ProjectFolder({
             style={prefersReduced || !mouse ? undefined : { x, y }}
             variants={{
               rest: { opacity: 0, scale: 0.8 },
-              open: { opacity: mouse && !prefersReduced && !launching ? 1 : 0, scale: 1 },
+              open: { opacity: mouse && !prefersReduced && !leaving ? 1 : 0, scale: 1 },
             }}
             transition={{ duration: 0.2, ease: EASE }}
             className="pointer-events-none absolute left-0 top-0 z-30 -translate-x-1/2 translate-y-5 whitespace-nowrap rounded-full bg-[#1d1d1f] px-4 py-2 text-[13px] font-medium text-white"
@@ -407,38 +342,21 @@ export function ProjectFolder({
         </div>
       </Link>
 
-      {/* The window grows out of the card and into the viewport, starting
-         exactly where the card left it. Rendered through a portal: the reveal
-         animation leaves a transform on this list item, and a transformed
-         ancestor would trap a fixed child. */}
-      {zoom &&
+      {/* On the way out the whole page blurs behind a veil, then the case study
+         takes its place. Portaled to the body so it covers the page rather
+         than this card, and driven by a CSS keyframe so it starts on its own
+         the moment it mounts. */}
+      {leaving &&
         typeof document !== "undefined" &&
         createPortal(
-          <div className="pointer-events-none fixed inset-0 z-[200] overflow-hidden">
-            <motion.div
-              animate={{ opacity: zoomed ? 1 : 0 }}
-              transition={{ duration: ZOOM_MS / 1600, ease: "linear" }}
-              className="absolute inset-0"
-              style={{ backgroundColor: project.dark ? "#0d0d0f" : "#ffffff" }}
-            />
-            <motion.div
-              className="absolute"
-              style={{
-                left: zoom.left,
-                top: zoom.top,
-                width: zoom.width,
-                height: zoom.height,
-              }}
-              animate={
-                zoomed
-                  ? { x: 0, y: 0, scale: 1 }
-                  : { x: zoom.x, y: zoom.y, scale: zoom.scale }
-              }
-              transition={{ duration: ZOOM_MS / 1000, ease: ZOOM_EASE }}
-            >
-              <Screen className="h-full w-full" />
-            </motion.div>
-          </div>,
+          <div
+            className="v2-leave fixed inset-0 z-[200] backdrop-blur-2xl backdrop-saturate-125"
+            style={{
+              backgroundColor: project.dark
+                ? "rgba(13,13,15,0.55)"
+                : "rgba(255,255,255,0.6)",
+            }}
+          />,
           document.body,
         )}
     </motion.li>

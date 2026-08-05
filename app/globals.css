@@ -40,6 +40,31 @@ body {
   color: var(--background);
 }
 
+/* Leaving a /v2 project: the page blurs away and the case study arrives.
+   Written as a keyframe so it runs on mount, with no state change to wait for. */
+/* Only the opacity is animated. The blur comes from a backdrop-filter utility
+   on the element: fading the element in fades its backdrop-filter in with it,
+   and a backdrop-filter declared inside a keyframe is dropped. */
+@keyframes v2-leave {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.v2-leave {
+  animation: v2-leave 380ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-leave {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 /* Visible keyboard focus everywhere, none for mouse clicks */
 :focus-visible {
   outline: 2px solid var(--foreground);
