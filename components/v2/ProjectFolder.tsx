@@ -37,6 +37,57 @@ export type FolderProject = {
 
 const SPRING = { type: "spring" as const, stiffness: 210, damping: 26, mass: 0.9 };
 const EASE = [0.22, 1, 0.36, 1] as const;
+/* the curve iOS uses to open an app: slow to leave, long glide into place */
+const ZOOM_EASE = [0.32, 0.72, 0, 1] as const;
+const ZOOM_MS = 620;
+
+type Zoom = {
+  /* where the window starts, as an offset from where it ends */
+  x: number;
+  y: number;
+  scale: number;
+  /* the box it grows into */
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+};
+
+/* Measure the card's window and work out the transform that would place a
+   centred full size copy exactly on top of it. Animating that transform back
+   to identity is one continuous zoom out of the card, rather than a new panel
+   appearing in the middle of the screen. */
+function planZoom(rect: DOMRect, phone: boolean): Zoom {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const ratio = phone ? 170 / 320 : 360 / 240;
+
+  let width: number;
+  let height: number;
+  if (phone) {
+    height = Math.min(vh * 0.88, 940);
+    width = height * ratio;
+  } else {
+    width = Math.min(vw * 0.94, 1180);
+    height = width / ratio;
+    if (height > vh * 0.9) {
+      height = vh * 0.9;
+      width = height * ratio;
+    }
+  }
+
+  const left = (vw - width) / 2;
+  const top = (vh - height) / 2;
+  return {
+    width,
+    height,
+    left,
+    top,
+    scale: rect.width / width,
+    x: rect.left + rect.width / 2 - (left + width / 2),
+    y: rect.top + rect.height / 2 - (top + height / 2),
+  };
+}
 
 /* The screen is large enough to span the card, so the cards are dealt into the
    strip the pocket vacates along the bottom, spread like a hand rather than a
@@ -96,13 +147,15 @@ export function ProjectFolder({
   const prefersReduced = useReducedMotion();
   const stageRef = useRef<HTMLDivElement>(null);
   const pocketRef = useRef<HTMLDivElement>(null);
+  const screenRef = useRef<HTMLDivElement>(null);
   const [mouse, setMouse] = useState(false);
   const [pocket, setPocket] = useState({ w: 0, h: 0 });
-  const [phase, setPhase] = useState<"idle" | "lift" | "full">("idle");
+  const [zoom, setZoom] = useState<Zoom | null>(null);
+  const [zoomed, setZoomed] = useState(false);
   const Screen = screens[project.slug];
   const phone = project.shape === "phone";
   const href = `/work/${project.slug}`;
-  const launching = phase !== "idle";
+  const launching = zoom !== null;
 
   /* measure the pocket so the folder outline can be cut in real pixels */
   useEffect(() => {
@@ -148,19 +201,25 @@ export function ProjectFolder({
     cy.set(e.clientY - rect.top);
   };
 
-  /* Click lifts the screen out of the folder, then expands it to the viewport
-     before the route changes. Modified clicks and reduced motion navigate the
-     ordinary way. */
+  /* Click zooms the window out of the card and into the viewport, and the case
+     study lands as that zoom settles. Modified clicks and reduced motion
+     navigate the ordinary way. */
   const onClick = useCallback(
     (e: React.MouseEvent) => {
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
       if (prefersReduced) return;
+      const rect = screenRef.current?.getBoundingClientRect();
+      if (!rect || rect.width < 2) return;
       e.preventDefault();
-      setPhase("lift");
-      window.setTimeout(() => setPhase("full"), 190);
-      window.setTimeout(() => router.push(href), 780);
+      setZoom(planZoom(rect, phone));
+      /* The portal keeps this list item's motion context, and a motion child
+         that mounts under an already animated parent skips its `initial`. So
+         the copy mounts on top of the card and only then is told to grow: a
+         change of target always animates. */
+      requestAnimationFrame(() => requestAnimationFrame(() => setZoomed(true)));
+      window.setTimeout(() => router.push(href), ZOOM_MS - 60);
     },
-    [prefersReduced, router, href],
+    [prefersReduced, router, href, phone],
   );
 
   const path = folderPath(pocket.w, pocket.h);
@@ -235,12 +294,15 @@ export function ProjectFolder({
           {/* layer 2: the screen, unclipped so it can lift past the folder */}
           <div className="absolute inset-0 z-10 flex items-center justify-center">
             <motion.div
+              ref={screenRef}
               variants={{
                 rest: { scale: 1, y: "6%" },
                 open: { scale: 1.14, y: "-9%" },
               }}
-              animate={launching ? { scale: 1.24, y: "-15%" } : undefined}
-              transition={launching ? { duration: 0.3, ease: EASE } : SPRING}
+              transition={SPRING}
+              /* the zoomed copy takes over from here, so this one steps aside
+                 without moving anything in the layout */
+              style={{ visibility: launching ? "hidden" : "visible" }}
               className={`flex items-center justify-center ${screenSize}`}
             >
               <Screen className={phone ? "h-full w-auto" : "h-auto w-full"} />
@@ -345,27 +407,36 @@ export function ProjectFolder({
         </div>
       </Link>
 
-      {/* Once the screen has cleared the folder it takes over the viewport.
-         Rendered through a portal: the reveal animation leaves a transform on
-         this list item, and a transformed ancestor would trap a fixed child. */}
-      {phase === "full" &&
+      {/* The window grows out of the card and into the viewport, starting
+         exactly where the card left it. Rendered through a portal: the reveal
+         animation leaves a transform on this list item, and a transformed
+         ancestor would trap a fixed child. */}
+      {zoom &&
         typeof document !== "undefined" &&
         createPortal(
-          <div className="fixed inset-0 z-[200] flex items-center justify-center overflow-hidden">
+          <div className="pointer-events-none fixed inset-0 z-[200] overflow-hidden">
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, ease: EASE }}
+              animate={{ opacity: zoomed ? 1 : 0 }}
+              transition={{ duration: ZOOM_MS / 1600, ease: "linear" }}
               className="absolute inset-0"
               style={{ backgroundColor: project.dark ? "#0d0d0f" : "#ffffff" }}
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.58, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.55, ease: EASE }}
-              className={`relative ${phone ? "h-[86vh]" : "w-[min(94vw,1180px)]"}`}
+              className="absolute"
+              style={{
+                left: zoom.left,
+                top: zoom.top,
+                width: zoom.width,
+                height: zoom.height,
+              }}
+              animate={
+                zoomed
+                  ? { x: 0, y: 0, scale: 1 }
+                  : { x: zoom.x, y: zoom.y, scale: zoom.scale }
+              }
+              transition={{ duration: ZOOM_MS / 1000, ease: ZOOM_EASE }}
             >
-              <Screen className={phone ? "h-full w-auto" : "h-auto w-full"} />
+              <Screen className="h-full w-full" />
             </motion.div>
           </div>,
           document.body,
