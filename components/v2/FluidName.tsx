@@ -330,9 +330,11 @@ export function FluidName({ text = "JulianG" }: { text?: string }) {
       className="relative h-[30vw] max-h-[420px] min-h-[170px] w-full select-none overflow-hidden"
     >
       {fallback ? (
+        // readable gray, not the fluid's near-white: the static version has to
+        // carry the name on its own, at 3:1 for large text
         <span
           aria-hidden
-          className="absolute inset-0 flex items-center justify-center whitespace-nowrap text-[19vw] font-bold leading-none tracking-[-0.03em] text-[#ECECEE]"
+          className="absolute inset-0 flex items-center justify-center whitespace-nowrap text-[19vw] font-bold leading-none tracking-[-0.03em] text-[#909096]"
         >
           {text}
         </span>

@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { MotionConfig, motion, useReducedMotion } from "motion/react";
+import { MotionConfig, motion } from "motion/react";
 import { useState } from "react";
 import { FluidName } from "./FluidName";
+import { ProjectStage, type StageProject } from "./ProjectStage";
 
 const EMAIL = "application@juliang.de";
 const LINKEDIN = "https://www.linkedin.com/in/julian-gr/";
@@ -18,21 +19,7 @@ const LABEL = "#6e6e73";
 
 const EASE = [0.25, 0.1, 0.25, 1] as const;
 
-type Project = {
-  slug: string;
-  title: string;
-  headline: string;
-  tags: string[];
-  year: string;
-  image: string;
-  alt: string;
-  span: string;
-  bg: string;
-  dark?: boolean;
-  imgPosition?: string;
-};
-
-const work: Project[] = [
+const work: StageProject[] = [
   {
     slug: "erp-duo",
     title: "ERP Duo",
@@ -41,7 +28,6 @@ const work: Project[] = [
     year: "2026",
     image: "/projects/erp-duo/cover.webp",
     alt: "ERP Duo dashboard with inventory charts, shown on a desktop monitor",
-    span: "md:col-span-7",
     bg: "#F0F0EB",
   },
   {
@@ -52,7 +38,6 @@ const work: Project[] = [
     year: "2025",
     image: "/projects/taurus/cover.webp",
     alt: "TaurusWebs bulk entry table for registering farm animals",
-    span: "md:col-span-5",
     bg: "#EAF1F9",
   },
   {
@@ -63,7 +48,6 @@ const work: Project[] = [
     year: "2025",
     image: "/projects/savee/cover.webp",
     alt: "Hand holding a phone with the glowing green Savee app splash screen",
-    span: "md:col-span-5",
     bg: "#ECF3ED",
   },
   {
@@ -74,7 +58,6 @@ const work: Project[] = [
     year: "2025",
     image: "/projects/meinerva/cover.webp",
     alt: "Meinerva wordmark in dotted lettering on a dark background",
-    span: "md:col-span-7",
     bg: "#101013",
     dark: true,
     imgPosition: "object-center",
@@ -156,12 +139,6 @@ export function V2Home() {
   return (
     <MotionConfig reducedMotion="user">
       <div className="bg-white font-sans" style={{ color: INK }}>
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-[#1d1d1f] focus:px-5 focus:py-3 focus:text-[14px] focus:text-white"
-        >
-          Skip to content
-        </a>
         <TopBar />
         <main id="main" className="mx-auto max-w-[1240px] px-5 md:px-8">
           <Intro />
@@ -177,6 +154,12 @@ export function V2Home() {
 function TopBar() {
   return (
     <header className="sticky top-0 z-50 border-b border-black/[0.06] bg-white/70 backdrop-blur-xl">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-[#1d1d1f] focus:px-5 focus:py-3 focus:text-[14px] focus:text-white"
+      >
+        Skip to content
+      </a>
       <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-3 md:px-8">
         <Link
           href="/v2"
@@ -307,91 +290,12 @@ function SelectedWork() {
       <SectionHeading id="work-heading" aside="4 projects">
         Selected work
       </SectionHeading>
-      <ul className="grid list-none grid-cols-1 gap-4 md:grid-cols-12 md:gap-5">
+      <ul className="grid list-none grid-cols-1 gap-10 md:grid-cols-12 md:gap-x-5 md:gap-y-16">
         {work.map((p, i) => (
-          <WorkCard key={p.slug} project={p} index={i} />
+          <ProjectStage key={p.slug} project={p} index={i} wide={i % 2 === 0} />
         ))}
       </ul>
     </section>
-  );
-}
-
-function WorkCard({ project, index }: { project: Project; index: number }) {
-  const prefersReduced = useReducedMotion();
-  const dark = project.dark;
-
-  return (
-    <motion.li
-      {...reveal}
-      transition={{ ...reveal.transition, delay: (index % 2) * 0.07 }}
-      className={`col-span-1 ${project.span}`}
-    >
-      <Link
-        href={`/work/${project.slug}`}
-        data-cursor-hover
-        className="group relative block h-[460px] overflow-hidden rounded-[28px] transition-shadow duration-300 hover:shadow-[0_20px_50px_-24px_rgba(0,0,0,0.25)] md:h-[540px]"
-        style={{ backgroundColor: project.bg }}
-      >
-        <motion.div
-          whileHover={prefersReduced ? undefined : { y: -4 }}
-          transition={{ duration: 0.25, ease: EASE }}
-          className="flex h-full flex-col p-6 md:p-9"
-        >
-          <ul className="relative z-10 flex list-none flex-wrap gap-1.5" aria-label="Project tags">
-            {project.tags.map((t) => (
-              <li
-                key={t}
-                className={`rounded-full px-3 py-1.5 text-[12px] font-medium tracking-[0.01em] ${
-                  dark ? "bg-white/12 text-white/90" : "bg-white/80"
-                }`}
-                style={dark ? undefined : { color: SECONDARY }}
-              >
-                {t}
-              </li>
-            ))}
-          </ul>
-
-          <h3
-            className={`relative z-10 mt-5 max-w-[16ch] text-[26px] font-medium leading-[1.12] tracking-[-0.02em] md:text-[32px] ${
-              dark ? "text-white" : ""
-            }`}
-          >
-            {project.headline}
-          </h3>
-
-          <p
-            className={`relative z-10 mt-3 text-[13px] font-medium tracking-[0.01em] ${
-              dark ? "text-white/70" : ""
-            }`}
-            style={dark ? undefined : { color: SECONDARY }}
-          >
-            {project.title} · {project.year}
-          </p>
-
-          <p className="relative z-10 mt-auto">
-            <span className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-white px-5 text-[14px] font-medium shadow-sm transition-transform duration-200 motion-safe:group-hover:translate-x-1" style={{ color: INK }}>
-              Read case study
-              <span aria-hidden>→</span>
-            </span>
-          </p>
-
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-6 bottom-0 h-[45%] translate-y-[12%] overflow-hidden rounded-t-2xl shadow-[0_24px_60px_-24px_rgba(0,0,0,0.45)] md:inset-x-9 md:h-[47%]"
-          >
-            <Image
-              src={project.image}
-              alt=""
-              fill
-              sizes="(min-width: 768px) 50vw, 100vw"
-              className={`object-cover ${project.imgPosition ?? "object-top"} transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.03]`}
-              priority={index < 2}
-            />
-          </div>
-          <span className="sr-only">{project.alt}</span>
-        </motion.div>
-      </Link>
-    </motion.li>
   );
 }
 
