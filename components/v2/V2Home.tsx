@@ -5,7 +5,7 @@ import Link from "next/link";
 import { MotionConfig, motion } from "motion/react";
 import { useState } from "react";
 import { FluidName } from "./FluidName";
-import { ProjectStage, type StageProject } from "./ProjectStage";
+import { ProjectFolder, type FolderProject } from "./ProjectFolder";
 
 const EMAIL = "application@juliang.de";
 const LINKEDIN = "https://www.linkedin.com/in/julian-gr/";
@@ -19,48 +19,47 @@ const LABEL = "#6e6e73";
 
 const EASE = [0.25, 0.1, 0.25, 1] as const;
 
-const work: StageProject[] = [
+const work: FolderProject[] = [
   {
     slug: "erp-duo",
     title: "ERP Duo",
     headline: "Nine locations. One system. Full control.",
-    tags: ["Web", "B2B", "ERP"],
+    tags: ["9 locations", "13 modules", "Shipped"],
     year: "2026",
-    image: "/projects/erp-duo/cover.webp",
-    alt: "ERP Duo dashboard with inventory charts, shown on a desktop monitor",
-    bg: "#F0F0EB",
+    shape: "desktop",
+    bg: "#EDEFEC",
+    glass: "rgba(255,255,255,0.55)",
   },
   {
     slug: "taurus",
     title: "TaurusWebs",
     headline: "From 6 hours to 1: digitizing a whole farm.",
-    tags: ["Web", "SaaS", "Agtech"],
+    tags: ["Bulk entry", "6h to 1h", "Agtech"],
     year: "2025",
-    image: "/projects/taurus/cover.webp",
-    alt: "TaurusWebs bulk entry table for registering farm animals",
-    bg: "#EAF1F9",
+    shape: "desktop",
+    bg: "#E7EEF8",
+    glass: "rgba(255,255,255,0.52)",
   },
   {
     slug: "savee",
     title: "Savee",
     headline: "Meal planning that makes food waste impossible.",
-    tags: ["Mobile", "UX", "Sustainability"],
+    tags: ["0 to 1", "Mobile", "Zero waste"],
     year: "2025",
-    image: "/projects/savee/cover.webp",
-    alt: "Hand holding a phone with the glowing green Savee app splash screen",
-    bg: "#ECF3ED",
+    shape: "phone",
+    bg: "#E9F2EB",
+    glass: "rgba(255,255,255,0.55)",
   },
   {
     slug: "meinerva",
     title: "Meinerva",
     headline: "Look before you're told: making experimental art legible.",
-    tags: ["Research", "UX", "Art & Tech"],
+    tags: ["Thesis", "Research", "Art & tech"],
     year: "2025",
-    image: "/projects/meinerva/cover.webp",
-    alt: "Meinerva wordmark in dotted lettering on a dark background",
-    bg: "#101013",
+    shape: "phone",
+    bg: "#17171A",
+    glass: "rgba(255,255,255,0.09)",
     dark: true,
-    imgPosition: "object-center",
   },
 ];
 
@@ -292,7 +291,7 @@ function SelectedWork() {
       </SectionHeading>
       <ul className="grid list-none grid-cols-1 gap-10 md:grid-cols-12 md:gap-x-5 md:gap-y-16">
         {work.map((p, i) => (
-          <ProjectStage key={p.slug} project={p} index={i} wide={i % 2 === 0} />
+          <ProjectFolder key={p.slug} project={p} index={i} wide={i % 2 === 0} />
         ))}
       </ul>
     </section>
