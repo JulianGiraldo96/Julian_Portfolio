@@ -11,6 +11,9 @@ declare global {
 
 export function SmoothScroll({ children }: { children: ReactNode }) {
   useEffect(() => {
+    // Respect reduced-motion: skip smooth scrolling entirely
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

@@ -2,12 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "motion/react";
+import { MotionConfig, motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
 
 const EMAIL = "application@juliang.de";
 const LINKEDIN = "https://www.linkedin.com/in/julian-gr/";
 const CV = "/Julian_Giraldo_CV.pdf";
+
+/* v2 palette: Apple-adjacent neutrals, AA+ contrast on white.
+   ink #1d1d1f · secondary #55555a (7:1) · label #6e6e73 (4.9:1, >=12px) */
+const INK = "#1d1d1f";
+const SECONDARY = "#55555a";
+const LABEL = "#6e6e73";
+
+const EASE = [0.25, 0.1, 0.25, 1] as const;
 
 type Project = {
   slug: string;
@@ -16,6 +24,7 @@ type Project = {
   tags: string[];
   year: string;
   image: string;
+  alt: string;
   span: string;
   bg: string;
   dark?: boolean;
@@ -30,8 +39,9 @@ const work: Project[] = [
     tags: ["Web", "B2B", "ERP"],
     year: "2026",
     image: "/projects/erp-duo/cover.webp",
+    alt: "ERP Duo dashboard with inventory charts, shown on a desktop monitor",
     span: "md:col-span-7",
-    bg: "#EDEDE8",
+    bg: "#F0F0EB",
   },
   {
     slug: "taurus",
@@ -40,8 +50,9 @@ const work: Project[] = [
     tags: ["Web", "SaaS", "Agtech"],
     year: "2025",
     image: "/projects/taurus/cover.webp",
+    alt: "TaurusWebs bulk entry table for registering farm animals",
     span: "md:col-span-5",
-    bg: "#E6EEFA",
+    bg: "#EAF1F9",
   },
   {
     slug: "savee",
@@ -50,8 +61,9 @@ const work: Project[] = [
     tags: ["Mobile", "UX", "Sustainability"],
     year: "2025",
     image: "/projects/savee/cover.webp",
+    alt: "Hand holding a phone with the glowing green Savee app splash screen",
     span: "md:col-span-5",
-    bg: "#E7F1E9",
+    bg: "#ECF3ED",
   },
   {
     slug: "meinerva",
@@ -60,8 +72,9 @@ const work: Project[] = [
     tags: ["Research", "UX", "Art & Tech"],
     year: "2025",
     image: "/projects/meinerva/cover.webp",
+    alt: "Meinerva wordmark in dotted lettering on a dark background",
     span: "md:col-span-7",
-    bg: "#151513",
+    bg: "#101013",
     dark: true,
     imgPosition: "object-center",
   },
@@ -72,6 +85,7 @@ type Tile = {
   span: string;
   ratio?: string;
   src?: string;
+  alt?: string;
   years?: string;
   caption: string;
   note: string;
@@ -83,6 +97,7 @@ const other: Tile[] = [
     span: "lg:col-span-2",
     ratio: "aspect-[4/1]",
     src: "/misc/linkedin-banner.png",
+    alt: "Typographic LinkedIn banner reading Julian Giraldo, Product Designer, Berlin",
     caption: "Personal identity",
     note: "Type driven banner and profile system.",
   },
@@ -98,6 +113,7 @@ const other: Tile[] = [
     span: "lg:col-span-1",
     ratio: "aspect-[4/3]",
     src: "/projects/taurus/julian-event.jpg",
+    alt: "Julian and a TaurusWebs teammate smiling on a rural road in Colombia",
     caption: "Field research, Colombia",
     note: "On site with the TaurusWebs team before touching a screen.",
   },
@@ -106,6 +122,7 @@ const other: Tile[] = [
     span: "lg:col-span-1",
     ratio: "aspect-[4/3]",
     src: "/projects/meinerva/app-icon.webp",
+    alt: "Meinerva app icon on an iPhone home screen",
     caption: "Meinerva, app icon",
     note: "Dotted lettering for the thesis project.",
   },
@@ -114,6 +131,7 @@ const other: Tile[] = [
     span: "lg:col-span-1",
     ratio: "aspect-[4/3]",
     src: "/projects/taurus/bootcamp-night.jpg",
+    alt: "Farmers gathered around laptops during an evening TaurusWebs bootcamp",
     caption: "Livestock bootcamp",
     note: "Field sessions with farmers, Colombia.",
   },
@@ -126,47 +144,66 @@ const other: Tile[] = [
   },
 ];
 
-const fadeUp = {
-  initial: { opacity: 0, y: 24 },
+const reveal = {
+  initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.15 },
-  transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const },
+  viewport: { once: true, amount: 0.2 },
+  transition: { duration: 0.6, ease: EASE },
 };
 
 export function V2Home() {
   return (
-    <main className="relative bg-background text-foreground">
-      <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+    <MotionConfig reducedMotion="user">
+      <div className="bg-white font-sans" style={{ color: INK }}>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-[#1d1d1f] focus:px-5 focus:py-3 focus:text-[14px] focus:text-white"
+        >
+          Skip to content
+        </a>
         <TopBar />
-        <Intro />
-        <SelectedWork />
-        <OtherThings />
+        <main id="main" className="mx-auto max-w-[1240px] px-5 md:px-8">
+          <Intro />
+          <SelectedWork />
+          <OtherThings />
+        </main>
         <Footer />
       </div>
-    </main>
+    </MotionConfig>
   );
 }
 
 function TopBar() {
   return (
-    <header className="flex flex-wrap items-center justify-between gap-4 py-6">
-      <Link
-        href="/v2"
-        className="font-mono text-[13px] uppercase tracking-[0.16em]"
-        data-cursor-hover
-      >
-        Julian Giraldo
-      </Link>
-      <nav className="flex items-center gap-2">
-        <Pill href={LINKEDIN}>linkedin</Pill>
-        <Pill href={`mailto:${EMAIL}`}>{EMAIL}</Pill>
-        <Pill href={CV}>cv</Pill>
-      </nav>
+    <header className="sticky top-0 z-50 border-b border-black/[0.06] bg-white/70 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-3 md:px-8">
+        <Link
+          href="/v2"
+          className="rounded-md py-2 text-[14px] font-medium tracking-[-0.01em]"
+        >
+          Julian Giraldo
+        </Link>
+        <nav aria-label="Contact links" className="flex items-center gap-2">
+          <Pill href={LINKEDIN}>LinkedIn</Pill>
+          <Pill href={`mailto:${EMAIL}`} shortLabel="Email">
+            {EMAIL}
+          </Pill>
+          <Pill href={CV}>CV</Pill>
+        </nav>
+      </div>
     </header>
   );
 }
 
-function Pill({ href, children }: { href: string; children: React.ReactNode }) {
+function Pill({
+  href,
+  children,
+  shortLabel,
+}: {
+  href: string;
+  children: React.ReactNode;
+  shortLabel?: string;
+}) {
   const external = href.startsWith("http") || href.endsWith(".pdf");
   return (
     <a
@@ -174,49 +211,59 @@ function Pill({ href, children }: { href: string; children: React.ReactNode }) {
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
       data-cursor-hover
-      className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-3.5 py-1.5 text-[12px] md:text-[13px] lowercase text-background transition-opacity hover:opacity-80"
+      className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-[#1d1d1f] px-4 text-[13px] text-white transition-[opacity,transform] duration-200 hover:opacity-85 motion-safe:active:scale-[0.97]"
     >
-      {children}
-      <span aria-hidden className="text-[0.85em] opacity-70">
-        ↗
-      </span>
+      {shortLabel ? (
+        <>
+          <span className="sm:hidden">{shortLabel}</span>
+          <span className="hidden sm:inline">{children}</span>
+        </>
+      ) : (
+        children
+      )}
+      {external && (
+        <>
+          <span aria-hidden className="text-[0.8em] opacity-60">
+            ↗
+          </span>
+          <span className="sr-only">(opens in new tab)</span>
+        </>
+      )}
     </a>
   );
 }
 
 function Intro() {
+  const rise = (delay: number) => ({
+    initial: { opacity: 0, y: 16 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.7, delay, ease: EASE },
+  });
+
   return (
-    <section className="pt-16 pb-14 md:pt-28 md:pb-24 text-center">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="flex flex-wrap items-center justify-center gap-2 mb-8"
-      >
-        <span className="inline-flex items-center gap-2 rounded-full bg-subtle px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/70">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
-          open for work
+    <section aria-label="Introduction" className="pb-16 pt-16 text-center md:pb-24 md:pt-28">
+      <motion.p {...rise(0)} className="flex flex-wrap items-center justify-center gap-2">
+        <span className="inline-flex items-center gap-2 rounded-full bg-[#F5F5F7] px-3.5 py-2 text-[12px] font-medium tracking-[0.02em] text-[#3a7d44]">
+          <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#3a7d44]" />
+          Open for work
         </span>
-        <span className="rounded-full bg-subtle px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/70">
+        <span className="rounded-full bg-[#F5F5F7] px-3.5 py-2 text-[12px] font-medium tracking-[0.02em]" style={{ color: SECONDARY }}>
           Berlin, DE
         </span>
-      </motion.div>
+      </motion.p>
 
       <motion.h1
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto max-w-[860px] font-display font-light tracking-[-0.025em] leading-[1.16] text-[clamp(1.7rem,3.7vw,3rem)]"
+        {...rise(0.08)}
+        className="mx-auto mt-8 max-w-[820px] text-balance text-[clamp(1.9rem,4.2vw,3.35rem)] font-medium leading-[1.12] tracking-[-0.025em]"
       >
-        Product Designer in Berlin. I work on B2B SaaS, internal tools and data
-        heavy interfaces, where dense information has to feel calm and usable.
+        Product Designer in Berlin. I make dense, data heavy products feel calm
+        and usable.
       </motion.h1>
 
       <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.25 }}
-        className="mx-auto mt-7 max-w-[560px] text-[15px] md:text-[17px] leading-relaxed text-muted"
+        {...rise(0.16)}
+        className="mx-auto mt-6 max-w-[560px] text-[16px] leading-relaxed md:text-[18px]"
+        style={{ color: SECONDARY }}
       >
         4 years in product, 8+ years designing. I design products I also use
         myself: the ERP I built at Duo Sicilian Ice Cream runs daily across nine
@@ -226,142 +273,178 @@ function Intro() {
   );
 }
 
+function SectionHeading({
+  id,
+  children,
+  aside,
+}: {
+  id: string;
+  children: React.ReactNode;
+  aside?: string;
+}) {
+  return (
+    <div className="mb-6 flex items-baseline justify-between gap-4">
+      <h2
+        id={id}
+        className="font-mono text-[12px] font-medium uppercase tracking-[0.18em]"
+        style={{ color: INK }}
+      >
+        {children}
+      </h2>
+      {aside && (
+        <span className="font-mono text-[12px] uppercase tracking-[0.18em]" style={{ color: LABEL }}>
+          {aside}
+        </span>
+      )}
+    </div>
+  );
+}
+
 function SelectedWork() {
   return (
-    <section id="work" className="pb-8">
-      <SectionLabel left="selected work" right={`${work.length} projects`} />
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-5">
+    <section id="work" aria-labelledby="work-heading" className="pb-6">
+      <SectionHeading id="work-heading" aside="4 projects">
+        Selected work
+      </SectionHeading>
+      <ul className="grid list-none grid-cols-1 gap-4 md:grid-cols-12 md:gap-5">
         {work.map((p, i) => (
           <WorkCard key={p.slug} project={p} index={i} />
         ))}
-      </div>
+      </ul>
     </section>
   );
 }
 
 function WorkCard({ project, index }: { project: Project; index: number }) {
+  const prefersReduced = useReducedMotion();
   const dark = project.dark;
+
   return (
-    <motion.article
-      {...fadeUp}
-      transition={{ ...fadeUp.transition, delay: (index % 2) * 0.06 }}
-      className={`${project.span} col-span-1`}
+    <motion.li
+      {...reveal}
+      transition={{ ...reveal.transition, delay: (index % 2) * 0.07 }}
+      className={`col-span-1 ${project.span}`}
     >
       <Link
         href={`/work/${project.slug}`}
         data-cursor-hover
-        className="group relative flex h-[440px] md:h-[520px] flex-col overflow-hidden rounded-[28px] p-6 md:p-9"
+        className="group relative block h-[460px] overflow-hidden rounded-[28px] transition-shadow duration-300 hover:shadow-[0_20px_50px_-24px_rgba(0,0,0,0.25)] md:h-[540px]"
         style={{ backgroundColor: project.bg }}
       >
-        <div className="relative z-10 flex flex-wrap gap-1.5">
-          {project.tags.map((t) => (
-            <span
-              key={t}
-              className={`rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${
-                dark ? "bg-white/12 text-white/75" : "bg-white/70 text-foreground/60"
-              }`}
-            >
-              {t}
+        <motion.div
+          whileHover={prefersReduced ? undefined : { y: -4 }}
+          transition={{ duration: 0.25, ease: EASE }}
+          className="flex h-full flex-col p-6 md:p-9"
+        >
+          <ul className="relative z-10 flex list-none flex-wrap gap-1.5" aria-label="Project tags">
+            {project.tags.map((t) => (
+              <li
+                key={t}
+                className={`rounded-full px-3 py-1.5 text-[12px] font-medium tracking-[0.01em] ${
+                  dark ? "bg-white/12 text-white/90" : "bg-white/80"
+                }`}
+                style={dark ? undefined : { color: SECONDARY }}
+              >
+                {t}
+              </li>
+            ))}
+          </ul>
+
+          <h3
+            className={`relative z-10 mt-5 max-w-[16ch] text-[26px] font-medium leading-[1.12] tracking-[-0.02em] md:text-[32px] ${
+              dark ? "text-white" : ""
+            }`}
+          >
+            {project.headline}
+          </h3>
+
+          <p
+            className={`relative z-10 mt-3 text-[13px] font-medium tracking-[0.01em] ${
+              dark ? "text-white/70" : ""
+            }`}
+            style={dark ? undefined : { color: SECONDARY }}
+          >
+            {project.title} · {project.year}
+          </p>
+
+          <p className="relative z-10 mt-auto">
+            <span className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-white px-5 text-[14px] font-medium shadow-sm transition-transform duration-200 motion-safe:group-hover:translate-x-1" style={{ color: INK }}>
+              Read case study
+              <span aria-hidden>→</span>
             </span>
-          ))}
-        </div>
+          </p>
 
-        <h3
-          className={`relative z-10 mt-5 max-w-[15ch] font-display font-light tracking-[-0.025em] leading-[1.08] text-[26px] md:text-[34px] ${
-            dark ? "text-white" : "text-foreground"
-          }`}
-        >
-          {project.headline}
-        </h3>
-
-        <span
-          className={`relative z-10 mt-4 font-mono text-[11px] uppercase tracking-[0.16em] ${
-            dark ? "text-white/50" : "text-foreground/45"
-          }`}
-        >
-          {project.title} · {project.year}
-        </span>
-
-        <div className="relative z-10 mt-auto">
-          <span className="inline-flex items-center gap-2 rounded-full bg-background px-4 py-2 text-[13px] text-foreground shadow-sm transition-transform duration-300 group-hover:translate-x-1">
-            Read
-            <span aria-hidden>→</span>
-          </span>
-        </div>
-
-        <div className="pointer-events-none absolute inset-x-6 bottom-0 h-[46%] md:inset-x-9 md:h-[48%] translate-y-[14%] overflow-hidden rounded-t-2xl shadow-[0_24px_60px_-24px_rgba(0,0,0,0.45)]">
-          <Image
-            src={project.image}
-            alt={project.title}
-            fill
-            sizes="(min-width: 768px) 50vw, 100vw"
-            className={`object-cover ${project.imgPosition ?? "object-top"} transition-transform duration-700 ease-out group-hover:scale-[1.04]`}
-            priority={index < 2}
-          />
-        </div>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-6 bottom-0 h-[45%] translate-y-[12%] overflow-hidden rounded-t-2xl shadow-[0_24px_60px_-24px_rgba(0,0,0,0.45)] md:inset-x-9 md:h-[47%]"
+          >
+            <Image
+              src={project.image}
+              alt=""
+              fill
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className={`object-cover ${project.imgPosition ?? "object-top"} transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.03]`}
+              priority={index < 2}
+            />
+          </div>
+          <span className="sr-only">{project.alt}</span>
+        </motion.div>
       </Link>
-    </motion.article>
+    </motion.li>
   );
 }
 
 function OtherThings() {
   return (
-    <section id="other" className="pt-20 md:pt-28">
-      <SectionLabel left="design and other things" right="visual work" />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+    <section id="other" aria-labelledby="other-heading" className="pt-16 md:pt-24">
+      <SectionHeading id="other-heading" aside="visual work">
+        Design and other things
+      </SectionHeading>
+      <ul className="grid list-none grid-cols-1 gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3">
         {other.map((tile, i) => (
-          <motion.div
+          <motion.li
             key={tile.caption}
-            {...fadeUp}
-            transition={{ ...fadeUp.transition, delay: (i % 3) * 0.05 }}
+            {...reveal}
+            transition={{ ...reveal.transition, delay: (i % 3) * 0.06 }}
             className={`col-span-1 ${tile.span}`}
           >
             {tile.kind === "image" ? (
-              <figure className="group flex h-full flex-col overflow-hidden rounded-[22px] bg-subtle">
-                <div className={`relative w-full ${tile.ratio}`}>
+              <figure className="group flex h-full flex-col overflow-hidden rounded-[24px] bg-[#F5F5F7]">
+                <div className={`relative w-full overflow-hidden ${tile.ratio}`}>
                   <Image
                     src={tile.src as string}
-                    alt={tile.caption}
+                    alt={tile.alt as string}
                     fill
                     sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                    className="object-cover transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.03]"
                   />
                 </div>
                 <figcaption className="px-5 py-4">
-                  <span className="block font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/70">
+                  <span className="block text-[14px] font-medium tracking-[-0.01em]">
                     {tile.caption}
                   </span>
-                  <span className="mt-1.5 block text-[14px] leading-relaxed text-muted">
+                  <span className="mt-1 block text-[14px] leading-relaxed" style={{ color: SECONDARY }}>
                     {tile.note}
                   </span>
                 </figcaption>
               </figure>
             ) : (
-              <div className="flex h-full flex-col rounded-[22px] bg-subtle px-6 py-7">
-                <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground/70">
+              <div className="flex h-full flex-col rounded-[24px] bg-[#F5F5F7] px-6 py-7">
+                <span className="font-mono text-[12px] uppercase tracking-[0.16em]" style={{ color: LABEL }}>
                   {tile.years}
                 </span>
-                <h3 className="mt-3 font-display font-light text-[20px] md:text-[23px] leading-[1.15] tracking-[-0.02em]">
+                <h3 className="mt-3 text-[19px] font-medium leading-[1.2] tracking-[-0.015em] md:text-[21px]">
                   {tile.caption}
                 </h3>
-                <p className="mt-3 max-w-[60ch] text-[14px] leading-relaxed text-muted">
+                <p className="mt-2.5 max-w-[62ch] text-[14px] leading-relaxed" style={{ color: SECONDARY }}>
                   {tile.note}
                 </p>
               </div>
             )}
-          </motion.div>
+          </motion.li>
         ))}
-      </div>
+      </ul>
     </section>
-  );
-}
-
-function SectionLabel({ left, right }: { left: string; right: string }) {
-  return (
-    <div className="mb-5 flex items-end justify-between font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
-      <span className="text-foreground">{left}</span>
-      <span>{right}</span>
-    </div>
   );
 }
 
@@ -372,26 +455,26 @@ function Footer() {
     try {
       await navigator.clipboard.writeText(EMAIL);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1600);
+      setTimeout(() => setCopied(false), 2000);
     } catch {
       setCopied(false);
     }
   };
 
   return (
-    <footer id="contact" className="pt-20 pb-14 md:pt-28 md:pb-20">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+    <footer aria-labelledby="contact-heading" className="mx-auto max-w-[1240px] px-5 pb-14 pt-20 md:px-8 md:pb-20 md:pt-28">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
         <div className="md:col-span-5">
-          <h2 className="font-display font-light text-[28px] md:text-[36px] tracking-[-0.025em] leading-[1.1]">
+          <h2 id="contact-heading" className="text-[28px] font-medium tracking-[-0.02em] md:text-[34px]">
             Get in touch
           </h2>
-          <p className="mt-4 max-w-[36ch] text-[15px] leading-relaxed text-muted">
+          <p className="mt-4 max-w-[38ch] text-[15px] leading-relaxed" style={{ color: SECONDARY }}>
             Open to Product Design roles in Berlin or remote. Happy to walk you
             through any of these projects.
           </p>
         </div>
 
-        <div className="md:col-span-7 md:max-w-[460px] md:justify-self-end w-full space-y-2">
+        <div className="w-full space-y-2 md:col-span-7 md:max-w-[460px] md:justify-self-end">
           <LinkRow href={CV} label="CV, PDF" />
           <LinkRow href={LINKEDIN} label="LinkedIn" />
           <div className="flex items-center gap-2">
@@ -400,19 +483,23 @@ function Footer() {
               type="button"
               onClick={copy}
               data-cursor-hover
-              aria-label="Copy email address"
-              className="shrink-0 rounded-2xl border border-border px-4 py-3.5 text-[13px] text-muted transition-colors hover:border-foreground hover:text-foreground"
+              className="min-h-[48px] shrink-0 rounded-2xl border border-black/[0.12] px-4 text-[13px] font-medium transition-colors duration-200 hover:border-black/40 motion-safe:active:scale-[0.97]"
+              style={{ color: SECONDARY }}
             >
-              {copied ? "copied" : "copy"}
+              {copied ? "Copied" : "Copy"}
+              <span className="sr-only"> email address</span>
             </button>
+            <span aria-live="polite" className="sr-only">
+              {copied ? "Email address copied to clipboard" : ""}
+            </span>
           </div>
           <LinkRow href="/" label="Portfolio v1" />
         </div>
       </div>
 
-      <div className="mt-14 flex flex-col gap-2 border-t border-border pt-6 font-mono text-[11px] uppercase tracking-[0.18em] text-muted md:flex-row md:items-center md:justify-between">
-        <span>© {new Date().getFullYear()} · julian giraldo</span>
-        <span>berlin · 52.5200°N 13.4050°E</span>
+      <div className="mt-14 flex flex-col gap-2 border-t border-black/[0.06] pt-6 font-mono text-[12px] uppercase tracking-[0.16em] md:flex-row md:items-center md:justify-between" style={{ color: LABEL }}>
+        <span>© {new Date().getFullYear()} · Julian Giraldo</span>
+        <span>Berlin · 52.5200°N 13.4050°E</span>
       </div>
     </footer>
   );
@@ -434,10 +521,11 @@ function LinkRow({
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
       data-cursor-hover
-      className={`group flex items-center justify-between gap-3 rounded-2xl bg-subtle px-5 py-3.5 text-[14px] transition-colors hover:bg-foreground hover:text-background ${className}`}
+      className={`group flex min-h-[48px] items-center justify-between gap-3 rounded-2xl bg-[#F5F5F7] px-5 text-[14px] font-medium transition-colors duration-200 hover:bg-[#1d1d1f] hover:text-white motion-safe:active:scale-[0.99] ${className}`}
     >
       <span className="truncate">{label}</span>
-      <span aria-hidden className="opacity-50 transition-transform duration-300 group-hover:translate-x-0.5">
+      {external && <span className="sr-only">(opens in new tab)</span>}
+      <span aria-hidden className="opacity-50 transition-transform duration-200 motion-safe:group-hover:translate-x-0.5">
         ↗
       </span>
     </a>

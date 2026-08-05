@@ -53,10 +53,14 @@ export function Nav() {
     const scroll = () => {
       const lenis = window.__lenis;
       if (hash === "#top") {
-        lenis?.scrollTo(0);
+        if (lenis) lenis.scrollTo(0);
+        else window.scrollTo(0, 0);
       } else {
         const el = document.querySelector(hash);
-        if (el) lenis?.scrollTo(el as HTMLElement, { offset: -20 });
+        if (el) {
+          if (lenis) lenis.scrollTo(el as HTMLElement, { offset: -20 });
+          else (el as HTMLElement).scrollIntoView();
+        }
       }
       history.replaceState(null, "", hash === "#top" ? "/" : hash);
     };
