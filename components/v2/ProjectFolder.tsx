@@ -12,11 +12,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { screens, type ScreenSlug } from "./ProductScreens";
 
-/* Each project is a folder. At rest a glass pocket, cut as one continuous
-   shape with its tab, covers the lower half of the product screen. On hover or
-   keyboard focus the pocket slides out of frame, the screen rises clear of it,
-   and the keyword cards are dealt one at a time from behind it. Clicking blurs
-   the page away and the case study arrives in its place.
+/* Each project card is a tinted panel with the product screen sitting on it,
+   nothing in front of it. On hover or keyboard focus the screen rises and
+   grows past the card's edges, and the keyword cards are dealt one at a time
+   from behind it along the bottom. Clicking blurs the page away and the case
+   study arrives in its place.
    The keywords are decoration, aria-hidden: the same words sit in the meta line
    under every card. */
 
@@ -26,11 +26,10 @@ export type FolderProject = {
   headline: string;
   tags: string[];
   year: string;
-  /* phones are sized by height, desktop windows by width, so both sit inside
-     the folder at the same visual weight */
+  /* phones are sized by height, desktop windows by width, so both sit on the
+     card at the same visual weight */
   shape: "phone" | "desktop";
   bg: string;
-  glass: string;
   dark?: boolean;
 };
 
@@ -40,9 +39,8 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const LEAVE_MS = 380;
 
 /* The screen is large enough to span the card, so the cards are dealt into the
-   strip the pocket vacates along the bottom, spread like a hand rather than a
-   row. Offsets are percentages of the stage, so the fan scales with the
-   column. */
+   strip below it, spread like a hand rather than a row. Offsets are
+   percentages of the stage, so the fan scales with the column. */
 const fan = [
   { x: "-30%", y: "42%", rotate: -7 },
   { x: "0%", y: "46%", rotate: 2 },
@@ -52,36 +50,6 @@ const fan = [
 
 function deal(i: number) {
   return fan[i % fan.length];
-}
-
-/* The folder front and its tab as a single path, so there is no seam where a
-   separate tab would sit on top. Built in pixels from the measured pocket, so
-   the corner radii stay round at any column width. */
-function folderPath(w: number, h: number) {
-  if (w < 2 || h < 2) return "";
-  const R = 30; // outer top corners
-  const tabW = Math.min(150, w * 0.3);
-  const tabX = Math.max(R + 8, w * 0.07);
-  const tabH = Math.min(24, h * 0.11);
-  const r = 9; // tab corners
-  const s = 14; // width of the sweep between body and tab
-  return [
-    `M0 ${h}`,
-    `L0 ${tabH + R}`,
-    `Q0 ${tabH} ${R} ${tabH}`,
-    `L${tabX - s} ${tabH}`,
-    `C${tabX - s / 2} ${tabH} ${tabX} ${tabH - 1} ${tabX} ${tabH - r - 2}`,
-    `L${tabX} ${r}`,
-    `Q${tabX} 0 ${tabX + r} 0`,
-    `L${tabX + tabW - r} 0`,
-    `Q${tabX + tabW} 0 ${tabX + tabW} ${r}`,
-    `L${tabX + tabW} ${tabH - r - 2}`,
-    `C${tabX + tabW} ${tabH - 1} ${tabX + tabW + s / 2} ${tabH} ${tabX + tabW + s} ${tabH}`,
-    `L${w - R} ${tabH}`,
-    `Q${w} ${tabH} ${w} ${tabH + R}`,
-    `L${w} ${h}`,
-    "Z",
-  ].join(" ");
 }
 
 export function ProjectFolder({
@@ -96,32 +64,14 @@ export function ProjectFolder({
   const router = useRouter();
   const prefersReduced = useReducedMotion();
   const stageRef = useRef<HTMLDivElement>(null);
-  const pocketRef = useRef<HTMLDivElement>(null);
   const [mouse, setMouse] = useState(false);
-  const [pocket, setPocket] = useState({ w: 0, h: 0 });
   const [leaving, setLeaving] = useState(false);
   const Screen = screens[project.slug];
   const phone = project.shape === "phone";
   const href = `/work/${project.slug}`;
 
-  /* measure the pocket so the folder outline can be cut in real pixels */
-  useEffect(() => {
-    const el = pocketRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([entry]) => {
-      const { width, height } = entry.contentRect;
-      setPocket((p) =>
-        Math.abs(p.w - width) < 1 && Math.abs(p.h - height) < 1
-          ? p
-          : { w: width, h: height },
-      );
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  /* Touch has no hover, so on those devices the folder opens itself once the
-     card is well inside the viewport. Pointer devices keep the hover reveal. */
+  /* Touch has no hover, so on those devices the card opens itself once it is
+     well inside the viewport. Pointer devices keep the hover reveal. */
   const [openInView, setOpenInView] = useState(false);
   useEffect(() => {
     const el = stageRef.current;
@@ -161,13 +111,12 @@ export function ProjectFolder({
     [prefersReduced, router, href],
   );
 
-  const path = folderPath(pocket.w, pocket.h);
   const stageState = leaving || openInView ? "open" : "rest";
 
-  /* The window is deliberately larger than the folder: at rest it already
-     fills most of the card, and on hover it grows past the edges. Its layer is
-     unclipped so nothing cuts it off. It stays inside the card on small
-     screens, where there is no room either side before the viewport edge. */
+  /* At rest the window already fills most of the card, and on hover it grows
+     past the edges. Its layer is unclipped so nothing cuts it off. It stays
+     inside the card on small screens, where there is no room either side
+     before the viewport edge. */
   const screenSize = phone
     ? "h-[70%] md:h-[80%]"
     : wide
@@ -230,90 +179,17 @@ export function ProjectFolder({
             })}
           </div>
 
-          {/* layer 2: the screen, unclipped so it can lift past the folder */}
+          {/* layer 2: the screen, unclipped so it can grow past the card */}
           <div className="absolute inset-0 z-10 flex items-center justify-center">
             <motion.div
               variants={{
-                rest: { scale: 1, y: "6%" },
-                open: { scale: 1.14, y: "-9%" },
+                rest: { scale: 1, y: "0%" },
+                open: { scale: 1.14, y: "-7%" },
               }}
               transition={SPRING}
               className={`flex items-center justify-center ${screenSize}`}
             >
               <Screen className={phone ? "h-full w-auto" : "h-auto w-full"} />
-            </motion.div>
-          </div>
-
-          {/* layer 3: the glass pocket, above the screen, clipped to the card */}
-          <div className="pointer-events-none absolute inset-0 z-20 overflow-hidden rounded-[28px]">
-            <motion.div
-              ref={pocketRef}
-              aria-hidden
-              variants={{ rest: { y: "0%" }, open: { y: "88%" } }}
-              transition={{ ...SPRING, damping: 28 }}
-              className="absolute inset-x-0 bottom-[-10%] h-[57%]"
-            >
-              {/* the glass itself: one shape, blurred and tinted */}
-              <div
-                className="absolute inset-0 backdrop-blur-2xl backdrop-saturate-[1.7]"
-                style={{
-                  clipPath: path ? `path("${path}")` : undefined,
-                  background: project.dark
-                    ? "linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.07) 42%, rgba(255,255,255,0.04) 100%)"
-                    : "linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(255,255,255,0.52) 42%, rgba(255,255,255,0.42) 100%)",
-                }}
-              />
-              {/* the outline and the sheen, drawn on the same path */}
-              {path && (
-                <svg
-                  className="absolute inset-0 h-full w-full"
-                  viewBox={`0 0 ${pocket.w} ${pocket.h}`}
-                  fill="none"
-                >
-                  <defs>
-                    <linearGradient id={`edge-${project.slug}`} x1="0" y1="0" x2="0" y2="1">
-                      <stop
-                        offset="0"
-                        stopColor="#fff"
-                        stopOpacity={project.dark ? 0.42 : 0.95}
-                      />
-                      <stop
-                        offset="0.55"
-                        stopColor="#fff"
-                        stopOpacity={project.dark ? 0.1 : 0.35}
-                      />
-                      <stop offset="1" stopColor="#fff" stopOpacity="0" />
-                    </linearGradient>
-                    <linearGradient id={`sheen-${project.slug}`} x1="0" y1="0" x2="1" y2="0.6">
-                      <stop offset="0" stopColor="#fff" stopOpacity="0" />
-                      <stop
-                        offset="0.45"
-                        stopColor="#fff"
-                        stopOpacity={project.dark ? 0.07 : 0.5}
-                      />
-                      <stop offset="1" stopColor="#fff" stopOpacity="0" />
-                    </linearGradient>
-                    <clipPath id={`clip-${project.slug}`}>
-                      <path d={path} />
-                    </clipPath>
-                  </defs>
-                  <g clipPath={`url(#clip-${project.slug})`}>
-                    <rect
-                      x="0"
-                      y="0"
-                      width={pocket.w}
-                      height={Math.max(pocket.h * 0.5, 1)}
-                      fill={`url(#sheen-${project.slug})`}
-                    />
-                  </g>
-                  <path
-                    d={path}
-                    stroke={`url(#edge-${project.slug})`}
-                    strokeWidth="1.4"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                </svg>
-              )}
             </motion.div>
           </div>
 

@@ -28,7 +28,6 @@ const work: FolderProject[] = [
     year: "2026",
     shape: "desktop",
     bg: "#EDEFEC",
-    glass: "rgba(255,255,255,0.55)",
   },
   {
     slug: "taurus",
@@ -38,7 +37,6 @@ const work: FolderProject[] = [
     year: "2025",
     shape: "desktop",
     bg: "#E7EEF8",
-    glass: "rgba(255,255,255,0.52)",
   },
   {
     slug: "savee",
@@ -48,7 +46,6 @@ const work: FolderProject[] = [
     year: "2025",
     shape: "phone",
     bg: "#E9F2EB",
-    glass: "rgba(255,255,255,0.55)",
   },
   {
     slug: "meinerva",
@@ -58,7 +55,6 @@ const work: FolderProject[] = [
     year: "2025",
     shape: "phone",
     bg: "#17171A",
-    glass: "rgba(255,255,255,0.09)",
     dark: true,
   },
 ];
