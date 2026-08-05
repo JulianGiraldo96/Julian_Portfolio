@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MotionConfig, motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
+import { FluidName } from "./FluidName";
 
 const EMAIL = "application@juliang.de";
 const LINKEDIN = "https://www.linkedin.com/in/julian-gr/";
@@ -497,7 +498,11 @@ function Footer() {
         </div>
       </div>
 
-      <div className="mt-14 flex flex-col gap-2 border-t border-black/[0.06] pt-6 font-mono text-[12px] uppercase tracking-[0.16em] md:flex-row md:items-center md:justify-between" style={{ color: LABEL }}>
+      <div className="mt-16 md:mt-20">
+        <FluidName text="JulianG" />
+      </div>
+
+      <div className="mt-6 flex flex-col gap-2 border-t border-black/[0.06] pt-6 font-mono text-[12px] uppercase tracking-[0.16em] md:flex-row md:items-center md:justify-between" style={{ color: LABEL }}>
         <span>© {new Date().getFullYear()} · Julian Giraldo</span>
         <span>Berlin · 52.5200°N 13.4050°E</span>
       </div>
