@@ -69,6 +69,12 @@ export const work: FolderProject[] = [
   },
 ];
 
+/* "Design and other things" is hidden until it has real graphic design work in
+   it: the tiles are currently placeholders and a banner, which undersells the
+   rest of the page. Flip this to true and the section and its nav link both
+   come back. */
+export const showOtherThings = false;
+
 /* The home page shows these as two sections: what shipped, and what was
    written at university. Both read from the list above so a project only ever
    has to be described once. */

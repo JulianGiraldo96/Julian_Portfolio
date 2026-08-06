@@ -7,7 +7,7 @@ import { TopBar } from "./TopBar";
 import { V2Button } from "./V2Button";
 import { EASE, reveal } from "./motion";
 import { ProjectFolder } from "./ProjectFolder";
-import { academic, professional } from "./projects";
+import { academic, professional, showOtherThings } from "./projects";
 
 const EMAIL = "application@juliang.de";
 const LINKEDIN = "https://www.linkedin.com/in/julian-gr/";
@@ -91,7 +91,7 @@ export function V2Home() {
           <Intro />
           <SelectedWork />
           <AcademicWork />
-          <OtherThings />
+          {showOtherThings && <OtherThings />}
         </main>
         <Footer />
       </div>

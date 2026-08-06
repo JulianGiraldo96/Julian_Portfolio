@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { BerlinClock } from "../Clock";
 import { ThemeToggle } from "./Theme";
+import { showOtherThings } from "./projects";
 
 /* Same anatomy as the original portfolio header, wordmark left, links centred,
    Berlin time right, but drawn light: hairline rule, glass fill, no
@@ -11,7 +12,8 @@ import { ThemeToggle } from "./Theme";
 
 const sections = [
   { hash: "#work", label: "Work" },
-  { hash: "#other", label: "Design" },
+  /* only while the section it points at exists */
+  ...(showOtherThings ? [{ hash: "#other", label: "Design" }] : []),
   { hash: "#contact", label: "Contact" },
 ];
 
