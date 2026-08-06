@@ -1,63 +1,22 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { MotionConfig, motion } from "motion/react";
 import { useState } from "react";
-import { FluidName } from "./FluidName";
-import { ProjectFolder, type FolderProject } from "./ProjectFolder";
+import { TopBar } from "./TopBar";
+import { V2Button } from "./V2Button";
+import { EASE, reveal } from "./motion";
+import { ProjectFolder } from "./ProjectFolder";
+import { academic, professional } from "./projects";
 
 const EMAIL = "application@juliang.de";
 const LINKEDIN = "https://www.linkedin.com/in/julian-gr/";
 const CV = "/Julian_Giraldo_CV.pdf";
 
-/* v2 palette: Apple-adjacent neutrals, AA+ contrast on white.
-   ink #1d1d1f · secondary #55555a (7:1) · label #6e6e73 (4.9:1, >=12px) */
-const INK = "#1d1d1f";
-const SECONDARY = "#55555a";
-const LABEL = "#6e6e73";
-
-const EASE = [0.25, 0.1, 0.25, 1] as const;
-
-const work: FolderProject[] = [
-  {
-    slug: "erp-duo",
-    title: "ERP Duo",
-    headline: "Nine locations. One system. Full control.",
-    tags: ["9 locations", "13 modules", "Shipped"],
-    year: "2026",
-    shape: "desktop",
-    bg: "#EDEFEC",
-  },
-  {
-    slug: "taurus",
-    title: "TaurusWebs",
-    headline: "From 6 hours to 1: digitizing a whole farm.",
-    tags: ["Bulk entry", "6h to 1h", "Agtech"],
-    year: "2025",
-    shape: "desktop",
-    bg: "#E7EEF8",
-  },
-  {
-    slug: "savee",
-    title: "Savee",
-    headline: "Meal planning that makes food waste impossible.",
-    tags: ["0 to 1", "Mobile", "Zero waste"],
-    year: "2025",
-    shape: "phone",
-    bg: "#E9F2EB",
-  },
-  {
-    slug: "meinerva",
-    title: "Meinerva",
-    headline: "Look before you're told: making experimental art legible.",
-    tags: ["Thesis", "Research", "Art & tech"],
-    year: "2025",
-    shape: "phone",
-    bg: "#17171A",
-    dark: true,
-  },
-];
+/* Type system is the original portfolio's: Outfit (--font-display) light and
+   tight for anything that carries a voice, Geist Mono uppercase for labels,
+   Geist Sans for running text. Colour comes from the .v2-root tokens in
+   globals.css, so light and dark are one stylesheet. */
 
 type Tile = {
   kind: "image" | "text";
@@ -123,21 +82,15 @@ const other: Tile[] = [
   },
 ];
 
-const reveal = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.2 },
-  transition: { duration: 0.6, ease: EASE },
-};
-
 export function V2Home() {
   return (
     <MotionConfig reducedMotion="user">
-      <div className="bg-white font-sans" style={{ color: INK }}>
-        <TopBar />
+      <div className="v2-root font-sans">
+        <TopBar home />
         <main id="main" className="mx-auto max-w-[1240px] px-5 md:px-8">
           <Intro />
           <SelectedWork />
+          <AcademicWork />
           <OtherThings />
         </main>
         <Footer />
@@ -146,108 +99,43 @@ export function V2Home() {
   );
 }
 
-function TopBar() {
-  return (
-    <header className="sticky top-0 z-50 border-b border-black/[0.06] bg-white/70 backdrop-blur-xl">
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-[#1d1d1f] focus:px-5 focus:py-3 focus:text-[14px] focus:text-white"
-      >
-        Skip to content
-      </a>
-      <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-3 md:px-8">
-        <Link
-          href="/v2"
-          className="rounded-md py-2 text-[14px] font-medium tracking-[-0.01em]"
-        >
-          Julian Giraldo
-        </Link>
-        <nav aria-label="Contact links" className="flex items-center gap-2">
-          <Pill href={LINKEDIN}>LinkedIn</Pill>
-          <Pill href={`mailto:${EMAIL}`} shortLabel="Email">
-            {EMAIL}
-          </Pill>
-          <Pill href={CV}>CV</Pill>
-        </nav>
-      </div>
-    </header>
-  );
-}
-
-function Pill({
-  href,
-  children,
-  shortLabel,
-}: {
-  href: string;
-  children: React.ReactNode;
-  shortLabel?: string;
-}) {
-  const external = href.startsWith("http") || href.endsWith(".pdf");
-  return (
-    <a
-      href={href}
-      target={external ? "_blank" : undefined}
-      rel={external ? "noopener noreferrer" : undefined}
-      data-cursor-hover
-      className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-[#1d1d1f] px-4 text-[13px] text-white transition-[opacity,transform] duration-200 hover:opacity-85 motion-safe:active:scale-[0.97]"
-    >
-      {shortLabel ? (
-        <>
-          <span className="sm:hidden">{shortLabel}</span>
-          <span className="hidden sm:inline">{children}</span>
-        </>
-      ) : (
-        children
-      )}
-      {external && (
-        <>
-          <span aria-hidden className="text-[0.8em] opacity-60">
-            ↗
-          </span>
-          <span className="sr-only">(opens in new tab)</span>
-        </>
-      )}
-    </a>
-  );
-}
-
 function Intro() {
-  const rise = (delay: number) => ({
-    initial: { opacity: 0, y: 16 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.7, delay, ease: EASE },
-  });
-
   return (
     <section aria-label="Introduction" className="pb-16 pt-16 text-center md:pb-24 md:pt-28">
-      <motion.p {...rise(0)} className="flex flex-wrap items-center justify-center gap-2">
-        <span className="inline-flex items-center gap-2 rounded-full bg-[#F5F5F7] px-3.5 py-2 text-[12px] font-medium tracking-[0.02em] text-[#3a7d44]">
-          <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#3a7d44]" />
+      <p className="v2-rise flex flex-wrap items-center justify-center gap-2">
+        <span className="grain relative inline-flex items-center gap-2 rounded-full bg-[var(--v2-surface)] px-3.5 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--v2-accent)]">
+          <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--v2-accent)]" />
           Open for work
         </span>
-        <span className="rounded-full bg-[#F5F5F7] px-3.5 py-2 text-[12px] font-medium tracking-[0.02em]" style={{ color: SECONDARY }}>
+        <span className="grain relative inline-block rounded-full bg-[var(--v2-surface)] px-3.5 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--v2-secondary)]">
           Berlin, DE
         </span>
-      </motion.p>
+      </p>
 
-      <motion.h1
-        {...rise(0.08)}
-        className="mx-auto mt-8 max-w-[820px] text-balance text-[clamp(1.9rem,4.2vw,3.35rem)] font-medium leading-[1.12] tracking-[-0.025em]"
+      <h1
+        className="v2-rise v2-rise-1 mx-auto mt-9 max-w-[900px] text-balance font-display text-[clamp(2.1rem,5vw,4rem)] font-extralight leading-[1.06] tracking-[-0.04em]"
       >
         Product Designer in Berlin. I make dense, data heavy products feel calm
         and usable.
-      </motion.h1>
+      </h1>
 
-      <motion.p
-        {...rise(0.16)}
-        className="mx-auto mt-6 max-w-[560px] text-[16px] leading-relaxed md:text-[18px]"
-        style={{ color: SECONDARY }}
+      <p
+        className="v2-rise v2-rise-2 mx-auto mt-7 max-w-[560px] text-[16px] leading-relaxed text-[var(--v2-secondary)] md:text-[18px]"
       >
         4 years in product, 8+ years designing. I design products I also use
         myself: the ERP I built at Duo Sicilian Ice Cream runs daily across nine
         locations and six departments.
-      </motion.p>
+      </p>
+
+      <p className="v2-rise v2-rise-3 mt-9 flex flex-wrap items-center justify-center gap-2">
+        <V2Button href={LINKEDIN}>LinkedIn</V2Button>
+        <V2Button href={`mailto:${EMAIL}`} shortLabel="Email">
+          {EMAIL}
+        </V2Button>
+        <V2Button href={CV} tone="outline">
+          CV
+        </V2Button>
+      </p>
     </section>
   );
 }
@@ -262,16 +150,12 @@ function SectionHeading({
   aside?: string;
 }) {
   return (
-    <div className="mb-6 flex items-baseline justify-between gap-4">
-      <h2
-        id={id}
-        className="font-mono text-[12px] font-medium uppercase tracking-[0.18em]"
-        style={{ color: INK }}
-      >
+    <div className="mb-7 flex items-baseline justify-between gap-4 border-t border-[var(--v2-line)] pt-5">
+      <h2 id={id} className="font-mono text-[12px] uppercase tracking-[0.2em]">
         {children}
       </h2>
       {aside && (
-        <span className="font-mono text-[12px] uppercase tracking-[0.18em]" style={{ color: LABEL }}>
+        <span className="font-mono text-[12px] uppercase tracking-[0.2em] text-[var(--v2-label)]">
           {aside}
         </span>
       )}
@@ -279,24 +163,63 @@ function SectionHeading({
   );
 }
 
+/* Two grids, not one. Three shipped products, then the university work under
+   its own heading: with five cards in a single grid a reader has no way to tell
+   which of these ran in a business and which was a thesis.
+
+   Three is an odd count, so the last card takes the whole row. That is why
+   TaurusWebs is the wide one. */
+function ProjectGrid({
+  list,
+  offset = 0,
+}: {
+  list: typeof professional;
+  offset?: number;
+}) {
+  return (
+    <ul className="grid list-none grid-cols-1 gap-10 md:grid-cols-12 md:gap-x-5 md:gap-y-16">
+      {list.map((p, i) => (
+        <ProjectFolder
+          key={p.slug}
+          project={p}
+          index={offset + i}
+          wide={i % 2 === 0}
+          full={list.length % 2 === 1 && i === list.length - 1}
+        />
+      ))}
+    </ul>
+  );
+}
+
 function SelectedWork() {
   return (
-    <section id="work" aria-labelledby="work-heading" className="pb-6">
-      <SectionHeading id="work-heading" aside="4 projects">
+    <section id="work" aria-labelledby="work-heading" className="scroll-mt-24 pb-6">
+      <SectionHeading id="work-heading" aside={`${professional.length} shipped`}>
         Selected work
       </SectionHeading>
-      <ul className="grid list-none grid-cols-1 gap-10 md:grid-cols-12 md:gap-x-5 md:gap-y-16">
-        {work.map((p, i) => (
-          <ProjectFolder key={p.slug} project={p} index={i} wide={i % 2 === 0} />
-        ))}
-      </ul>
+      <ProjectGrid list={professional} />
+    </section>
+  );
+}
+
+function AcademicWork() {
+  return (
+    <section
+      id="academic"
+      aria-labelledby="academic-heading"
+      className="scroll-mt-24 pt-16 md:pt-24"
+    >
+      <SectionHeading id="academic-heading" aside="university">
+        Academic projects
+      </SectionHeading>
+      <ProjectGrid list={academic} offset={professional.length} />
     </section>
   );
 }
 
 function OtherThings() {
   return (
-    <section id="other" aria-labelledby="other-heading" className="pt-16 md:pt-24">
+    <section id="other" aria-labelledby="other-heading" className="scroll-mt-24 pt-16 md:pt-24">
       <SectionHeading id="other-heading" aside="visual work">
         Design and other things
       </SectionHeading>
@@ -309,7 +232,7 @@ function OtherThings() {
             className={`col-span-1 ${tile.span}`}
           >
             {tile.kind === "image" ? (
-              <figure className="group flex h-full flex-col overflow-hidden rounded-[24px] bg-[#F5F5F7]">
+              <figure className="grain group relative flex h-full flex-col overflow-hidden rounded-[24px] bg-[var(--v2-surface)]">
                 <div className={`relative w-full overflow-hidden ${tile.ratio}`}>
                   <Image
                     src={tile.src as string}
@@ -319,24 +242,24 @@ function OtherThings() {
                     className="object-cover transition-transform duration-700 ease-out motion-safe:group-hover:scale-[1.03]"
                   />
                 </div>
-                <figcaption className="px-5 py-4">
-                  <span className="block text-[14px] font-medium tracking-[-0.01em]">
+                <figcaption className="relative z-10 px-5 py-4">
+                  <span className="block font-mono text-[11px] uppercase tracking-[0.16em]">
                     {tile.caption}
                   </span>
-                  <span className="mt-1 block text-[14px] leading-relaxed" style={{ color: SECONDARY }}>
+                  <span className="mt-2 block text-[14px] leading-relaxed text-[var(--v2-secondary)]">
                     {tile.note}
                   </span>
                 </figcaption>
               </figure>
             ) : (
-              <div className="flex h-full flex-col rounded-[24px] bg-[#F5F5F7] px-6 py-7">
-                <span className="font-mono text-[12px] uppercase tracking-[0.16em]" style={{ color: LABEL }}>
+              <div className="grain relative flex h-full flex-col overflow-hidden rounded-[24px] bg-[var(--v2-surface)] px-6 py-7">
+                <span className="relative z-10 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--v2-label)]">
                   {tile.years}
                 </span>
-                <h3 className="mt-3 text-[19px] font-medium leading-[1.2] tracking-[-0.015em] md:text-[21px]">
+                <h3 className="relative z-10 mt-3 font-display text-[21px] font-light leading-[1.16] tracking-[-0.03em] md:text-[24px]">
                   {tile.caption}
                 </h3>
-                <p className="mt-2.5 max-w-[62ch] text-[14px] leading-relaxed" style={{ color: SECONDARY }}>
+                <p className="relative z-10 mt-2.5 max-w-[62ch] text-[14px] leading-relaxed text-[var(--v2-secondary)]">
                   {tile.note}
                 </p>
               </div>
@@ -362,13 +285,20 @@ function Footer() {
   };
 
   return (
-    <footer aria-labelledby="contact-heading" className="mx-auto max-w-[1240px] px-5 pb-14 pt-20 md:px-8 md:pb-20 md:pt-28">
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
+    <footer
+      id="contact"
+      aria-labelledby="contact-heading"
+      className="mx-auto max-w-[1240px] scroll-mt-24 px-5 pb-14 pt-20 md:px-8 md:pb-20 md:pt-28"
+    >
+      <div className="grid grid-cols-1 gap-8 border-t border-[var(--v2-line)] pt-10 md:grid-cols-12">
         <div className="md:col-span-5">
-          <h2 id="contact-heading" className="text-[28px] font-medium tracking-[-0.02em] md:text-[34px]">
+          <h2
+            id="contact-heading"
+            className="font-display text-[34px] font-extralight leading-[1.04] tracking-[-0.04em] md:text-[46px]"
+          >
             Get in touch
           </h2>
-          <p className="mt-4 max-w-[38ch] text-[15px] leading-relaxed" style={{ color: SECONDARY }}>
+          <p className="mt-5 max-w-[38ch] text-[15px] leading-relaxed text-[var(--v2-secondary)]">
             Open to Product Design roles in Berlin or remote. Happy to walk you
             through any of these projects.
           </p>
@@ -382,9 +312,7 @@ function Footer() {
             <button
               type="button"
               onClick={copy}
-              data-cursor-hover
-              className="min-h-[48px] shrink-0 rounded-2xl border border-black/[0.12] px-4 text-[13px] font-medium transition-colors duration-200 hover:border-black/40 motion-safe:active:scale-[0.97]"
-              style={{ color: SECONDARY }}
+              className="min-h-[48px] shrink-0 rounded-2xl border border-[var(--v2-line-strong)] px-4 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--v2-secondary)] transition-colors duration-200 hover:border-[var(--v2-ink)] hover:text-[var(--v2-ink)] motion-safe:active:scale-[0.97]"
             >
               {copied ? "Copied" : "Copy"}
               <span className="sr-only"> email address</span>
@@ -397,11 +325,7 @@ function Footer() {
         </div>
       </div>
 
-      <div className="mt-16 md:mt-20">
-        <FluidName text="JulianG" />
-      </div>
-
-      <div className="mt-6 flex flex-col gap-2 border-t border-black/[0.06] pt-6 font-mono text-[12px] uppercase tracking-[0.16em] md:flex-row md:items-center md:justify-between" style={{ color: LABEL }}>
+      <div className="mt-14 flex flex-col gap-2 border-t border-[var(--v2-line)] pt-6 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--v2-label)] md:mt-20 md:flex-row md:items-center md:justify-between">
         <span>© {new Date().getFullYear()} · Julian Giraldo</span>
         <span>Berlin · 52.5200°N 13.4050°E</span>
       </div>
@@ -409,6 +333,8 @@ function Footer() {
   );
 }
 
+/* The footer rows: a bar wipes across from the left and the label rolls with
+   it, so the whole row commits at once instead of just changing colour. */
 function LinkRow({
   href,
   label,
@@ -420,18 +346,50 @@ function LinkRow({
 }) {
   const external = href.startsWith("http") || href.endsWith(".pdf");
   return (
-    <a
+    <motion.a
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
-      data-cursor-hover
-      className={`group flex min-h-[48px] items-center justify-between gap-3 rounded-2xl bg-[#F5F5F7] px-5 text-[14px] font-medium transition-colors duration-200 hover:bg-[#1d1d1f] hover:text-white motion-safe:active:scale-[0.99] ${className}`}
+      initial="rest"
+      whileHover="on"
+      whileFocus="on"
+      whileTap={{ scale: 0.995 }}
+      className={`group grain relative isolate flex min-h-[52px] items-center justify-between gap-3 overflow-hidden rounded-2xl bg-[var(--v2-surface)] px-5 font-mono text-[11px] uppercase tracking-[0.14em] ${className}`}
     >
-      <span className="truncate">{label}</span>
+      <motion.span
+        aria-hidden
+        variants={{ rest: { scaleX: 0 }, on: { scaleX: 1 } }}
+        transition={{ duration: 0.45, ease: EASE }}
+        className="absolute inset-0 -z-10 origin-left bg-[var(--v2-invert-bg)]"
+      />
+      <motion.span
+        variants={{ rest: { color: "var(--v2-ink)" }, on: { color: "var(--v2-invert-ink)" } }}
+        transition={{ duration: 0.3, ease: EASE }}
+        className="relative block h-[1.15em] flex-1 overflow-hidden text-left"
+      >
+        <motion.span
+          variants={{ rest: { y: "0%" }, on: { y: "-50%" } }}
+          transition={{ duration: 0.42, ease: EASE }}
+          className="block"
+        >
+          <span className="block truncate leading-[1.15em]">{label}</span>
+          <span aria-hidden className="block truncate leading-[1.15em]">
+            {label}
+          </span>
+        </motion.span>
+      </motion.span>
       {external && <span className="sr-only">(opens in new tab)</span>}
-      <span aria-hidden className="opacity-50 transition-transform duration-200 motion-safe:group-hover:translate-x-0.5">
+      <motion.span
+        aria-hidden
+        variants={{
+          rest: { x: 0, y: 0, color: "var(--v2-label)" },
+          on: { x: 3, y: -3, color: "var(--v2-invert-ink)" },
+        }}
+        transition={{ duration: 0.32, ease: EASE }}
+        className="relative shrink-0"
+      >
         ↗
-      </span>
-    </a>
+      </motion.span>
+    </motion.a>
   );
 }

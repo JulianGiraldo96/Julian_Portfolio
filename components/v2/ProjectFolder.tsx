@@ -7,10 +7,12 @@ import {
   useMotionValue,
   useReducedMotion,
   useSpring,
+  useTransform,
 } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import { screens, type ScreenSlug } from "./ProductScreens";
+import { startRouteVeil } from "./RouteVeil";
+import { EASE, SPRING } from "./motion";
 
 /* Each project card is a tinted panel with the product screen sitting on it,
    nothing in front of it. On hover or keyboard focus the screen rises and
@@ -23,6 +25,11 @@ import { screens, type ScreenSlug } from "./ProductScreens";
 export type FolderProject = {
   slug: ScreenSlug;
   title: string;
+  /* what the tool does, in the plainest two words available. The headline
+     sells the outcome and the meta line names the product; without this you
+     can read a card and still not know what the thing actually does. Keep it
+     literal: "Bulk Action", not "bulk farm setup workflow". */
+  feature: string;
   headline: string;
   tags: string[];
   year: string;
@@ -30,11 +37,18 @@ export type FolderProject = {
      card at the same visual weight */
   shape: "phone" | "desktop";
   bg: string;
+  /* the same tint reworked for the dark theme, swapped in pure CSS */
+  bgDark: string;
+  /* dark tint in the light theme, so the chips flip to frosted */
   dark?: boolean;
+  /* set when the project has a v2 styled case study of its own */
+  href?: string;
+  /* university work. It gets its own section on the home page and carries a
+     badge everywhere else, so a recruiter never has to guess which of these
+     shipped to real users. */
+  academic?: boolean;
 };
 
-const SPRING = { type: "spring" as const, stiffness: 210, damping: 26, mass: 0.9 };
-const EASE = [0.22, 1, 0.36, 1] as const;
 /* matches the .v2-leave keyframe in globals.css */
 const LEAVE_MS = 380;
 
@@ -56,10 +70,18 @@ export function ProjectFolder({
   project,
   index,
   wide,
+  compact = false,
+  full = false,
 }: {
   project: FolderProject;
   index: number;
   wide: boolean;
+  /* an odd number of projects leaves the last one without a partner, so it
+     takes the whole row rather than sitting in half of one */
+  full?: boolean;
+  /* the row at the foot of a case study: the same card, sized to sit three
+     across instead of two */
+  compact?: boolean;
 }) {
   const router = useRouter();
   const prefersReduced = useReducedMotion();
@@ -68,7 +90,7 @@ export function ProjectFolder({
   const [leaving, setLeaving] = useState(false);
   const Screen = screens[project.slug];
   const phone = project.shape === "phone";
-  const href = `/work/${project.slug}`;
+  const href = project.href ?? `/work/${project.slug}`;
 
   /* Touch has no hover, so on those devices the card opens itself once it is
      well inside the viewport. Pointer devices keep the hover reveal. */
@@ -84,18 +106,39 @@ export function ProjectFolder({
     return () => io.disconnect();
   }, []);
 
+  /* pointer position inside the card, in pixels, for the trailing pill and the
+     light that follows it */
   const cx = useMotionValue(0);
   const cy = useMotionValue(0);
   const x = useSpring(cx, { stiffness: 380, damping: 32, mass: 0.6 });
   const y = useSpring(cy, { stiffness: 380, damping: 32, mass: 0.6 });
+
+  /* and the same position normalised to -0.5…0.5, which is what the screen
+     leans on. A product shot that turns slightly toward you reads as an object
+     on the card rather than a picture pasted onto it. */
+  const nx = useMotionValue(0);
+  const ny = useMotionValue(0);
+  const tilt = { stiffness: 170, damping: 20, mass: 0.7 };
+  const rotateY = useSpring(useTransform(nx, (v) => v * 8), tilt);
+  const rotateX = useSpring(useTransform(ny, (v) => v * -6), tilt);
 
   const onMove = (e: React.PointerEvent) => {
     if (e.pointerType !== "mouse") return;
     const rect = stageRef.current?.getBoundingClientRect();
     if (!rect) return;
     if (!mouse) setMouse(true);
-    cx.set(e.clientX - rect.left);
-    cy.set(e.clientY - rect.top);
+    const lx = e.clientX - rect.left;
+    const ly = e.clientY - rect.top;
+    cx.set(lx);
+    cy.set(ly);
+    nx.set(lx / rect.width - 0.5);
+    ny.set(ly / rect.height - 0.5);
+  };
+
+  const onLeave = () => {
+    setMouse(false);
+    nx.set(0);
+    ny.set(0);
   };
 
   /* Click blurs the page away and the case study arrives behind it. Modified
@@ -106,6 +149,9 @@ export function ProjectFolder({
       if (prefersReduced) return;
       e.preventDefault();
       setLeaving(true);
+      /* the veil lives in the root layout, so it survives this page unmounting
+         and there is never an uncovered frame */
+      startRouteVeil();
       window.setTimeout(() => router.push(href), LEAVE_MS - 60);
     },
     [prefersReduced, router, href],
@@ -117,21 +163,35 @@ export function ProjectFolder({
      past the edges. Its layer is unclipped so nothing cuts it off. It stays
      inside the card on small screens, where there is no room either side
      before the viewport edge. */
-  const screenSize = phone
-    ? "h-[70%] md:h-[80%]"
-    : wide
-      ? "w-[82%] md:w-[88%]"
-      : "w-[84%] md:w-[94%]";
+  const screenSize = compact
+    ? phone
+      ? "h-[74%]"
+      : "w-[86%]"
+    : full
+      ? phone
+        ? "h-[80%] md:h-[88%]"
+        : "w-[84%] md:w-[66%]"
+      : phone
+      ? "h-[70%] md:h-[80%]"
+      : wide
+        ? "w-[82%] md:w-[88%]"
+        : "w-[84%] md:w-[94%]";
 
   return (
     <motion.li
       initial={{ opacity: 0, y: 22 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6, delay: (index % 2) * 0.07, ease: EASE }}
-      className={`col-span-1 ${wide ? "md:col-span-7" : "md:col-span-5"}`}
+      transition={{ duration: 0.6, delay: (index % 3) * 0.07, ease: EASE }}
+      className={
+        compact
+          ? "col-span-1"
+          : full
+            ? "col-span-1 md:col-span-12"
+            : `col-span-1 ${wide ? "md:col-span-7" : "md:col-span-5"}`
+      }
     >
-      <Link href={href} onClick={onClick} className="group block" data-cursor-hover>
+      <Link href={href} onClick={onClick} className="group block">
         <motion.div
           ref={stageRef}
           initial="rest"
@@ -139,39 +199,71 @@ export function ProjectFolder({
           whileHover="open"
           whileFocus="open"
           onPointerMove={onMove}
-          onPointerLeave={() => setMouse(false)}
-          className="relative isolate h-[400px] md:h-[520px]"
+          onPointerLeave={onLeave}
+          className={`relative isolate ${
+            compact
+              ? "h-[230px] md:h-[260px]"
+              : full
+                ? phone
+                  ? "h-[360px] md:h-[440px]"
+                  : "h-[420px] md:h-[560px]"
+                : "h-[400px] md:h-[520px]"
+          }`}
         >
-          {/* layer 1: the tinted panel and the keyword cards, clipped */}
+          {/* layer 1: the tinted panel and the keyword cards, clipped.
+              `grain` lays a static noise tile over the tint, so the colour has
+              some tooth instead of reading as flat fill. */}
           <div
-            className="absolute inset-0 overflow-hidden rounded-[28px]"
-            style={{ backgroundColor: project.bg }}
+            className={`v2-tint grain absolute inset-0 overflow-hidden rounded-[28px] ${
+              project.dark ? "grain-dark" : ""
+            }`}
+            style={
+              {
+                "--tint": project.bg,
+                "--tint-dark": project.bgDark,
+              } as React.CSSProperties
+            }
           >
-            {project.tags.map((tag, i) => {
+            {/* the light the pointer carries. A fixed size disc translated by
+                the pointer springs, so it is a transform and never a repaint.
+                Blend rather than paint, so it lifts the tint instead of
+                greying it. */}
+            <motion.span
+              aria-hidden
+              style={prefersReduced || !mouse ? { opacity: 0 } : { x, y }}
+              variants={{ rest: { opacity: 0 }, open: { opacity: mouse && !prefersReduced ? 1 : 0 } }}
+              transition={{ duration: 0.35, ease: EASE }}
+              className={`pointer-events-none absolute left-0 top-0 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full ${
+                project.dark ? "mix-blend-soft-light" : "mix-blend-overlay"
+              }`}
+            >
+              <span className="block h-full w-full rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.9)_0%,rgba(255,255,255,0)_68%)]" />
+            </motion.span>
+
+            {!compact && project.tags.map((tag, i) => {
               const d = deal(i);
               return (
                 <motion.div
                   key={tag}
                   aria-hidden
                   variants={{
-                    rest: { x: 0, y: "4%", opacity: 0 },
+                    rest: { x: 0, y: "16%", opacity: 0 },
                     open: { x: d.x, y: d.y, opacity: 1 },
                   }}
-                  transition={{ ...SPRING, delay: 0.12 + i * 0.09 }}
-                  className="pointer-events-none absolute inset-0 flex items-center justify-center"
+                  transition={{ ...SPRING, delay: 0.1 + i * 0.075 }}
+                  className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
                 >
                   <motion.span
                     variants={{
-                      rest: { rotate: 0, scale: 0.82 },
+                      rest: { rotate: 0, scale: 0.7 },
                       open: { rotate: d.rotate, scale: 1 },
                     }}
-                    transition={{ ...SPRING, delay: 0.12 + i * 0.09 }}
-                    className={`whitespace-nowrap rounded-xl px-3.5 py-2 text-[12px] font-medium shadow-[0_14px_30px_-16px_rgba(0,0,0,0.6)] ${
-                      project.dark
-                        ? "bg-white/[0.14] text-white/85 backdrop-blur-sm"
-                        : "bg-white text-[#55555a]"
+                    transition={{ ...SPRING, delay: 0.1 + i * 0.075 }}
+                    className={`v2-chip inline-flex items-center gap-2 whitespace-nowrap rounded-xl px-3.5 py-2 font-mono text-[11px] uppercase tracking-[0.14em] shadow-[0_18px_36px_-18px_rgba(0,0,0,0.75)] ${
+                      project.dark ? "v2-chip--ondark" : ""
                     }`}
                   >
+                    <span className="v2-chip__dot h-1 w-1 shrink-0 rounded-full" />
                     {tag}
                   </motion.span>
                 </motion.div>
@@ -179,15 +271,25 @@ export function ProjectFolder({
             })}
           </div>
 
-          {/* layer 2: the screen, unclipped so it can grow past the card */}
-          <div className="absolute inset-0 z-10 flex items-center justify-center">
+          {/* layer 2: the screen, unclipped so it can grow past the card.
+              The perspective lives on the wrapper, so the lean is real
+              rotation rather than a skew. */}
+          <div
+            className="absolute inset-0 z-10 flex items-center justify-center"
+            style={{ perspective: 1100 }}
+          >
             <motion.div
               variants={{
                 rest: { scale: 1, y: "0%" },
-                open: { scale: 1.14, y: "-7%" },
+                open: compact
+                  ? { scale: 1.07, y: "-3%" }
+                  : { scale: 1.14, y: "-7%" },
               }}
+              style={prefersReduced ? undefined : { rotateX, rotateY }}
               transition={SPRING}
-              className={`flex items-center justify-center ${screenSize}`}
+              className={`flex items-center justify-center shadow-[0_22px_44px_-8px_rgba(0,0,0,0.28)] ${
+                phone ? "rounded-[30px]" : "rounded-[18px]"
+              } ${compact ? "shadow-[0_14px_28px_-8px_rgba(0,0,0,0.26)]" : ""} ${screenSize}`}
             >
               <Screen className={phone ? "h-full w-auto" : "h-auto w-full"} />
             </motion.div>
@@ -202,39 +304,38 @@ export function ProjectFolder({
               open: { opacity: mouse && !prefersReduced && !leaving ? 1 : 0, scale: 1 },
             }}
             transition={{ duration: 0.2, ease: EASE }}
-            className="pointer-events-none absolute left-0 top-0 z-30 -translate-x-1/2 translate-y-5 whitespace-nowrap rounded-full bg-[#1d1d1f] px-4 py-2 text-[13px] font-medium text-white"
+            className="pointer-events-none absolute left-0 top-0 z-30 -translate-x-1/2 translate-y-5 whitespace-nowrap rounded-full bg-[var(--v2-invert-bg)] px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--v2-invert-ink)]"
           >
             Read case study
           </motion.span>
         </motion.div>
 
-        <div className="mt-5 px-1">
-          <h3 className="max-w-[24ch] text-[21px] font-medium leading-[1.18] tracking-[-0.02em] transition-opacity duration-300 group-hover:opacity-70 md:text-[25px]">
+        <div className={compact ? "mt-4 px-1" : "mt-5 px-1"}>
+          <p className="mb-2 flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--v2-ink)]">
+            {project.feature}
+            {project.academic && (
+              <span className="rounded-full border border-[var(--v2-line-strong)] px-2 py-0.5 text-[var(--v2-label)]">
+                Academic
+              </span>
+            )}
+          </p>
+          <h3
+            className={`max-w-[24ch] font-display font-light tracking-[-0.03em] transition-opacity duration-300 group-hover:opacity-70 ${
+              compact
+                ? "text-[17px] leading-[1.2]"
+                : "text-[24px] leading-[1.14] md:text-[30px]"
+            }`}
+          >
             {project.headline}
           </h3>
-          <p className="mt-2 text-[14px]" style={{ color: "#55555a" }}>
-            {project.title} · {project.year} · {project.tags.join(" · ")}
+          <p className="mt-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--v2-label)]">
+            {compact
+              ? `${project.title} · ${project.year}`
+              : `${project.title} · ${project.year} · ${project.tags.join(" · ")}`}
           </p>
         </div>
       </Link>
 
-      {/* On the way out the whole page blurs behind a veil, then the case study
-         takes its place. Portaled to the body so it covers the page rather
-         than this card, and driven by a CSS keyframe so it starts on its own
-         the moment it mounts. */}
-      {leaving &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <div
-            className="v2-leave fixed inset-0 z-[200] backdrop-blur-2xl backdrop-saturate-125"
-            style={{
-              backgroundColor: project.dark
-                ? "rgba(13,13,15,0.55)"
-                : "rgba(255,255,255,0.6)",
-            }}
-          />,
-          document.body,
-        )}
     </motion.li>
   );
 }

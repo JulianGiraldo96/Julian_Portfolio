@@ -30,6 +30,15 @@ body {
   color: var(--foreground);
 }
 
+/* The document follows the theme. Without this the page is dark but <body>
+   underneath it is white, and any frame where the route subtree is not painted
+   flashes through. */
+html[data-v2-theme="dark"],
+html[data-v2-theme="dark"] body {
+  background: #0c0c0e;
+  color: #f2f2f4;
+}
+
 body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   overflow-x: hidden;
@@ -38,6 +47,496 @@ body {
 ::selection {
   background: var(--foreground);
   color: var(--background);
+}
+
+/* The rule above paints selected text near-black on white, which on a dark v2
+   page is ink on ink: the selection is invisible. v2 selects with its own
+   tokens, so it inverts correctly in both themes. */
+.v2-root ::selection,
+.v2-root::selection {
+  background: var(--v2-ink);
+  color: var(--v2-bg);
+}
+
+/* ---------------------------------------------------------------------------
+   v2 theme tokens.
+   Scoped to .v2-root so the original portfolio keeps its own colours: the
+   toggle only ever repaints the v2 routes. The dark values are picked against
+   #0c0c0e, secondary and label both clear 4.5:1.
+--------------------------------------------------------------------------- */
+.v2-root {
+  --v2-bg: #ffffff;
+  --v2-surface: #f5f5f7;
+  --v2-surface-2: #ebebef;
+  --v2-ink: #1d1d1f;
+  --v2-secondary: #55555a;
+  --v2-label: #6e6e73;
+  --v2-line: rgba(0, 0, 0, 0.08);
+  --v2-line-strong: rgba(0, 0, 0, 0.16);
+  --v2-invert-bg: #1d1d1f;
+  --v2-invert-ink: #ffffff;
+  --v2-header: rgba(255, 255, 255, 0.72);
+  --v2-accent: #3a7d44;
+  --v2-accent-bg: #edf5ef;
+  /* the flows need one warm colour for the dead ends and one cool one for the
+     automated steps, and both have to survive the theme swap */
+  --v2-warn: #a8482a;
+  --v2-warn-bg: #fbf0ec;
+  --v2-cool: #2f5d9e;
+  --v2-cool-bg: #eef2fa;
+
+  background-color: var(--v2-bg);
+  color: var(--v2-ink);
+  color-scheme: light;
+}
+
+[data-v2-theme="dark"] .v2-root {
+  --v2-bg: #0c0c0e;
+  --v2-surface: #17171a;
+  --v2-surface-2: #202024;
+  --v2-ink: #f2f2f4;
+  --v2-secondary: #a8a8b0;
+  --v2-label: #8f8f98;
+  --v2-line: rgba(255, 255, 255, 0.1);
+  --v2-line-strong: rgba(255, 255, 255, 0.24);
+  --v2-invert-bg: #f2f2f4;
+  --v2-invert-ink: #0c0c0e;
+  --v2-header: rgba(12, 12, 14, 0.72);
+  --v2-accent: #6fbf7f;
+  --v2-accent-bg: #14201a;
+  --v2-warn: #e79170;
+  --v2-warn-bg: #241713;
+  --v2-cool: #8ab0e6;
+  --v2-cool-bg: #14192240;
+
+  color-scheme: dark;
+}
+
+/* ---------------------------------------------------------------------------
+   Static film grain.
+   One inlined feTurbulence tile, painted as a background image, so it never
+   moves and costs nothing per frame. Applied over coloured surfaces only.
+   `multiply` bites on light tints, `overlay` on dark ones.
+--------------------------------------------------------------------------- */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  background-repeat: repeat;
+  mix-blend-mode: multiply;
+  opacity: 0.2;
+}
+
+/* On dark surfaces multiply paints nothing, so lift the grain instead. */
+.grain-dark::after,
+[data-v2-theme="dark"] .grain::after {
+  mix-blend-mode: overlay;
+  opacity: 0.26;
+}
+
+/* ---------------------------------------------------------------------------
+   Flow canvas.
+   A grid of pads with wires drawn over it. One column on a phone so the graph
+   reads downward, one column per phase from md up. The column count rides on
+   the element as --flow-cols, which is all a component has to know.
+
+   Row and column gaps are generous on purpose: the wires are measured from the
+   pad edges and need somewhere to curve.
+--------------------------------------------------------------------------- */
+.v2-flow-canvas {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem 0;
+  align-items: start;
+}
+
+/* stacked, a loop back needs a lane down the left of the column to run in */
+@media (max-width: 767px) {
+  .v2-flow-canvas[data-loop="true"] {
+    padding-left: 2.25rem;
+  }
+}
+
+.v2-flow-phases {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .v2-flow-canvas {
+    grid-template-columns: repeat(var(--flow-cols, 4), minmax(0, 1fr));
+    gap: 2.5rem 3.5rem;
+  }
+
+  .v2-flow-phases {
+    display: grid;
+    grid-template-columns: repeat(var(--flow-cols, 4), minmax(0, 1fr));
+    gap: 0 3.25rem;
+  }
+}
+
+/* On a phone every pad is in column 1, stacked in source order: the authored
+   grid positions are a desktop concern. */
+@media (max-width: 767px) {
+  .v2-flow-canvas > * {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+}
+
+/* The sockets the wires plug into. Stacked, every wire runs downward, so an
+   `in` doubles as a `top` and an `out` as a `bottom`; where a pad happens to
+   own both they land on the same spot, which costs nothing. */
+.v2-port {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--v2-bg);
+  border: 1.5px solid var(--v2-line-strong);
+  left: 50%;
+  margin-left: -4.5px;
+}
+
+.v2-port--in,
+.v2-port--top {
+  top: -5px;
+}
+
+.v2-port--out,
+.v2-port--bottom {
+  bottom: -5px;
+}
+
+/* only stacked: the socket a loop back plugs into on the left edge */
+.v2-port--loop {
+  left: -5px;
+  top: 50%;
+  margin-left: 0;
+  margin-top: -4.5px;
+}
+
+@media (min-width: 768px) {
+  .v2-port--in,
+  .v2-port--out {
+    top: 50%;
+    bottom: auto;
+    margin-top: -4.5px;
+    margin-left: 0;
+  }
+
+  .v2-port--in {
+    left: -5px;
+  }
+
+  .v2-port--out {
+    left: auto;
+    right: -5px;
+  }
+
+  .v2-port--loop {
+    display: none;
+  }
+
+  .v2-port--top,
+  .v2-port--bottom {
+    left: 50%;
+    margin-left: -4.5px;
+    margin-top: 0;
+  }
+
+  .v2-port--top {
+    top: -5px;
+    bottom: auto;
+  }
+
+  .v2-port--bottom {
+    bottom: -5px;
+    top: auto;
+  }
+}
+
+/* the pad a wire leaves from reads as the live one while you hover it */
+.v2-pad {
+  transition: border-color 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.v2-pad:hover {
+  border-color: var(--v2-ink);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-pad {
+    transition: none;
+  }
+  .v2-pad:hover {
+    transform: none;
+  }
+}
+
+/* A project card's tint. Both values ride on the element as custom properties
+   so the theme swap is pure CSS, with no re-render. */
+.v2-tint {
+  background-color: var(--tint);
+}
+
+[data-v2-theme="dark"] .v2-tint {
+  background-color: var(--tint-dark);
+}
+
+/* Keyword chips: white on a light tint, frosted on a dark one. */
+.v2-chip {
+  background: #ffffff;
+  color: #55555a;
+}
+
+.v2-chip__dot {
+  background: currentColor;
+  opacity: 0.45;
+}
+
+.v2-chip--ondark,
+[data-v2-theme="dark"] .v2-chip {
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(4px);
+}
+
+/* ---------------------------------------------------------------------------
+   Liquid theme switch.
+   The knob and a trailing droplet sit inside a goo filter (blur, then a hard
+   alpha ramp), so while they are apart the filter welds them into one
+   stretching body of liquid. The droplet runs slower and squashes, which is
+   what reads as surface tension.
+--------------------------------------------------------------------------- */
+.v2-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 62px;
+  height: 34px;
+  flex: none;
+  border-radius: 999px;
+  border: 1px solid var(--v2-line-strong);
+  background: var(--v2-surface);
+  /* a hairline of depth, so the liquid reads as sitting in a channel */
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.07);
+  transition:
+    background-color 400ms ease,
+    border-color 250ms ease,
+    box-shadow 250ms ease,
+    transform 250ms cubic-bezier(0.34, 0.9, 0.2, 1);
+}
+
+.v2-switch:hover {
+  border-color: var(--v2-ink);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.07), 0 0 0 4px var(--v2-surface);
+}
+
+.v2-switch:active {
+  transform: scale(0.95);
+}
+
+/* pressing squeezes the liquid, the way a real drop would resist */
+.v2-switch:active .v2-switch__blob {
+  transform: translateX(0) scale(0.86, 1.06);
+}
+
+.v2-switch[data-on="true"]:active .v2-switch__blob {
+  transform: translateX(28px) scale(0.86, 1.06);
+}
+
+.v2-switch__goo {
+  position: absolute;
+  inset: 0;
+  filter: url(#v2-goo);
+  pointer-events: none;
+}
+
+.v2-switch__blob,
+.v2-switch__drop {
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  border-radius: 999px;
+  background: var(--v2-ink);
+  transform: translate(0, -50%);
+}
+
+/* The head of the liquid: leaves first and arrives first. */
+.v2-switch__blob {
+  width: 24px;
+  height: 24px;
+  margin-top: -12px;
+  top: 50%;
+  transform: translateX(0);
+  transition: transform 380ms cubic-bezier(0.34, 0.9, 0.2, 1);
+}
+
+/* The tail: leaves late and lands late, so for most of the travel the two are
+   apart and the goo filter has to bridge them. That bridge is the stretch. */
+.v2-switch__drop {
+  width: 17px;
+  height: 17px;
+  margin-top: -8.5px;
+  left: 7px;
+  transform: translateX(0) scale(1);
+  transition: transform 720ms cubic-bezier(0.4, 0, 0.15, 1) 110ms;
+}
+
+.v2-switch[data-on="true"] .v2-switch__blob {
+  transform: translateX(28px);
+}
+
+.v2-switch[data-on="true"] .v2-switch__drop {
+  transform: translateX(29px) scale(0.92);
+}
+
+/* The icons ride above the liquid and cross-fade with it. */
+.v2-switch__icon {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  color: var(--v2-secondary);
+  transition: opacity 320ms ease;
+}
+
+.v2-switch__icon--sun {
+  left: 9px;
+}
+
+.v2-switch__icon--moon {
+  right: 9px;
+}
+
+.v2-switch[data-on="false"] .v2-switch__icon--sun,
+.v2-switch[data-on="true"] .v2-switch__icon--moon {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-switch__blob,
+  .v2-switch__drop {
+    transition: none;
+  }
+  .v2-switch__goo {
+    filter: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   The above-the-fold entrance, in CSS rather than JS.
+
+   The hero heading and the case study cover are the page's Largest Contentful
+   Paint. A motion entrance cannot start until React has hydrated, so gating
+   them behind one adds the whole hydration cost to the reported load time: the
+   measured LCP was over a second for an element that had been painted in
+   ninety milliseconds. As a keyframe it starts at first paint, and the number
+   goes back to describing the page instead of the bundle.
+
+   Everything below the fold still uses motion, where the trigger genuinely is
+   a scroll position.
+--------------------------------------------------------------------------- */
+@keyframes v2-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes v2-settle {
+  from {
+    transform: scale(1.05);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.v2-rise {
+  animation: v2-rise 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.v2-settle > * {
+  animation: v2-settle 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.v2-rise-1 { animation-delay: 60ms; }
+.v2-rise-2 { animation-delay: 120ms; }
+.v2-rise-3 { animation-delay: 180ms; }
+.v2-rise-4 { animation-delay: 240ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-rise,
+  .v2-settle > * {
+    animation: none;
+  }
+}
+
+/* Counted dots.
+   There are eighty of them on the page. As motion components that is eighty
+   JS driven animations competing with the scroll; as one keyframe with a
+   per-dot delay it is eighty compositor animations and the main thread is free.
+   The class arrives when the row scrolls in. */
+@keyframes v2-dot-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.v2-dot {
+  opacity: 0;
+}
+
+.v2-dots-run .v2-dot {
+  animation: v2-dot-in 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-dot {
+    opacity: 1;
+  }
+  .v2-dots-run .v2-dot {
+    animation: none;
+  }
+}
+
+/* The route veil. Opacity only; the blur comes from a backdrop-filter utility
+   on the element, because a backdrop-filter declared inside a keyframe is
+   silently dropped. Fading the element in fades its backdrop-filter with it. */
+.v2-veil {
+  opacity: 0;
+  background-color: rgb(255 255 255 / 0.62);
+  transition: opacity 320ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.v2-veil[data-on="true"] {
+  opacity: 1;
+}
+
+[data-v2-theme="dark"] .v2-veil {
+  background-color: rgb(13 13 15 / 0.66);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-veil {
+    transition: none;
+  }
 }
 
 /* Leaving a /v2 project: the page blurs away and the case study arrives.

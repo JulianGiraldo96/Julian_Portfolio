@@ -40,6 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 projects_res/
+# reference material, not build input
+res/
+# internal session log, stays local
+HANDOVER.md
 
 # AI tooling config
 CLAUDE.md

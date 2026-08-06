@@ -1,347 +1,362 @@
 import type { Metadata } from "next";
-import { CaseStudy } from "@/components/CaseStudy";
+import { V2CaseStudy } from "@/components/v2/V2CaseStudy";
+
+const SITE = "https://juliang.de";
 
 export const metadata: Metadata = {
   title: "Savee | Julian Giraldo",
   description:
-    "Social planner that cuts household food waste through smart meal planning, automated shopping lists and proactive expiry alerts.",
+    "Savee: a short video recipe feed where saving a recipe schedules the meal and folds its ingredients into one shopping list, grouped by aisle and sized to your portions. Households throw out 30 to 40% of what they buy, mostly things that never had a recipe attached.",
+  alternates: { canonical: `${SITE}/work/savee` },
+  openGraph: {
+    type: "article",
+    title: "Savee",
+    description:
+      "Save a recipe and the shopping list writes itself, in the right quantities.",
+    url: `${SITE}/work/savee`,
+    images: [`${SITE}/projects/savee/cover.webp`],
+  },
 };
 
-export default function SaveePage() {
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "Savee",
+  description:
+    "A zero to one short video recipe app where every saved recipe becomes a scheduled meal and a line on one aisle grouped shopping list.",
+  image: `${SITE}/projects/savee/cover.webp`,
+  url: `${SITE}/work/savee`,
+  datePublished: "2025-01-01",
+  author: {
+    "@type": "Person",
+    name: "Julian Giraldo",
+    jobTitle: "Product Designer",
+    url: `${SITE}`,
+  },
+  about: {
+    "@type": "SoftwareApplication",
+    name: "Savee",
+    applicationCategory: "LifestyleApplication",
+    operatingSystem: "iOS, Android",
+    description:
+      "A short video recipe feed that turns saved recipes into scheduled meals and a single portion aware shopping list, aligned with UN Sustainable Development Goal 12.3.",
+  },
+  keywords:
+    "product design, UX design, sustainability, food waste, short video, mobile app, zero to one, visual identity",
+};
+
+export default function SaveeV2Page() {
   return (
-    <CaseStudy
-      currentSlug="savee"
-      meta={{
-        index: "01",
-        title: "Savee",
-        subtitle: "A social planning app that makes responsible consumption the path of least resistance.",
-        year: "2025",
-        role: "UX Design · Visual Identity",
-        tags: ["Sustainability", "UX", "FoodTech"],
-        note: "Developed as part of a Master's project focused on sustainability and technology.",
-      }}
-      cover={{
-        src: "/projects/savee/cover.webp",
-        alt: "Savee app, three device views (dark, light, color)",
-      }}
-      sections={[
-        /* ─── 01 Overview ─── */
-        {
-          kind: "text",
-          label: "01 · Overview",
-          heading: "A social network designed to end food waste at home.",
-          body: [
-            "Savee treats food planning the way social media treats content discovery: an infinite, personalised feed of recipe videos. Behind the scroll sits a complete system: a smart pantry, an auto-updated shopping list, a weekly cooking calendar, and an alert engine that acts before ingredients expire.",
-            "The result is an app that doesn't just inspire cooking. It closes the loop between what you watch, what you buy, and what you actually eat.",
-          ],
-          image: {
-            src: "/projects/savee/logo.webp",
-            alt: "Savee app - launch screen",
-            position: "right",
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <V2CaseStudy
+        currentSlug="savee"
+        coverScreen="savee"
+        tint="#E9F2EB"
+        tintDark="#161B17"
+        meta={{
+          index: "04",
+          title: "Savee",
+          subtitle:
+            "A recipe feed where saving something schedules it, and the shopping list writes itself in the right quantities. Responsible consumption as the path of least resistance.",
+          year: "2025",
+          role: "UX Design · Visual Identity",
+          tags: ["Mobile", "Sustainability", "FoodTech"],
+          status: "Master's project, 2025",
+        }}
+        sections={[
+          {
+            kind: "columns",
+            label: "00 · Overview",
+            heading: "A recipe feed that leaves a shopping list behind it.",
+            columns: [
+              {
+                title: "My role",
+                body: "Zero to one, alone: the research framing, the product concept, every flow and screen, and the visual identity. Built as part of a Master's project on sustainability and technology.",
+              },
+              {
+                title: "The challenge",
+                body: "Household food waste is not a knowledge problem. People know it is wasteful. It happens because deciding what to cook is effort and buying is easy, so the wasteful path is always the path of least resistance.",
+              },
+              {
+                title: "The goal",
+                body: "Swap those two around. Attach the plan to the thing people already do for fun, which is watching food videos, and let the shopping list be a by-product rather than a chore.",
+              },
+            ],
+            meta: "Aligned with UN Sustainable Development Goal 12.3",
           },
-        },
 
-        /* ─── 02 Context ─── */
-        {
-          kind: "text",
-          label: "02 · Context",
-          heading: "Why Savee?",
-          body: [
-            "According to the UNEP Food Waste Index 2024, the world throws away more than 1 billion meals a day. The biggest contributor isn't industry, it's the household.",
-          ],
-          stats: [
-            {
-              icon: "percent",
-              number: "60%",
-              caption:
-                "of global food waste comes from households. Around 631 million tonnes a year.",
-            },
-            {
-              icon: "triangle",
-              number: "30–40%",
-              caption:
-                "of food gets thrown out straight from the fridge, mostly impulse buys that never had a recipe attached.",
-            },
-            {
-              icon: "globe",
-              number: "1B+",
-              caption:
-                "meals wasted every day worldwide (UNEP Food Waste Index 2024).",
-            },
-          ],
-          footer:
-            "Poor storage makes it worse: ethylene gas and mould create a domino effect. The fix isn't willpower. It's better planning tools.",
-        },
-
-        /* ─── 03 Onboarding ─── */
-        {
-          kind: "questions",
-          label: "03 · Onboarding",
-          heading: "Eight questions that personalise everything.",
-          body: [
-            "Before the feed appears, Savee asks a short set of questions. Every answer shapes the algorithm, the shopping cadence, and the portion sizes, right from day one.",
-          ],
-          items: [
-            {
-              question: "What do you like to eat?",
-              hint: "Cuisine types · multi-select",
-            },
-            {
-              question: "Which meals do you cook at home?",
-              hint: "Breakfast · lunch · dinner · brunch · snacks",
-            },
-            {
-              question: "Any dietary requirements?",
-              hint: "Vegan · vegetarian · gluten-free · halal · allergies",
-            },
-            {
-              question: "How often do you shop for groceries?",
-              hint: "Twice a week · weekly · bi-weekly · monthly",
-            },
-            {
-              question: "How many people do you cook for?",
-              hint: "Household size · adjusts portions automatically",
-            },
-            {
-              question: "What's your cooking skill level?",
-              hint: "Beginner ≤ 30 min · home cook · enthusiast 1 h+",
-            },
-            {
-              question: "How much time do you have on weekdays?",
-              hint: "Quick < 20 min · moderate 30–45 min · no rush",
-            },
-            {
-              question: "What kitchen equipment do you have?",
-              hint: "Oven · air fryer · slow cooker · wok · etc.",
-            },
-          ],
-        },
-
-        /* ─── 04 The feed ─── */
-        {
-          kind: "list",
-          label: "04 · The feed",
-          heading: "Social media-simple. Infinitely useful.",
-          body: [
-            "The core interface is a vertical video feed. Each interaction on the right-hand action bar does one thing, and together they drive the whole planning loop.",
-          ],
-          items: [
-            {
-              title: "♥ Like",
-              body: "Signals interest to the algorithm. The more you like, the more the feed learns your taste. Cuisine, time, difficulty, and season all adapt quietly.",
-            },
-            {
-              title: "Save",
-              body: "Bookmarks a video without committing to it. Saved recipes have their own tab and can be moved to the cooking calendar whenever you're ready.",
-            },
-            {
-              title: "🍴+ Add to list",
-              body: "Adds the recipe to the active shopping list and immediately asks when you want to cook it. One tap and the week is planned.",
-            },
-            {
-              title: "Creator card",
-              body: "At the bottom of every video is the creator's name and a short recipe title. Tap it to see the full recipe, ingredients, difficulty, and estimated cook time.",
-            },
-            {
-              title: "+ Post (creator)",
-              body: "Creators (and eventually regular users) upload recipe videos through the + button. The community builds the catalogue.",
-            },
-          ],
-        },
-
-        /* ─── 05 Calendar ─── */
-        {
-          kind: "text",
-          label: "05 · Calendar & schedule",
-          heading: "Plan the week. Never wonder what's for dinner.",
-          body: [
-            "After adding a recipe to the shopping list, Savee shows a horizontal week view. Each day column shows what's already scheduled, and a + button lets you slot the new recipe into any open day.",
-            "The calendar is the connective tissue of the app. It links discovery (the feed) to action (shopping and cooking) and feeds back into the daily reminders.",
-          ],
-          image: {
-            src: "/projects/savee/home-1.webp",
-            alt: "Savee calendar scheduling view",
-            position: "right",
-            bg: "bg-[#0a0a0a]",
+          {
+            kind: "text",
+            label: "01 · Context",
+            heading: "Most of the problem is in the kitchen, not the supply chain.",
+            body: [
+              "The framing everyone reaches for is industrial: farms, transport, supermarkets. The numbers point somewhere much less convenient, which is the fridge in your own kitchen.",
+              "That reframing is what the whole product rests on. If most of the loss happens at home, then the intervention has to live in the ordinary week, in the gap between buying food and deciding what to cook.",
+            ],
+            stats: [
+              {
+                number: "60%",
+                caption:
+                  "of global food waste comes from households. Around 631 million tonnes a year.",
+              },
+              {
+                number: "30 to 40%",
+                caption:
+                  "of food is thrown out straight from the fridge, mostly impulse buys that never had a recipe attached.",
+              },
+              {
+                number: "1B+",
+                caption:
+                  "meals wasted every day worldwide, according to the UNEP Food Waste Index 2024.",
+              },
+            ],
           },
-        },
 
-        /* ─── 06 Fork — shopping list ─── */
-        {
-          kind: "list",
-          label: "06 · Fork, shopping list",
-          heading: "One toggle. Two views.",
-          body: [
-            "The Fork tab is the operational core of Savee. A toggle in the top-right switches between the flat shopping list and the recipe card view: two ways of looking at the same data.",
-          ],
-          items: [
-            {
-              title: "Smart shopping list",
-              body: "Pulls all ingredients from your scheduled recipes, grouped by category and sorted by aisle. Savee subtracts what's already in your pantry and flags duplicates. Live shopping mode lets you check items off as you go.",
-            },
-            {
-              title: "Recipe card view (toggle)",
-              body: "Switches to a card-per-recipe layout showing difficulty, scheduled date (moveable), estimated cook time, and a full ingredient breakdown.",
-            },
-            {
-              title: "Live portion sync",
-              body: "Move the servings slider on any recipe card and the ingredient quantities update instantly, in the card and in the shopping list. Cook for two or ten without doing the math yourself.",
-            },
-            {
-              title: "Moveable cooking date",
-              body: "Drag the date chip on a recipe card to reschedule. The calendar and shopping cadence update right away. No friction, no double-entry.",
-            },
-            {
-              title: "Ingredient-level expiry awareness",
-              body: "Ingredients from past purchases carry an estimated expiry date. When one gets close, a warning icon appears on the relevant recipe card so you can cook it before it's wasted.",
-            },
-          ],
-        },
-
-        /* ─── 07 Anti-waste loop ─── */
-        {
-          kind: "text",
-          label: "07 · Anti-waste loop",
-          heading: "The app that remembers what your fridge forgets.",
-          body: [
-            "Every day you open Savee, it surfaces the recipe you should cook today. No searching, no indecision. The daily push notification shows the video thumbnail, the cook time, and the first three ingredients.",
-            "A second alert watches the pantry for ingredients that weren't used in past recipes and are getting close to expiry. It suggests a recipe that uses them, turning near-waste into tonight's dinner.",
-            "If food does get wasted, Savee logs it on your profile so you can spot patterns over time and adjust your shopping frequency or portion sizes. Awareness is the last resort. Prevention is the whole point.",
-          ],
-          image: {
-            src: "/projects/savee/shopping-list.webp",
-            alt: "Savee shopping list with expiry alerts",
-            position: "right",
-            bg: "bg-[#0a0a0a]",
+          {
+            kind: "wires",
+            label: "02 · From the file",
+            heading: "The four screens the whole app is made of.",
+            body: [
+              "Exported straight from the Figma file. There are only four surfaces, and the argument is in how few there are: discovery, one recipe, one list, and the mark that ties them together.",
+            ],
+            frames: [
+              {
+                src: "/projects/savee/process/feed.webp",
+                title: "Home",
+                note: "A recipe playing full bleed, the creator's handle underneath, and a rail of actions down the right edge. The fork is the one that matters: it schedules the meal and starts the list.",
+                w: 390,
+                h: 844,
+              },
+              {
+                src: "/projects/savee/process/search.webp",
+                title: "Search",
+                note: "Discovery by cuisine rather than by ingredient: German, Vegan, Street, Healthy. People look for a mood, not for what is about to expire, and the app meets them there.",
+                w: 390,
+                h: 844,
+              },
+              {
+                src: "/projects/savee/process/recipe.webp",
+                title: "Recipe, scheduled",
+                note: "Schedule for a date, adjust portions with a stepper, and the ingredients for this recipe listed underneath. Changing the portions rewrites every quantity below it.",
+                w: 390,
+                h: 844,
+              },
+              {
+                src: "/projects/savee/process/list.webp",
+                title: "My shopping list",
+                note: "Everything from every scheduled recipe, summed and grouped by aisle: Veggies and Fruits, Bakery, Butcher. Ticked items strike through rather than disappear.",
+                w: 390,
+                h: 844,
+              },
+            ],
           },
-        },
 
-        /* ─── 08 Navigation ─── */
-        {
-          kind: "list",
-          label: "08 · Navigation",
-          heading: "Five destinations. Zero friction.",
-          body: [
-            "The bottom navigation covers every intent in the app. The order is deliberate: discovery first, action last.",
-          ],
-          items: [
-            {
-              title: "Home",
-              body: "The personalised feed. Infinite vertical scroll of recipe videos shaped by your preferences, cooking history, and what's in your pantry.",
+          {
+            kind: "text",
+            label: "03 · The mechanic",
+            heading: "Save a recipe, and three things happen at once.",
+            body: [
+              "The feed is the whole surface: a recipe plays full bleed, with the creator's handle and a rail of actions down the right edge. One of those actions is the fork, and it is the only one that matters.",
+              "Tapping it schedules the recipe to a date, sizes it to your portions, and folds its ingredients into a single shopping list. Nothing is typed, no plan is filled in, and the list is never maintained: it is what the saved recipes add up to.",
+              "The portion stepper is the quiet centrepiece. Cooking for two instead of four halves every quantity on the list, which is the difference between buying a kilo of potatoes and buying what the week actually eats.",
+            ],
+            image: {
+              src: "/projects/savee/home-1.webp",
+              alt: "Savee, a recipe playing full bleed with the save actions down the right edge",
+              caption: "The feed, where the planning happens without looking like planning",
+              w: 1170,
+              h: 2532,
             },
-            {
-              title: "Search",
-              body: "Find recipes by ingredient, cuisine, dietary filter, difficulty, or cook time. Works for planned searches and for 'what can I make with spinach?' moments alike.",
-            },
-            {
-              title: "Fork",
-              body: "The shopping list and recipe schedule in one place. Toggle between the flat list and the card-per-recipe view. The operational core of the app.",
-            },
-            {
-              title: "Saved",
-              body: "Two sub-tabs: bookmarked videos for future inspiration, and cooked recipes with ratings. Everything you've interacted with, in one place.",
-            },
-            {
-              title: "Profile",
-              body: "All onboarding preferences are editable here: diet, skill level, household size, shopping frequency, equipment. Also shows waste-saved stats and cooking streaks.",
-            },
-          ],
-        },
-
-        /* ─── 09 Design ─── */
-        {
-          kind: "text",
-          label: "09 · Design & identity",
-          heading: "Fresh, vital, environmental by default.",
-          body: [
-            "The visual language uses vibrant greens and a confident display typeface to communicate freshness and environmental intent, without the guilt-trip tone that most sustainability apps default to.",
-            "The interface is dark-first to put recipe videos front and centre. The fork-and-plough mark connects the origin of food to the plate: a minimal icon that encodes the whole philosophy.",
-          ],
-          image: {
-            src: "/projects/savee/asset-4.svg",
-            alt: "Savee visual identity system",
-            width: "25%",
           },
-        },
 
-        /* ─── 10 Impact ─── */
-        {
-          kind: "text",
-          label: "10 · Impact",
-          heading: "Cutting waste by 25% in the first year.",
-          body: [
-            "Savee's measurable goal is to reduce per-capita household food waste by 25% within the first year of consistent use. It's a direct contribution to UN SDG 12.3, which targets halving global food waste by 2030.",
-            "The approach is behavioural, not punitive: better planning, better awareness, better habits. When the daily loop becomes routine, waste reduction is just what happens.",
-          ],
-          stats: [
-            {
-              icon: "percent",
-              number: "25%",
-              caption:
-                "target reduction in per-capita household food waste within the first year.",
+          {
+            kind: "text",
+            label: "04 · The list",
+            heading: "One list, grouped the way a shop is.",
+            body: [
+              "Every saved recipe feeds the same list, and the list is grouped by aisle rather than by recipe: Veggies and Fruits, Bakery, Butcher. That grouping is the whole reason it works in the shop, because nobody walks a supermarket recipe by recipe.",
+              "Quantities are summed across recipes and shown in the units the shop uses, grams, packets and pieces. Ticking something off strikes it through rather than deleting it, so at the till you can still see what the week was supposed to be.",
+            ],
+            image: {
+              src: "/projects/savee/shopping-list.webp",
+              alt: "Savee, the shopping list grouped by aisle with quantities summed across recipes",
+              caption: "Aisle by aisle, in the units the shop uses",
+              w: 1170,
+              h: 2532,
             },
-            {
-              icon: "leaf",
-              number: "SDG 12.3",
-              caption:
-                "aligned with the UN goal of halving global food waste by 2030.",
-            },
-            {
-              icon: "bolt",
-              number: "Daily",
-              caption:
-                "engagement loop: one reminder, one recipe, one less wasted ingredient per day.",
-            },
-          ],
-        },
+          },
 
-        /* ─── 11 Screens ─── */
-        {
-          kind: "screens",
-          label: "11 · Screens",
-          heading: "The app in motion.",
-          body: [
-            "Key screens from the Home feed, recipe discovery, and the Shopping List: the three surfaces users spend the most time with in the daily loop.",
-          ],
-          images: [
-            {
-              src: "/projects/savee/1.webp",
-              alt: "Savee · Screen 1",
+          {
+            kind: "flow",
+            label: "05 · The anti-waste loop",
+            heading: "Nothing is bought without a meal already pointing at it.",
+            body: [
+              "The loop closes because the list can only ever contain ingredients that a scheduled recipe asked for, at the portion size you set. An impulse buy has nowhere to enter.",
+            ],
+            caption: "Discovery, planning and the shopping list are the same gesture.",
+            spec: {
+              phases: ["1 · Watch", "2 · Save", "3 · Shop", "4 · Cook"],
+              nodes: [
+                {
+                  id: "feed",
+                  col: 1,
+                  row: 2,
+                  kind: "start",
+                  title: "A recipe plays",
+                  sub: "short, full bleed, one after another",
+                },
+                {
+                  id: "keep",
+                  col: 2,
+                  row: 2,
+                  kind: "decision",
+                  title: "Worth cooking",
+                },
+                {
+                  id: "date",
+                  col: 3,
+                  row: 1,
+                  title: "Schedule it",
+                  sub: "the recipe lands on a day",
+                },
+                {
+                  id: "portions",
+                  col: 3,
+                  row: 2,
+                  kind: "auto",
+                  title: "Sized to your portions",
+                  sub: "every quantity scales with the stepper",
+                },
+                {
+                  id: "list",
+                  col: 3,
+                  row: 3,
+                  kind: "auto",
+                  title: "Folded into the list",
+                  sub: "grouped by aisle, summed across recipes",
+                },
+                {
+                  id: "shop",
+                  col: 4,
+                  row: 2,
+                  title: "Buy exactly that",
+                  sub: "nothing on the list without a meal behind it",
+                },
+                {
+                  id: "cook",
+                  col: 4,
+                  row: 3,
+                  kind: "end",
+                  title: "Cook what you bought",
+                  sub: "the week closes with an empty fridge, on purpose",
+                },
+              ],
+              edges: [
+                { from: "feed", to: "keep" },
+                { from: "keep", to: "date", label: "yes" },
+                { from: "keep", to: "feed", label: "no", dashed: true },
+                { from: "date", to: "portions" },
+                { from: "portions", to: "list" },
+                { from: "list", to: "shop" },
+                { from: "shop", to: "cook" },
+              ],
             },
-            {
-              src: "/projects/savee/2.webp",
-              alt: "Savee · Screen 2",
-            },
-            {
-              src: "/projects/savee/3.webp",
-              alt: "Savee · Screen 3",
-            },
-            {
-              src: "/projects/savee/4.webp",
-              alt: "Savee · Screen 4",
-            },
-            {
-              src: "/projects/savee/5.webp",
-              alt: "Savee · Screen 5",
-            },
-            {
-              src: "/projects/savee/6.webp",
-              alt: "Savee · Screen 6",
-            },
-          ],
-        },
+          },
 
-        /* ─── 12 User flow ─── */
-        {
-          kind: "flow",
-          variant: "savee",
-          label: "12 · User flow",
-          heading: "End-to-end journey.",
-          body: [
-            "From first login to daily waste-free cooking. One continuous loop across four phases: Onboarding, Discover & Schedule, Shop & Cook, Track & Loop.",
-          ],
-        },
-      ]}
-    />
+          {
+            kind: "gallery",
+            label: "06 · Screens",
+            heading: "The app in use.",
+            columns: 3,
+            body: [
+              "Discovery by cuisine, a recipe scheduled with its portions and its own list, and the one list everything adds up to.",
+            ],
+            images: [
+              {
+                src: "/projects/savee/2.webp",
+                alt: "Savee, search with cuisine filters and a grid of short recipe videos",
+                caption: "Search, by cuisine rather than by ingredient",
+                w: 1170,
+                h: 2532,
+              },
+              {
+                src: "/projects/savee/3.webp",
+                alt: "Savee, a recipe scheduled to a date with a portion stepper and its ingredient list",
+                caption: "A recipe, dated and sized",
+                w: 1170,
+                h: 2532,
+              },
+              {
+                src: "/projects/savee/1.webp",
+                alt: "Savee, the aggregated shopping list with items ticked off",
+                caption: "Everything the week needs, in one list",
+                w: 1170,
+                h: 2532,
+              },
+            ],
+          },
+
+          {
+            kind: "text",
+            label: "07 · Identity",
+            heading: "Dark, quick, and never preachy.",
+            image: {
+              src: "/projects/savee/process/logo.webp",
+              alt: "Savee, the wordmark on the dark splash screen",
+              caption: "The wordmark, from the file",
+              w: 390,
+              h: 844,
+            },
+            body: [
+              "Sustainability design defaults to guilt: earth tones, wilting leaves, a quiet accusation. That was the one thing to avoid, because guilt is a terrible daily companion and this app has to be opened on a Tuesday when nobody feels like cooking.",
+              "So the interface is dark and the food is the only thing with colour in it, which is how every video app that people actually enjoy is built. One green accent carries the brand and marks the single action that matters, saving a recipe. Green because the food is green, not because the cause is.",
+            ],
+          },
+
+          {
+            kind: "text",
+            label: "08 · Target",
+            heading: "A quarter less waste in the first year.",
+            tone: "band",
+            body: [
+              "The project set a target of cutting per capita household food waste by 25% in the first year of use, against the UN's goal of halving global food waste by 2030.",
+              "It is a target, not a result. Savee was designed and prototyped as a Master's project, not shipped to households, so what is defensible here is the reasoning and the design, not an outcome.",
+            ],
+            stats: [
+              {
+                number: "25%",
+                caption:
+                  "target reduction in per capita household food waste within the first year.",
+              },
+              {
+                number: "SDG 12.3",
+                caption:
+                  "the UN goal of halving global food waste by 2030, which the target is set against.",
+              },
+              {
+                number: "Daily",
+                caption:
+                  "the engagement loop: one reminder, one recipe, one less wasted ingredient.",
+              },
+            ],
+          },
+
+          {
+            kind: "text",
+            label: "09 · Reflections",
+            heading: "Make the good thing the lazy thing.",
+            lead: true,
+            body: [
+              "The research kept saying the same thing in different words: nobody wastes food on purpose, they waste it because planning costs effort at the exact moment they have none. Any design that answers that with education is answering the wrong question.",
+              "So the whole product is one move, repeated. Put the plan first, derive everything else from it, and let the sustainable outcome be a side effect of the easiest available path. That is the idea I have taken into every project since.",
+            ],
+          },
+        ]}
+      />
+    </>
   );
 }

@@ -1,34 +1,84 @@
 import type { Metadata } from "next";
-import { CaseStudy } from "@/components/CaseStudy";
+import { V2CaseStudy } from "@/components/v2/V2CaseStudy";
+
+const SITE = "https://juliang.de";
 
 export const metadata: Metadata = {
-  title: "TaurusWebs | Julian Giraldo",
+  title: "TaurusWebs, bulk farm setup | Julian Giraldo",
   description:
-    "Bulk Farm Setup for TaurusWebs: an editable table that cut farm setup from six hours to one and got ranchers to digitize the whole herd instead of only the key animals. Adopted by 100% of new farms and by Fedegán, Colombia's cattle federation.",
+    "Bulk Farm Setup for TaurusWebs: an editable table that cut farm setup from six hours to one, moved 100% of new farms and 98% of tracked farms onto bulk entry, and took Fedegán's monthly load from roughly 167 hours to under 33.",
+  alternates: { canonical: `${SITE}/work/taurus` },
+  openGraph: {
+    type: "article",
+    title: "TaurusWebs, bulk farm setup",
+    description:
+      "An editable table that cut farm setup from six hours to one, and got ranchers to digitize the whole herd.",
+    url: `${SITE}/work/taurus`,
+    images: [`${SITE}/projects/taurus/hero.webp`],
+  },
 };
 
-export default function TaurusPage() {
+/* The case study as data, so an assistant summarising this page for a
+   recruiter reads the role, the dates and the outcome directly. */
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "TaurusWebs, bulk farm setup",
+  description:
+    "An editable table that cut farm setup from six hours to one, and got ranchers to digitize the whole herd instead of just the key animals.",
+  image: `${SITE}/projects/taurus/hero.webp`,
+  url: `${SITE}/work/taurus`,
+  datePublished: "2020-01-01",
+  author: {
+    "@type": "Person",
+    name: "Julian Giraldo",
+    jobTitle: "Product Designer",
+    url: `${SITE}`,
+  },
+  about: {
+    "@type": "SoftwareApplication",
+    name: "TaurusWebs",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    description:
+      "A livestock SaaS for cattle ranchers: herd records, weights, sanitary plans, and digital modules for biomass, bromatology, fertilization and per-farm CO2 footprint.",
+  },
+  keywords:
+    "product design, UX research, B2B SaaS, agtech, bulk data entry, onboarding, editable table",
+};
+
+/* Same case study as /work/taurus, told in the v2 language. Kept as its own
+   route while v2 is under review, so the live page is untouched. */
+export default function TaurusV2Page() {
   return (
-    <CaseStudy
-      currentSlug="taurus"
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <V2CaseStudy
       meta={{
-        index: "03",
+        index: "02",
         title: "TaurusWebs",
         subtitle:
           "An editable table that cut farm setup from six hours to one, and got ranchers to digitize the whole herd instead of just the key animals.",
-        year: "2024–2025",
+        year: "2020",
         role: "Product Design · UX · Research",
         tags: ["Web", "SaaS", "Agtech"],
-        status: "Shipped · 2025",
-        note: "Real product work · no NDA · TaurusWebs livestock platform",
+        status: "Shipped, 2020",
       }}
       cover={{
         src: "/projects/taurus/hero.webp",
         alt: "TaurusWebs · Bulk Farm Setup table",
+        w: 2880,
+        h: 1440,
       }}
+      tint="#E7EEF8"
+      tintDark="#15191F"
+      currentSlug="taurus"
       sections={[
         {
-          kind: "overview",
+          kind: "columns",
           label: "00 · Overview",
           heading: "The first data load decided whether the product was worth it.",
           columns: [
@@ -59,15 +109,14 @@ export default function TaurusPage() {
           image: {
             src: "/projects/taurus/product-fertilizacion.jpg",
             alt: "TaurusWebs Expert · digital fertilization module with nutrient tables",
-            position: "right",
-            width: "55%",
-            align: "center",
             caption: "TaurusWebs Expert · one of the modules the loaded data feeds",
+            w: 907,
+            h: 1600,
           },
         },
 
         {
-          kind: "overview",
+          kind: "columns",
           label: "02 · The domain",
           heading: "Before the software helps, it has to know the entire farm.",
           columns: [
@@ -97,19 +146,16 @@ export default function TaurusPage() {
           ],
           stats: [
             {
-              icon: "bolt",
               number: "5 min",
               caption:
                 "per animal through the single-record form: open, fill six fields, save, repeat.",
             },
             {
-              icon: "triangle",
               number: "~6 h",
               caption:
                 "to load a standard 70-animal farm, so in practice it rarely got finished.",
             },
             {
-              icon: "dot",
               number: "Few",
               caption:
                 "animals actually entered: clients loaded the key ones and gave up on the rest.",
@@ -119,12 +165,47 @@ export default function TaurusPage() {
 
         {
           kind: "flow",
-          variant: "taurus-before",
           label: "03b · Before",
           heading: "The old flow: one animal, then the same form again.",
           body: [
             "Every animal meant reopening the single-record form and filling the same six fields. Multiply by a 70-head herd and the loop is the whole problem, so people abandoned it.",
           ],
+          caption: "The dashed wire is the whole problem: every animal sends you back to the same form.",
+          spec: {
+            phases: [
+              "1 · New record",
+              "2 · Add animal",
+              "3 · Fill six fields",
+              "4 · Save, then again",
+            ],
+            nodes: [
+              { id: "farm", col: 1, row: 1, kind: "start", title: "New farm", sub: "nothing in the system yet" },
+              { id: "open", col: 1, row: 2, title: "Open animals", sub: "registry module" },
+              { id: "add", col: 2, row: 2, title: "Add animal", sub: "the single record form" },
+              {
+                id: "fill",
+                col: 3,
+                row: 2,
+                title: "Type every field",
+                sub: "tag #, breed, sex, birth date, weight, lot",
+                note: "roughly five minutes each",
+              },
+              { id: "missing", col: 3, row: 4, kind: "alert", title: "Missing field", sub: "blocks the save, back to the form" },
+              { id: "save", col: 4, row: 2, title: "Save", sub: "one record, 69 to go" },
+              { id: "more", col: 4, row: 3, kind: "decision", title: "More animals to add" },
+              { id: "gave", col: 4, row: 4, kind: "alert", title: "Gave up", sub: "only the key animals entered, and nobody trusts the data" },
+            ],
+            edges: [
+              { from: "farm", to: "open" },
+              { from: "open", to: "add" },
+              { from: "add", to: "fill" },
+              { from: "fill", to: "missing", label: "empty" },
+              { from: "fill", to: "save" },
+              { from: "save", to: "more" },
+              { from: "more", to: "fill", label: "yes, again", dashed: true },
+              { from: "more", to: "gave", label: "no patience left" },
+            ],
+          },
         },
 
         {
@@ -190,6 +271,38 @@ export default function TaurusPage() {
         },
 
         {
+          kind: "wires",
+          label: "05b · What we tried",
+          heading: "Four ways to get a herd into the system.",
+          body: [
+            "Everything had to survive the same test: a rancher with 70 animals and a spreadsheet he had kept for years. These are the frames that got drawn before the table won.",
+          ],
+          frames: [
+            {
+              slug: "oneform",
+              title: "The form that existed",
+              note: "Six fields, one animal, save, repeat. The baseline we were replacing, drawn out so the loop was impossible to argue with.",
+            },
+            {
+              slug: "wizard",
+              title: "Batch wizard",
+              note: "The same form cut into steps, filling a batch at a time. Fewer fields on screen, but it still walks you through the herd one group at a time.",
+            },
+            {
+              slug: "import",
+              title: "Upload and map",
+              note: "Drop the spreadsheet, then say which column is which. Fastest for anyone who already had a file, useless for anyone who did not.",
+            },
+            {
+              slug: "grid",
+              title: "Editable table",
+              chosen: true,
+              note: "Every animal a row, every attribute a column, paste supported and validation in the row. The one surface that worked whether the herd arrived as a file or as a memory.",
+            },
+          ],
+        },
+
+        {
           kind: "bulktable",
           label: "06 · Solution",
           heading: "One editable table that ingests an entire farm.",
@@ -197,25 +310,82 @@ export default function TaurusPage() {
             "Instead of a form per animal, TaurusWebs got a table mode: every animal is a row, every attribute a column, and the whole herd is filled, corrected, and submitted in a single pass. The same surface people already used to think about their cattle became the surface they entered it through.",
             "Toggle below between the old one-by-one form and the table that replaced it.",
           ],
-          footer:
+          caption:
             "Visuals recreated for this case study. The live TaurusWebs UI looks different, but the interaction model is the one that shipped.",
         },
 
         {
           kind: "flow",
-          variant: "taurus-after",
           label: "06b · After",
           heading: "The new flow: one table, filled, checked, ingested.",
           body: [
             "Eligible farms open straight into the table. Rows get pasted or filled with presets, validation flags bad data inline, and the whole herd is selected and ingested in a single pass.",
           ],
+          caption: "Every branch merges into one validated ingest. No wire goes back.",
+          spec: {
+            phases: [
+              "1 · Choose paddock",
+              "2 · Where they come from",
+              "3 · Names and detail",
+              "4 · Add to system",
+            ],
+            nodes: [
+              {
+                id: "paddock",
+                col: 1,
+                row: 2,
+                kind: "start",
+                title: "Create or select a paddock",
+                sub: "where this batch of animals lands",
+              },
+              { id: "move", col: 2, row: 2, kind: "decision", title: "Moving animals you already have" },
+              { id: "sheet", col: 2, row: 3, kind: "decision", title: "Import from a sheet" },
+              { id: "select", col: 3, row: 1, title: "Select them", sub: "they keep their history" },
+              {
+                id: "migrate",
+                col: 3,
+                row: 2,
+                kind: "auto",
+                title: "Migrate the sheet",
+                sub: "the herd they already kept in Excel",
+              },
+              { id: "create", col: 3, row: 3, title: "Create new animals", sub: "say how many, get that many rows" },
+              {
+                id: "autofill",
+                col: 3,
+                row: 4,
+                kind: "auto",
+                title: "Auto fill",
+                sub: "presets and fill down handle the repeating columns",
+              },
+              {
+                id: "validate",
+                col: 4,
+                row: 2,
+                title: "Validation before ingest",
+                sub: "bad weights and duplicate tags flagged in the row",
+              },
+              { id: "add", col: 4, row: 3, kind: "end", title: "Add animals", sub: "the whole herd, one pass" },
+            ],
+            edges: [
+              { from: "paddock", to: "move" },
+              { from: "move", to: "select", label: "yes" },
+              { from: "move", to: "sheet", label: "no" },
+              { from: "sheet", to: "migrate", label: "yes" },
+              { from: "sheet", to: "create", label: "no" },
+              { from: "create", to: "autofill" },
+              { from: "select", to: "validate" },
+              { from: "migrate", to: "validate" },
+              { from: "autofill", to: "validate" },
+              { from: "validate", to: "add" },
+            ],
+          },
         },
 
         {
           kind: "gallery",
           label: "07 · From sketch to spec",
           heading: "How the table took shape before it shipped.",
-          layout: "grid",
           columns: 3,
           body: [
             "The interaction went from a rough as-is sketch of the spreadsheet workaround, to a table with presets and paste, to an inline validation pass. These wireframes are the artefacts I handed to the developers to build against.",
@@ -225,16 +395,22 @@ export default function TaurusPage() {
               src: "/projects/taurus/wire-01-asis.svg",
               alt: "Wireframe: the as-is spreadsheet workaround",
               caption: "01 · As-is: they already work in rows",
+              w: 800,
+              h: 560,
             },
             {
               src: "/projects/taurus/wire-02-table.svg",
               alt: "Wireframe: table mode with presets and paste",
               caption: "02 · Table mode: presets, paste, fill-down",
+              w: 800,
+              h: 560,
             },
             {
               src: "/projects/taurus/wire-03-validation.svg",
               alt: "Wireframe: inline validation before ingest",
               caption: "03 · Validation before ingest",
+              w: 800,
+              h: 560,
             },
           ],
         },
@@ -277,10 +453,9 @@ export default function TaurusPage() {
           image: {
             src: "/projects/taurus/julian-event.jpg",
             alt: "Julian at a TaurusWebs company event",
-            position: "right",
-            width: "55%",
-            align: "center",
             caption: "The company's events are always a good time.",
+            w: 1050,
+            h: 1400,
           },
         },
 
@@ -288,18 +463,22 @@ export default function TaurusPage() {
           kind: "gallery",
           label: "09b · Bootcamp 4.0",
           heading: "Presenting and onboarding, in the same room.",
-          layout: "grid",
           columns: 2,
+          tone: "band",
           images: [
             {
               src: "/projects/taurus/bootcamp-director.jpg",
               alt: "A company director presenting TaurusWebs at Bootcamp 4.0",
               caption: "Directors presenting the new tools on stage",
+              w: 793,
+              h: 1400,
             },
             {
               src: "/projects/taurus/bootcamp-night.jpg",
               alt: "Ranchers onboarding their farms on laptops at Bootcamp 4.0",
               caption: "Ranchers loading their own herds, hands on",
+              w: 773,
+              h: 1400,
             },
           ],
         },
@@ -308,34 +487,23 @@ export default function TaurusPage() {
           kind: "text",
           label: "10 · Results",
           heading: "It became the way every farm starts.",
+          tone: "band",
           body: [
             "Bulk setup is now the default first step for onboarding a farm, so 100% of new farms come in through it. Even among existing farms already being tracked, 98% moved to bulk, leaving one-by-one entry only to a few very small or legacy clients.",
             "The clearest proof came from Fedegán, Colombia's cattle ranchers' federation, which loads around 2,000 records a month across its farms. At the old rate of five minutes per animal that was roughly 167 hours of monthly data entry. Through the table it dropped to under 33.",
           ],
-          image: {
-            src: "/projects/taurus/fedegan-logo.png",
-            alt: "Fedegán · Colombia's cattle ranchers' federation",
-            position: "below",
-            width: "240px",
-            align: "left",
-            bg: "bg-white px-6 py-5 border border-border",
-            caption: "Fedegán · ~2,000 records a month, loaded through bulk",
-          },
           stats: [
             {
-              icon: "percent",
               number: "100%",
               caption:
                 "of new farms now onboard through bulk setup: it's the default first step.",
             },
             {
-              icon: "bolt",
               number: "98%",
               caption:
                 "of existing tracked farms moved to bulk over one-by-one entry.",
             },
             {
-              icon: "triangle",
               number: "167 → 33 h",
               caption:
                 "Fedegán's monthly load for ~2,000 records, from roughly 167 hours to under 33.",
@@ -344,10 +512,36 @@ export default function TaurusPage() {
         },
 
         {
+          kind: "dots",
+          label: "10b · The numbers",
+          heading: "Counted out.",
+          body: [
+            "Adoption runs one way and workload runs the other, so the two rows read in opposite directions.",
+          ],
+          rows: [
+            {
+              label: "New farms onboarding through bulk",
+              value: "100%",
+              total: 10,
+              before: 0,
+              now: 10,
+              note: "Bulk setup is the default first step for a new farm, so every one of them now comes in through the table. Among farms already being tracked, 98% moved across too.",
+            },
+            {
+              label: "Fedegán's monthly data entry",
+              value: "167 h to under 33 h",
+              total: 10,
+              before: 10,
+              now: 2,
+              note: "One dot is roughly seventeen hours. Colombia's cattle ranchers' federation loads around 2,000 records a month; at five minutes per animal that was about 167 hours of typing.",
+            },
+          ],
+        },
+
+        {
           kind: "gallery",
           label: "10b · In their words",
           heading: "A launch with plenty of testimonials.",
-          layout: "grid",
           columns: 3,
           body: [
             "Bulk setup launched alongside a wave of new TaurusWebs tools, and it drew steady testimonials from ranchers on the ground. The team runs surveys continuously, so the feedback keeps coming in rather than stopping at launch day.",
@@ -357,16 +551,22 @@ export default function TaurusPage() {
               src: "/projects/taurus/testimonial-1.jpg",
               alt: "A rancher giving feedback about TaurusWebs at Bootcamp 4.0",
               caption: "Rancher feedback · Bootcamp 4.0",
+              w: 1400,
+              h: 722,
             },
             {
               src: "/projects/taurus/testimonial-2.jpg",
               alt: "A rancher giving feedback about TaurusWebs at Bootcamp 4.0",
               caption: "Rancher feedback · Bootcamp 4.0",
+              w: 1400,
+              h: 719,
             },
             {
               src: "/projects/taurus/testimonial-3.jpg",
               alt: "A rancher giving feedback about TaurusWebs at Bootcamp 4.0",
               caption: "Rancher feedback · Bootcamp 4.0",
+              w: 1400,
+              h: 741,
             },
           ],
         },
@@ -375,6 +575,7 @@ export default function TaurusPage() {
           kind: "text",
           label: "11 · Reflections",
           heading: "Users had already built the fix in Excel.",
+          lead: true,
           body: [
             "The fix wasn't a clever feature. Customers had already worked out the right interaction in their spreadsheets, and the product was fighting it. My job was to remove the funnel and let them work the way they already did.",
             "It also changed how I think about onboarding. The first data load isn't a chore to rush past. It's the moment a customer decides whether the whole product is worth it. Get that part fast and complete, and everything after it finally has data it can rely on.",
@@ -391,6 +592,7 @@ export default function TaurusPage() {
           ],
         },
       ]}
-    />
+      />
+    </>
   );
 }
