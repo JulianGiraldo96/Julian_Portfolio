@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { MotionConfig, motion } from "motion/react";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { TopBar } from "./TopBar";
 import { V2Button } from "./V2Button";
 import { EASE, reveal } from "./motion";
@@ -82,6 +82,70 @@ const other: Tile[] = [
   },
 ];
 
+/* The address is copied, not handed to a mail client: `application@juliang.de`
+   forwards but cannot send, and a mailto opens whatever the machine has
+   registered, which on a borrowed laptop is usually nothing. Both places that
+   show the address use this, so the feedback reads the same in each. */
+function useCopyEmail() {
+  const [copied, setCopied] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+    },
+    [],
+  );
+
+  const copy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setCopied(true);
+      if (timer.current) clearTimeout(timer.current);
+      timer.current = setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  }, []);
+
+  return { copied, copy };
+}
+
+/* Feedback is the glyph swapping, never the label: the label is the address
+   itself and swapping it for "Copied" would resize a button sitting in a
+   centred row and shove the ones beside it. */
+function CopyGlyph({ copied }: { copied: boolean }) {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-[1.15em] w-[1.15em] shrink-0 opacity-80"
+    >
+      {copied ? (
+        <path d="M4.5 12.5 9.5 17.5 19.5 6.5" />
+      ) : (
+        <>
+          <rect x="9" y="9" width="11" height="11" rx="2.5" />
+          <path d="M5 15V5.5A2.5 2.5 0 0 1 7.5 3H15" />
+        </>
+      )}
+    </svg>
+  );
+}
+
+function CopiedStatus({ copied }: { copied: boolean }) {
+  return (
+    <span aria-live="polite" className="sr-only">
+      {copied ? "Email address copied to clipboard" : ""}
+    </span>
+  );
+}
+
 export function V2Home() {
   return (
     <MotionConfig reducedMotion="user">
@@ -100,6 +164,8 @@ export function V2Home() {
 }
 
 function Intro() {
+  const { copied, copy } = useCopyEmail();
+
   return (
     <section aria-label="Introduction" className="pb-16 pt-16 text-center md:pb-24 md:pt-28">
       <p className="v2-rise flex flex-wrap items-center justify-center gap-2">
@@ -128,13 +194,21 @@ function Intro() {
       </p>
 
       <p className="v2-rise v2-rise-3 mt-9 flex flex-wrap items-center justify-center gap-2">
-        <V2Button href={LINKEDIN}>LinkedIn</V2Button>
-        <V2Button href={`mailto:${EMAIL}`} shortLabel="Email">
+        <V2Button href={LINKEDIN} tone="outline">
+          LinkedIn
+        </V2Button>
+        <V2Button
+          onClick={copy}
+          shortLabel="Email"
+          ariaLabel={`Copy email address, ${EMAIL}`}
+          trailing={<CopyGlyph copied={copied} />}
+        >
           {EMAIL}
         </V2Button>
         <V2Button href={CV} tone="outline">
           CV
         </V2Button>
+        <CopiedStatus copied={copied} />
       </p>
     </section>
   );
@@ -272,17 +346,7 @@ function OtherThings() {
 }
 
 function Footer() {
-  const [copied, setCopied] = useState(false);
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(EMAIL);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setCopied(false);
-    }
-  };
+  const { copied, copy } = useCopyEmail();
 
   return (
     <footer
@@ -307,20 +371,13 @@ function Footer() {
         <div className="w-full space-y-2 md:col-span-7 md:max-w-[460px] md:justify-self-end">
           <LinkRow href={CV} label="CV, PDF" />
           <LinkRow href={LINKEDIN} label="LinkedIn" />
-          <div className="flex items-center gap-2">
-            <LinkRow href={`mailto:${EMAIL}`} label={EMAIL} className="flex-1" />
-            <button
-              type="button"
-              onClick={copy}
-              className="min-h-[48px] shrink-0 rounded-2xl border border-[var(--v2-line-strong)] px-4 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--v2-secondary)] transition-colors duration-200 hover:border-[var(--v2-ink)] hover:text-[var(--v2-ink)] motion-safe:active:scale-[0.97]"
-            >
-              {copied ? "Copied" : "Copy"}
-              <span className="sr-only"> email address</span>
-            </button>
-            <span aria-live="polite" className="sr-only">
-              {copied ? "Email address copied to clipboard" : ""}
-            </span>
-          </div>
+          <LinkRow
+            onClick={copy}
+            label={EMAIL}
+            ariaLabel={`Copy email address, ${EMAIL}`}
+            trailing={<CopyGlyph copied={copied} />}
+          />
+          <CopiedStatus copied={copied} />
           <LinkRow href="/" label="Portfolio v1" />
         </div>
       </div>
@@ -337,25 +394,32 @@ function Footer() {
    it, so the whole row commits at once instead of just changing colour. */
 function LinkRow({
   href,
+  onClick,
   label,
+  trailing,
+  ariaLabel,
   className = "",
 }: {
-  href: string;
+  href?: string;
+  onClick?: () => void;
   label: string;
+  trailing?: React.ReactNode;
+  ariaLabel?: string;
   className?: string;
 }) {
-  const external = href.startsWith("http") || href.endsWith(".pdf");
-  return (
-    <motion.a
-      href={href}
-      target={external ? "_blank" : undefined}
-      rel={external ? "noopener noreferrer" : undefined}
-      initial="rest"
-      whileHover="on"
-      whileFocus="on"
-      whileTap={{ scale: 0.995 }}
-      className={`group grain relative isolate flex min-h-[52px] items-center justify-between gap-3 overflow-hidden rounded-2xl bg-[var(--v2-surface)] px-5 font-mono text-[11px] uppercase tracking-[0.14em] ${className}`}
-    >
+  const external = !!href && (href.startsWith("http") || href.endsWith(".pdf"));
+
+  const shared = {
+    "aria-label": ariaLabel,
+    initial: "rest",
+    whileHover: "on",
+    whileFocus: "on",
+    whileTap: { scale: 0.995 },
+    className: `group grain relative isolate flex w-full min-h-[52px] items-center justify-between gap-3 overflow-hidden rounded-2xl bg-[var(--v2-surface)] px-5 text-left font-mono text-[11px] uppercase tracking-[0.14em] ${className}`,
+  };
+
+  const inner = (
+    <>
       <motion.span
         aria-hidden
         variants={{ rest: { scaleX: 0 }, on: { scaleX: 1 } }}
@@ -379,17 +443,45 @@ function LinkRow({
         </motion.span>
       </motion.span>
       {external && <span className="sr-only">(opens in new tab)</span>}
+      {/* the arrow travels the way the link does; a glyph that means something
+          else, like the copy mark, only changes colour */}
       <motion.span
         aria-hidden
-        variants={{
-          rest: { x: 0, y: 0, color: "var(--v2-label)" },
-          on: { x: 3, y: -3, color: "var(--v2-invert-ink)" },
-        }}
+        variants={
+          trailing
+            ? {
+                rest: { color: "var(--v2-label)" },
+                on: { color: "var(--v2-invert-ink)" },
+              }
+            : {
+                rest: { x: 0, y: 0, color: "var(--v2-label)" },
+                on: { x: 3, y: -3, color: "var(--v2-invert-ink)" },
+              }
+        }
         transition={{ duration: 0.32, ease: EASE }}
-        className="relative shrink-0"
+        className="relative flex shrink-0 items-center"
       >
-        ↗
+        {trailing ?? "↗"}
       </motion.span>
+    </>
+  );
+
+  if (!href) {
+    return (
+      <motion.button type="button" onClick={onClick} {...shared}>
+        {inner}
+      </motion.button>
+    );
+  }
+
+  return (
+    <motion.a
+      href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      {...shared}
+    >
+      {inner}
     </motion.a>
   );
 }

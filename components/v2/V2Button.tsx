@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { EASE } from "./motion";
 
 /* The contact buttons.
@@ -16,28 +16,36 @@ import { EASE } from "./motion";
    same words is motion that says nothing.
 
    Under prefers-reduced-motion the flood is skipped and the button is a plain
-   swap on hover. */
+   swap on hover.
+
+   With `href` it is a link, with `onClick` it is a real <button>. Same shape
+   either way, so the copy action sits in the row without looking bolted on. */
 
 export function V2Button({
   href,
+  onClick,
   children,
   shortLabel,
+  trailing,
+  ariaLabel,
   tone = "solid",
 }: {
-  href: string;
+  href?: string;
+  onClick?: () => void;
   children: React.ReactNode;
   shortLabel?: string;
+  trailing?: React.ReactNode;
+  ariaLabel?: string;
   tone?: "solid" | "outline";
 }) {
-  const ref = useRef<HTMLAnchorElement>(null);
   const prefersReduced = useReducedMotion();
   const [hover, setHover] = useState(false);
   /* where the pointer crossed the edge, so the disc grows from there */
   const [origin, setOrigin] = useState({ x: 50, y: 50 });
 
-  const enter = (e: React.PointerEvent) => {
-    const r = ref.current?.getBoundingClientRect();
-    if (r && e.pointerType === "mouse") {
+  const enter = (e: React.PointerEvent<HTMLElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    if (e.pointerType === "mouse") {
       setOrigin({
         x: ((e.clientX - r.left) / r.width) * 100,
         y: ((e.clientY - r.top) / r.height) * 100,
@@ -46,7 +54,7 @@ export function V2Button({
     setHover(true);
   };
 
-  const external = href.startsWith("http") || href.endsWith(".pdf");
+  const external = !!href && (href.startsWith("http") || href.endsWith(".pdf"));
   const solid = tone === "solid";
   const on = hover;
 
@@ -56,27 +64,25 @@ export function V2Button({
   const restInk = solid ? "var(--v2-invert-ink)" : "var(--v2-ink)";
   const hoverInk = solid ? "var(--v2-ink)" : "var(--v2-invert-ink)";
 
-  return (
-    <motion.a
-      ref={ref}
-      href={href}
-      target={external ? "_blank" : undefined}
-      rel={external ? "noopener noreferrer" : undefined}
-      onPointerEnter={enter}
-      onPointerLeave={() => setHover(false)}
-      onFocus={() => setHover(true)}
-      onBlur={() => setHover(false)}
-      animate={{
-        color: on ? hoverInk : restInk,
-        borderColor:
-          solid && !on ? "rgba(0, 0, 0, 0)" : "var(--v2-line-strong)",
-      }}
-      transition={{ duration: 0.3, ease: EASE }}
-      whileTap={prefersReduced ? undefined : { scale: 0.97 }}
-      className={`relative isolate inline-flex min-h-[46px] items-center gap-1.5 overflow-hidden rounded-full px-5 font-mono text-[11px] uppercase tracking-[0.16em] ${
-        solid ? "border border-[rgba(0,0,0,0)] bg-[var(--v2-invert-bg)]" : "border"
-      }`}
-    >
+  const shared = {
+    "aria-label": ariaLabel,
+    onPointerEnter: enter,
+    onPointerLeave: () => setHover(false),
+    onFocus: () => setHover(true),
+    onBlur: () => setHover(false),
+    animate: {
+      color: on ? hoverInk : restInk,
+      borderColor: solid && !on ? "rgba(0, 0, 0, 0)" : "var(--v2-line-strong)",
+    },
+    transition: { duration: 0.3, ease: EASE },
+    whileTap: prefersReduced ? undefined : { scale: 0.97 },
+    className: `relative isolate inline-flex min-h-[46px] items-center gap-1.5 overflow-hidden rounded-full px-5 font-mono text-[11px] uppercase tracking-[0.16em] ${
+      solid ? "border border-[rgba(0,0,0,0)] bg-[var(--v2-invert-bg)]" : "border"
+    }`,
+  };
+
+  const inner = (
+    <>
       {/* the flood. 260% wide keeps the disc bigger than the button's diagonal
           from any origin, so it always covers */}
       <motion.span
@@ -101,7 +107,9 @@ export function V2Button({
         children
       )}
 
-      {external && (
+      {trailing}
+
+      {external && !trailing && (
         <>
           <span aria-hidden className="text-[0.9em] opacity-70">
             ↗
@@ -109,6 +117,25 @@ export function V2Button({
           <span className="sr-only">(opens in new tab)</span>
         </>
       )}
+    </>
+  );
+
+  if (!href) {
+    return (
+      <motion.button type="button" onClick={onClick} {...shared}>
+        {inner}
+      </motion.button>
+    );
+  }
+
+  return (
+    <motion.a
+      href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      {...shared}
+    >
+      {inner}
     </motion.a>
   );
 }
