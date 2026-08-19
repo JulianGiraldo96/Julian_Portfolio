@@ -25,6 +25,23 @@
 //     as a single job at most vendors.
 //   - Plain ASCII hyphens in date ranges, ordinary bullets, no icons, no
 //     tables, no text in the page margins.
+//
+// Typeface, measured 2026-08-19 by rendering each candidate and extracting it
+// back with pypdf. The CV is meant to look like juliang.de, but the site's
+// display face cannot be used:
+//
+//   - BROKEN: Outfit (the site's --font-display) extracts as "P roduct
+//     Designer" and "TaurusW ebs", the exact bug that shipped until 2026-08-07.
+//     Jost is worse: "Prod uct Designer", "Food  Counter Clerk".
+//   - CLEAN: Montserrat, Geist, Geist Mono, Figtree, Inter, Poppins, Arial,
+//     Helvetica, and the previous Spectral.
+//   - So: Montserrat stands in for Outfit as the geometric display face, and
+//     Geist / Geist Mono are the site's own faces used unchanged.
+//   - Letter-spacing was retested rather than assumed. Positive tracking
+//     (0.04 to 0.16em, the site's mono labels) extracts clean, and so does
+//     negative tracking down to -0.045em ON MONTSERRAT, which is why the name
+//     may carry the site's tight display look. This is a per-font result, not
+//     a general licence: retest before tracking any other face.
 
 import { chromium } from "playwright";
 import { PDFDocument } from "pdf-lib";
@@ -48,23 +65,29 @@ const html = `<!doctype html>
 <title>Julian David Giraldo Rojas - Product Designer CV</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   @page { size: A4; margin: 0; }
   * { box-sizing: border-box; }
 
+  /* The portfolio's tokens, lifted from app/globals.css so the CV and the site
+     are visibly the same object. Outfit, the site's display face, is NOT here:
+     it fails PDF extraction (see the ATS notes above). Montserrat is the
+     geometric stand-in, Geist and Geist Mono are the site's own. */
   :root {
-    --fg: #111111;
-    --muted: #5f5f5f;
-    --link: #2f5597;
-    --rule: rgba(0,0,0,0.14);
+    --fg: #1d1d1f;          /* --v2-ink */
+    --secondary: #55555a;   /* --v2-secondary */
+    --muted: #6e6e73;       /* --v2-label */
+    --link: #2f5d9e;        /* --v2-cool */
+    --rule: rgba(0,0,0,0.08);        /* --v2-line */
+    --rule-strong: rgba(0,0,0,0.16); /* --v2-line-strong */
   }
 
   html, body {
     margin: 0;
-    font-family: "Spectral", Georgia, "Times New Roman", serif;
-    font-size: 9.4pt;
-    line-height: 1.28;
+    font-family: "Geist", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 8.9pt;
+    line-height: 1.34;
     color: var(--fg);
     /* every extractor reads "deﬁned" out of a real fi ligature */
     font-variant-ligatures: none;
@@ -88,70 +111,122 @@ const html = `<!doctype html>
   }
   .page:last-child { page-break-after: auto; }
 
-  /* header */
+  /* header: the site's hero, shrunk. Display face, light weight, tight
+     tracking. Verified extractable at -0.035em on Montserrat. */
   .head { display: flex; justify-content: space-between; align-items: flex-start; gap: 14mm; }
-  h1.name { font-size: 25pt; font-weight: 500; margin: 0 0 1mm 0; line-height: 1.05; }
-  .head .role { font-size: 12pt; margin: 0; }
-  .head .based { font-size: 11pt; font-style: italic; color: var(--muted); margin: 0.6mm 0 0 0; }
-  .contact { text-align: left; font-size: 10.4pt; line-height: 1.5; padding-top: 1.5mm; }
-  .contact .lbl { color: var(--fg); }
+  h1.name {
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: 24pt;
+    font-weight: 300;
+    letter-spacing: -0.035em;
+    margin: 0 0 1.6mm 0;
+    line-height: 1.02;
+  }
+  .head .role {
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: 11.5pt;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .head .based { font-size: 9.6pt; color: var(--secondary); margin: 0.8mm 0 0 0; }
+  .contact {
+    text-align: left;
+    font-family: "Geist Mono", ui-monospace, "Courier New", monospace;
+    font-size: 8.4pt;
+    line-height: 1.62;
+    padding-top: 1.2mm;
+  }
+  .contact .lbl { color: var(--muted); }
   .contact .val { color: var(--link); }
 
   /* two columns: main first in the DOM so extraction reads it first */
-  .cols { display: flex; gap: 9mm; margin-top: 9mm; flex: 1; min-height: 0; }
+  .cols { display: flex; gap: 9mm; margin-top: 8.4mm; flex: 1; min-height: 0; }
   .main { width: 68%; }
   .side { width: 32%; }
   .page + .page .cols { margin-top: 0; }
 
+  /* the site's label: mono, uppercase, wide tracking, muted. Positive tracking
+     was tested and does not break extraction; negative on body text is still
+     never used. */
   h2 {
-    font-size: 10.5pt;
+    font-family: "Geist Mono", ui-monospace, "Courier New", monospace;
+    font-size: 7.4pt;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin: 0 0 3mm 0;
-    padding-bottom: 1.2mm;
-    border-bottom: 0.5pt solid var(--rule);
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    margin: 0 0 2.5mm 0;
+    padding-bottom: 1.4mm;
+    border-bottom: 0.5pt solid var(--rule-strong);
   }
   .side h2 { margin-bottom: 3mm; }
   .side h2 + .block { margin-top: 0; }
-  section + section { margin-top: 4.6mm; }
+  section + section { margin-top: 4.2mm; }
 
   /* jobs */
-  .job { margin-bottom: 2.7mm; page-break-inside: avoid; }
+  .job { margin-bottom: 2.6mm; page-break-inside: avoid; }
   .job:last-child { margin-bottom: 0; }
-  .job-line { font-size: 10pt; line-height: 1.28; }
+  .job-line { font-size: 9.6pt; line-height: 1.3; }
   .job-line .org { font-weight: 600; }
-  .job-line .title { color: var(--link); }
-  .job-line .meta { font-style: italic; color: var(--fg); }
-  .job-date { font-size: 9.6pt; font-style: italic; color: var(--muted); margin: 0.3mm 0 0.8mm 0; }
+  .job-line .title { color: var(--link); font-weight: 500; }
+  .job-line .meta { color: var(--secondary); }
+  .job-date {
+    font-family: "Geist Mono", ui-monospace, "Courier New", monospace;
+    font-size: 7.8pt;
+    color: var(--muted);
+    margin: 0.6mm 0 1mm 0;
+  }
 
-  ul { margin: 0; padding-left: 4.6mm; list-style: disc; }
-  li { margin-bottom: 0.7mm; line-height: 1.3; padding-left: 0.6mm; }
-  li::marker { font-size: 0.8em; }
+  ul { margin: 0; padding-left: 4.4mm; list-style: disc; }
+  li { margin-bottom: 0.6mm; line-height: 1.34; padding-left: 0.6mm; color: var(--secondary); }
+  li::marker { font-size: 0.8em; color: var(--muted); }
 
   /* sidebar blocks */
-  .block { margin-top: 4.4mm; }
+  .block { margin-top: 4.2mm; }
   .block:first-of-type { margin-top: 0; }
   .block .b1 { font-weight: 600; }
   .block .b2 { color: var(--link); }
-  .block .b3 { font-style: italic; color: var(--muted); font-size: 9.8pt; }
+  .block .b3 {
+    font-family: "Geist Mono", ui-monospace, "Courier New", monospace;
+    font-size: 7.6pt;
+    color: var(--muted);
+    margin-top: 0.4mm;
+  }
+  .block .item { color: var(--secondary); line-height: 1.42; }
 
   /* pre-2019 and pure graphic design roles: one line each. A product design CV
      needs them listed, not narrated, and the bullets they would carry are the
      first thing a reader skips. */
-  .earlier .row { margin-bottom: 1mm; line-height: 1.3; }
+  /* Kept inline rather than flexed: a date column forces these long employer
+     names into three ragged lines. The interpunct carries the separation. */
+  .earlier .row { margin-bottom: 0.9mm; line-height: 1.32; }
   .earlier .row:last-child { margin-bottom: 0; }
   .earlier .org { font-weight: 600; }
-  .earlier .title { color: var(--link); }
-  .earlier .meta { font-style: italic; }
-  .earlier .when { font-style: italic; color: var(--muted); }
+  .earlier .title { color: var(--link); font-weight: 500; }
+  .earlier .meta { color: var(--secondary); }
+  .earlier .when {
+    font-family: "Geist Mono", ui-monospace, "Courier New", monospace;
+    font-size: 7.6pt;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .earlier .when::before { content: "· "; }
 
-  .skillgroup { margin-bottom: 4mm; }
+  .skillgroup { margin-bottom: 3.8mm; }
   .skillgroup:last-child { margin-bottom: 0; }
-  .skillgroup .gname { font-weight: 600; margin-bottom: 0.6mm; }
-  .skillgroup .item { line-height: 1.32; }
+  .skillgroup .gname {
+    font-family: "Geist Mono", ui-monospace, "Courier New", monospace;
+    font-size: 7.2pt;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 1mm;
+  }
+  .skillgroup .item { line-height: 1.42; color: var(--secondary); }
 
-  p.summary { margin: 0; }
+  p.summary { margin: 0; color: var(--secondary); }
 </style>
 </head>
 <body>
@@ -252,6 +327,23 @@ const html = `<!doctype html>
       </section>
 
       <section>
+        <h2>Skills</h2>
+        <div class="skillgroup">
+          <div class="gname">Design and Craft</div>
+          <div class="item">Product Design</div>
+          <div class="item">UX / UI Design</div>
+          <div class="item">Interaction Design</div>
+          <div class="item">Information Architecture</div>
+          <div class="item">User Flows and Wireframing</div>
+          <div class="item">High-Fidelity Prototyping</div>
+          <div class="item">Design Systems</div>
+          <div class="item">Visual Design and Branding</div>
+          <div class="item">Micro-Interactions</div>
+          <div class="item">Accessibility (WCAG)</div>
+        </div>
+      </section>
+
+      <section>
         <h2>Languages</h2>
         <div class="block">
           <div class="item">Spanish (Native)</div>
@@ -302,11 +394,11 @@ const html = `<!doctype html>
       <section>
         <h2>Earlier experience</h2>
         <div class="earlier">
-          <div class="row"><span class="org">Fresh To Go Foods Ltd, Greens Supermarket Group</span>, <span class="title">Senior Graphic Designer</span> <span class="meta">/ Swieqi, Malta</span> <span class="when">September 2019 - November 2023</span></div>
-          <div class="row"><span class="org">Greens Supermarket</span>, <span class="title">Graphic Designer</span> <span class="meta">/ Swieqi, Malta</span> <span class="when">August 2019 - August 2021</span></div>
-          <div class="row"><span class="org">Sanitas Medical Center</span>, <span class="title">Lead Animator</span> <span class="meta">/ Colombia</span> <span class="when">February 2019 - May 2019</span></div>
-          <div class="row"><span class="org">Rama Judicial, Consejo Superior de la Judicatura</span>, <span class="title">Graphic Designer</span> <span class="meta">/ Colombia</span> <span class="when">September 2018 - January 2019</span></div>
-          <div class="row"><span class="org">Agencia Trompo, in-house at Politecnico Grancolombiano</span>, <span class="title">Junior Graphic Designer</span> <span class="meta">/ Bogota, Colombia</span> <span class="when">February 2017 - February 2018</span></div>
+          <div class="row"><span class="who"><span class="org">Fresh To Go Foods Ltd, Greens Supermarket Group</span>, <span class="title">Senior Graphic Designer</span> <span class="meta">/ Swieqi, Malta</span></span> <span class="when">September 2019 - November 2023</span></div>
+          <div class="row"><span class="who"><span class="org">Greens Supermarket</span>, <span class="title">Graphic Designer</span> <span class="meta">/ Swieqi, Malta</span></span> <span class="when">August 2019 - August 2021</span></div>
+          <div class="row"><span class="who"><span class="org">Sanitas Medical Center</span>, <span class="title">Lead Animator</span> <span class="meta">/ Colombia</span></span> <span class="when">February 2019 - May 2019</span></div>
+          <div class="row"><span class="who"><span class="org">Rama Judicial, Consejo Superior de la Judicatura</span>, <span class="title">Graphic Designer</span> <span class="meta">/ Colombia</span></span> <span class="when">September 2018 - January 2019</span></div>
+          <div class="row"><span class="who"><span class="org">Agencia Trompo, in-house at Politecnico Grancolombiano</span>, <span class="title">Junior Graphic Designer</span> <span class="meta">/ Bogota, Colombia</span></span> <span class="when">February 2017 - February 2018</span></div>
         </div>
       </section>
 
@@ -336,21 +428,7 @@ const html = `<!doctype html>
 
     <div class="side">
       <section>
-        <h2>Skills</h2>
-
-        <div class="skillgroup">
-          <div class="gname">Design and Craft</div>
-          <div class="item">Product Design</div>
-          <div class="item">UX / UI Design</div>
-          <div class="item">Interaction Design</div>
-          <div class="item">Information Architecture</div>
-          <div class="item">User Flows and Wireframing</div>
-          <div class="item">High-Fidelity Prototyping</div>
-          <div class="item">Design Systems</div>
-          <div class="item">Visual Design and Branding</div>
-          <div class="item">Micro-Interactions</div>
-          <div class="item">Accessibility (WCAG)</div>
-        </div>
+        <h2>Skills continued</h2>
 
         <div class="skillgroup">
           <div class="gname">Research and Validation</div>

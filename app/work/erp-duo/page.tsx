@@ -62,7 +62,7 @@ export default function ErpDuoV2Page() {
           title: "ERP Duo",
           subtitle:
             "Nine locations of operational data, brought into one system you can actually audit.",
-          year: "2026",
+          year: "2024 to now",
           role: "Product Design · UX · Interaction Design",
           tags: ["Web", "ERP", "Operations"],
           status: "Live, 2026",

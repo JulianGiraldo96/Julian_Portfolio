@@ -11,7 +11,7 @@ export const work: FolderProject[] = [
     title: "ERP Duo",
     headline: "Nine locations. One system. Full control.",
     tags: ["9 locations", "13 modules", "Shipped"],
-    year: "2026",
+    year: "2024 to now",
     shape: "desktop",
     bg: "#EDEFEC",
     bgDark: "#1A1C19",

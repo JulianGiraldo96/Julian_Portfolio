@@ -378,7 +378,6 @@ function Footer() {
             trailing={<CopyGlyph copied={copied} />}
           />
           <CopiedStatus copied={copied} />
-          <LinkRow href="/" label="Portfolio v1" />
         </div>
       </div>
 
