@@ -1,15 +1,19 @@
-/* Vector portraits of the four products, drawn from the real interfaces:
-   Duo's ERP (teal status system, KPI row, shift tables), TaurusWebs' bulk entry
-   grid (blue ribbon, green validation pills), Savee's weekly planner and
-   Meinerva's dark reading screen. Real labels, not grey blocks, so the card
-   shows what the product actually does. No photography and no backdrop, so
-   each one can lift out of its folder as a shape.
+/* One portrait per product, sitting on its card and on its case study cover.
+   Four are vector, drawn from the real interfaces: Duo's ERP (teal status
+   system, KPI row, shift tables), Duo Scan Memory, TaurusWebs' bulk entry grid
+   (blue ribbon, green validation pills) and Meinerva's dark reading screen.
+   Real labels, not grey blocks, so the card shows what the product actually
+   does. Savee is the exception and is the real exported screen; see the note
+   above it. No photography and no backdrop, so each one can lift out of its
+   folder as a shape.
    No filter of any kind here: a drop-shadow is a CSS filter, and a filter
    region on a scaled element inside an `isolate` stacking context is what
    painted the hard edged ghost rectangle beside the first card. The shadow is
    a box-shadow on the wrapper in ProjectFolder instead.
    Decorative: every card names its product in text, so these are aria-hidden. */
 
+
+import Image from "next/image";
 
 /* ---------- Duo ERP ---------- */
 export function ErpScreen({ className = "" }: { className?: string }) {
@@ -302,126 +306,29 @@ export function TaurusScreen({ className = "" }: { className?: string }) {
 }
 
 /* ---------- Savee ---------- */
+/* The only one here that is not drawn. This is the real shopping list screen
+   exported from the Figma file, so the card shows the product rather than my
+   reading of it.
+   It ships as a raster, not as the SVG it was exported as. Figma writes the
+   frosted panels as `foreignObject` with `backdrop-filter`, and Chrome refuses
+   to render foreign content when an SVG is the src of an `<img>`, so the blur
+   and the angular gradients would silently drop out. Rasterised at 2x the
+   export is 35KB against the SVG's 2.4MB. Source kept in
+   OLD/savee-cover-source/.
+   The radius is written per axis so the corners stay circular at every size
+   the card renders: at this aspect 14% of the width is 6.5% of the height. */
 export function SaveeScreen({ className = "" }: { className?: string }) {
-  /* the real app is dark and video first: a short recipe plays full bleed, and
-     saving it schedules the meal and folds its ingredients into one shopping
-     list grouped the way a supermarket is */
-  const list = [
-    { g: "Veggies & Fruits", items: [["Blueberry", "25 g"], ["Banana", "1 pcs"]] },
-    { g: "Bakery", items: [["Sliced bread", "1 pkt"]] },
-  ];
   return (
-    <svg
-      viewBox="0 0 170 320"
+    <Image
+      src="/projects/savee/cover-screen.webp"
+      alt=""
       aria-hidden
-      role="presentation"
+      width={780}
+      height={1688}
+      sizes="(max-width: 768px) 60vw, 300px"
       className={className}
-      fontFamily="inherit"
-    >
-      <rect width="170" height="320" rx="24" fill="#000" />
-      <rect x="4" y="4" width="162" height="312" rx="20" fill="#111311" />
-      <rect x="66" y="10" width="38" height="9" rx="4.5" fill="#000" />
-      <text x="18" y="20" fontSize="6.4" fontWeight="600" fill="#EDEFEA">
-        9:41
-      </text>
-
-      {/* wordmark and the toggle between the feed and the plan */}
-      <text x="16" y="42" fontSize="11" fontWeight="800" fill="#3ED47B" letterSpacing="0.6">
-        SAVEE
-      </text>
-      <rect x="112" y="32" width="42" height="15" rx="7.5" fill="#232723" />
-      <circle cx="146" cy="39.5" r="6" fill="#3ED47B" />
-      <path d="M143.6 39.5 l1.6 1.7 l2.6 -3.2" stroke="#0C0E0C" strokeWidth="1.1" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-
-      {/* the recipe, scheduled to a day */}
-      <rect x="12" y="54" width="146" height="66" rx="7" fill="#2A2620" />
-      <path d="M12 92 q22 -20 42 -6 q20 12 38 -6 q24 -14 66 4 v24 a7 7 0 0 1 -7 7 h-132 a7 7 0 0 1 -7 -7z" fill="#7A5B31" opacity="0.85" />
-      <circle cx="52" cy="76" r="9" fill="#C89A55" opacity="0.9" />
-      <circle cx="76" cy="72" r="7" fill="#A8762F" opacity="0.85" />
-      <text x="19" y="65" fontSize="5.4" fill="#EDEFEA" opacity="0.9">
-        Schedule for
-      </text>
-      <text x="19" y="73" fontSize="6.2" fontWeight="700" fill="#fff">
-        12.03.2025
-      </text>
-      <rect x="19" y="96" width="98" height="18" rx="5" fill="#0E100E" opacity="0.72" />
-      <text x="26" y="104" fontSize="6.2" fontWeight="700" fill="#fff">
-        French Toast
-      </text>
-      <text x="26" y="111.6" fontSize="5.2" fill="#B7BBB4">
-        20 minutes · Easy
-      </text>
-
-      {/* portions, the control that decides how much gets bought */}
-      <rect x="12" y="126" width="146" height="17" rx="6" fill="#1B1E1B" />
-      <text x="20" y="137" fontSize="6" fill="#EDEFEA">
-        Adjust portions
-      </text>
-      <circle cx="122" cy="134.5" r="5.4" fill="#2C312C" />
-      <path d="M119.6 134.5 h4.8 M122 132.1 v4.8" stroke="#EDEFEA" strokeWidth="1" strokeLinecap="round" />
-      <text x="135" y="137" fontSize="6.4" fontWeight="700" fill="#fff" textAnchor="middle">
-        2
-      </text>
-      <circle cx="148" cy="134.5" r="5.4" fill="#2C312C" />
-      <path d="M145.6 134.5 h4.8" stroke="#EDEFEA" strokeWidth="1" strokeLinecap="round" />
-
-      {/* the list that falls out of it, grouped the way a shop is */}
-      <rect x="12" y="149" width="146" height="130" rx="7" fill="#1B1E1B" />
-      <text x="85" y="161" fontSize="6.4" fontWeight="700" fill="#fff" textAnchor="middle">
-        Shopping list for this recipe
-      </text>
-      <line x1="20" y1="167" x2="150" y2="167" stroke="#2C312C" />
-      {list.map((group, gi) => {
-        const top = 176 + gi * 44;
-        return (
-          <g key={group.g}>
-            <text x="20" y={top} fontSize="5.8" fontWeight="700" fill="#3ED47B">
-              {group.g}
-            </text>
-            {group.items.map(([name, qty], ii) => {
-              const y = top + 10 + ii * 15;
-              return (
-                <g key={name}>
-                  <circle cx="24" cy={y} r="3.6" fill="none" stroke="#4A504A" strokeWidth="1" />
-                  <text x="34" y={y + 2.2} fontSize="6" fill="#EDEFEA">
-                    {name}
-                  </text>
-                  <text x="150" y={y + 2.2} fontSize="5.8" fill="#B7BBB4" textAnchor="end">
-                    {qty}
-                  </text>
-                </g>
-              );
-            })}
-          </g>
-        );
-      })}
-
-      {/* the five destinations */}
-      <rect x="12" y="286" width="146" height="24" rx="12" fill="#1B1E1B" />
-      {[0, 1, 2, 3, 4].map((i) => {
-        const cx = 28 + i * 28.5;
-        const on = i === 2;
-        return (
-          <g key={i}>
-            {i === 0 && <path d="M23 302 v-7 l5 -3.4 l5 3.4 v7z" fill="none" stroke="#8A908A" strokeWidth="1.1" strokeLinejoin="round" />}
-            {i === 1 && (
-              <g stroke="#8A908A" strokeWidth="1.1" fill="none">
-                <circle cx={cx} cy="297" r="4" />
-                <path d={`M${cx + 3} 300 l3 3`} strokeLinecap="round" />
-              </g>
-            )}
-            {on && (
-              <g stroke="#3ED47B" strokeWidth="1.2" fill="none" strokeLinecap="round">
-                <path d={`M${cx - 3} 292 v5 M${cx} 292 v5 M${cx + 3} 292 v5`} />
-                <path d={`M${cx} 297 v6`} />
-              </g>
-            )}
-            {i === 3 && <path d={`M${cx - 3.4} 292 h6.8 v10 l-3.4 -3 l-3.4 3z`} fill="none" stroke="#8A908A" strokeWidth="1.1" strokeLinejoin="round" />}
-            {i === 4 && <circle cx={cx} cy="297" r="5" fill="none" stroke="#3ED47B" strokeWidth="1.2" />}
-          </g>
-        );
-      })}
-    </svg>
+      style={{ borderRadius: "14% / 6.5%" }}
+    />
   );
 }
 

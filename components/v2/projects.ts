@@ -51,7 +51,7 @@ export const work: FolderProject[] = [
     year: "2025",
     shape: "phone",
     bg: "#E9F2EB",
-    bgDark: "#161B17",
+    bgDark: "#232C25",
   },
   {
     slug: "meinerva",

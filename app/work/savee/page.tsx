@@ -56,7 +56,7 @@ export default function SaveeV2Page() {
         currentSlug="savee"
         coverScreen="savee"
         tint="#E9F2EB"
-        tintDark="#161B17"
+        tintDark="#232C25"
         meta={{
           index: "04",
           title: "Savee",
