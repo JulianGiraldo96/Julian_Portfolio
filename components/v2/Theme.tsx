@@ -6,13 +6,14 @@ import { useCallback, useSyncExternalStore } from "react";
    subtree can key off it, and the tokens it drives are scoped to .v2-root,
    which every page root carries. */
 
-const KEY = "v2-theme";
 const ATTR = "data-v2-theme";
 
-/* Runs before the v2 tree paints, so the chosen theme is already on <html>
-   and there is no white flash on a dark reload. Kept as a string: it has to
-   execute inline, ahead of hydration. */
-export const themeBootstrap = `(function(){try{var t=localStorage.getItem('${KEY}');if(t!=='dark'&&t!=='light'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}document.documentElement.setAttribute('${ATTR}',t)}catch(e){document.documentElement.setAttribute('${ATTR}','light')}})()`;
+/* Runs before the v2 tree paints, so dark is already on <html> and there is
+   no flash of a different theme on load. Kept as a string: it has to
+   execute inline, ahead of hydration. Every load opens dark, full stop — no
+   stored choice and no OS preference override it; the toggle only changes
+   the theme for the rest of that visit. */
+export const themeBootstrap = `document.documentElement.setAttribute('${ATTR}','dark')`;
 
 export function ThemeScript() {
   return <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />;
@@ -53,19 +54,56 @@ function getSnapshot() {
   return document.documentElement.getAttribute(ATTR) === "dark";
 }
 
+/* The reveal radius has to reach every corner from the click point, not just
+   the nearest one, or the sweep visibly runs out before the far edge. */
+function distanceToFarthestCorner(x: number, y: number) {
+  const dx = Math.max(x, window.innerWidth - x);
+  const dy = Math.max(y, window.innerHeight - y);
+  return Math.hypot(dx, dy);
+}
+
 export function ThemeToggle({ className = "" }: { className?: string }) {
   const dark = useSyncExternalStore(subscribe, getSnapshot, () => false);
 
-  const toggle = useCallback(() => {
+  const toggle = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
     const value =
       document.documentElement.getAttribute(ATTR) === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute(ATTR, value);
-    try {
-      localStorage.setItem(KEY, value);
-    } catch {
-      /* private mode: the choice just does not persist */
+
+    const apply = () => {
+      document.documentElement.setAttribute(ATTR, value);
+      window.dispatchEvent(new Event(EVENT));
+    };
+
+    /* the hpanel-style sweep: a circle grows from the switch itself and
+       uncovers the new theme underneath it. Skipped for reduced motion or a
+       browser without View Transitions, where the swap is just instant. */
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced || !document.startViewTransition) {
+      apply();
+      return;
     }
-    window.dispatchEvent(new Event(EVENT));
+
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = left + width / 2;
+    const y = top + height / 2;
+    const radius = distanceToFarthestCorner(x, y);
+
+    const transition = document.startViewTransition(apply);
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${radius}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 650,
+          easing: "ease-in-out",
+          pseudoElement: "::view-transition-new(root)",
+        },
+      );
+    });
   }, []);
 
   return (

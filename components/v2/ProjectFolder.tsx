@@ -2,69 +2,99 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-  useTransform,
-} from "motion/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
+import { useCallback, useState } from "react";
 import { screens, type ScreenSlug } from "./ProductScreens";
+import { CursorLoop, type CursorStop } from "./CursorLoop";
 import { startRouteVeil } from "./RouteVeil";
-import { EASE, SPRING } from "./motion";
+import { EASE } from "./motion";
 
-/* Each project card is a tinted panel with the product screen sitting on it,
-   nothing in front of it. On hover or keyboard focus the screen rises and
-   grows past the card's edges, and the keyword cards are dealt one at a time
-   from behind it along the bottom. Clicking blurs the page away and the case
-   study arrives in its place.
-   The keywords are decoration, aria-hidden: the same words sit in the meta line
-   under every card. */
+/* viewBox of each mockup, matched to its own <svg viewBox> in
+   ProductScreens.tsx so the fake-cursor overlay lines up exactly. Savee is
+   the real exported screenshot (780x1688), not a viewBox we drew, so the
+   route below is an estimate of where a shopping-list's checkboxes sit. */
+const screenBox: Record<ScreenSlug, string> = {
+  "erp-duo": "0 0 360 240",
+  "scan-memory": "0 0 360 240",
+  taurus: "0 0 360 240",
+  savee: "0 0 780 1688",
+  meinerva: "0 0 170 320",
+};
+
+/* each product's own brand colour, pulled from its mockup in
+   ProductScreens.tsx, so the cursor loop's glow reads as that product
+   reacting rather than a generic system effect. */
+const cursorAccent: Record<ScreenSlug, string> = {
+  "erp-duo": "#2E8A77",
+  "scan-memory": "#2E8A77",
+  taurus: "#1F5FBF",
+  savee: "#7ED957",
+  meinerva: "#C6A96B",
+};
+
+/* one small "someone is using this" loop per product: on desktop screens the
+   pointer hovers a nav item or row (the real control lights up, like an
+   actual :hover) then clicks the thing that does something. Phone screens
+   (Meinerva, Savee) don't hover — a finger only taps, so their routes are
+   click-only. */
+const cursorRoute: Record<ScreenSlug, CursorStop[]> = {
+  "erp-duo": [
+    { x: 64.5, y: 37, box: { x: 18, y: 14, w: 73, h: 46, rx: 8 } }, // stat: Revenue
+    { x: 101, y: 110, box: { x: 18, y: 72, w: 166, h: 76, rx: 8 } }, // chart panel
+    { x: 218, y: 101, click: true, box: { x: 196, y: 72, w: 146, h: 76, rx: 8 } }, // alerts panel
+    { x: 289, y: 187, click: true, box: { x: 256, y: 176, w: 66, h: 22, rx: 11 } }, // status pill
+  ],
+  taurus: [
+    { x: 153, y: 27, box: { x: 118, y: 16, w: 70, h: 22, rx: 11 } }, // "Pegar filas"
+    { x: 64, y: 27, click: true, box: { x: 18, y: 16, w: 92, h: 22, rx: 11 } }, // "Carga múltiple"
+    { x: 22.5, y: 58, box: { x: 18, y: 53.5, w: 9, h: 9, rx: 2 } }, // header checkbox
+    { x: 298, y: 220, click: true, box: { x: 254, y: 210, w: 88, h: 20, rx: 10 } }, // "Guardar" button
+  ],
+  "scan-memory": [
+    { x: 73, y: 29, box: { x: 18, y: 18, w: 110, h: 22, rx: 11 } }, // store picker
+    { x: 287, y: 29, box: { x: 232, y: 18, w: 110, h: 22, rx: 11 } }, // scan field
+    { x: 32.5, y: 90, click: true, box: { x: 28, y: 85.5, w: 9, h: 9, rx: 2.5 } }, // toggle first row
+    { x: 294, y: 208, click: true, box: { x: 246, y: 198, w: 96, h: 20, rx: 10 } }, // accept button
+  ],
+  meinerva: [
+    { x: 60, y: 68, click: true, box: { x: 40, y: 48, w: 40, h: 40, rx: 20 } }, // tap the artwork
+    { x: 30, y: 234.5, click: true, box: { x: 18, y: 226, w: 76, h: 17, rx: 8.5 } }, // tap "Unlock hint"
+    { x: 28, y: 275, click: true, box: { x: 18, y: 268, w: 134, h: 14, rx: 7 } }, // tap a critique
+  ],
+  savee: [
+    { x: 90, y: 640, click: true },
+    { x: 90, y: 800, click: true },
+    { x: 90, y: 1120, click: true },
+  ],
+};
+
+/* Card frame ported from flora.ai's "Process" triptych: the product shot
+   floats centered in the card, smaller than the frame with room around it
+   (not cropped edge to edge — flora's own cards never fill either), a
+   number + title sit in the top corner, and the headline + meta line sit
+   over the bottom gradient. The shot lifts slightly on hover, a plain CSS
+   scale rather than a looping video. Kept from the old design: the site's
+   own type voice (font-light display headline, mono uppercase meta) rather
+   than flora's heavier weights, so the card frame changes but the page
+   still reads as one typographic system. */
 
 export type FolderProject = {
   slug: ScreenSlug;
   title: string;
-  /* what the tool does, in the plainest two words available. The headline
-     sells the outcome and the meta line names the product; without this you
-     can read a card and still not know what the thing actually does. Keep it
-     literal: "Bulk Action", not "bulk farm setup workflow". */
   feature: string;
   headline: string;
   tags: string[];
   year: string;
-  /* phones are sized by height, desktop windows by width, so both sit on the
-     card at the same visual weight */
   shape: "phone" | "desktop";
   bg: string;
-  /* the same tint reworked for the dark theme, swapped in pure CSS */
   bgDark: string;
-  /* dark tint in the light theme, so the chips flip to frosted */
   dark?: boolean;
-  /* set when the project has a v2 styled case study of its own */
   href?: string;
-  /* university work. It gets its own section on the home page and carries a
-     badge everywhere else, so a recruiter never has to guess which of these
-     shipped to real users. */
   academic?: boolean;
 };
 
 /* matches the .v2-leave keyframe in globals.css */
 const LEAVE_MS = 380;
-
-/* The screen is large enough to span the card, so the cards are dealt into the
-   strip below it, spread like a hand rather than a row. Offsets are
-   percentages of the stage, so the fan scales with the column. */
-const fan = [
-  { x: "-30%", y: "42%", rotate: -7 },
-  { x: "0%", y: "46%", rotate: 2 },
-  { x: "30%", y: "42%", rotate: 8 },
-  { x: "-15%", y: "48%", rotate: -3 },
-];
-
-function deal(i: number) {
-  return fan[i % fan.length];
-}
 
 export function ProjectFolder({
   project,
@@ -72,6 +102,7 @@ export function ProjectFolder({
   wide,
   compact = false,
   full = false,
+  row = false,
 }: {
   project: FolderProject;
   index: number;
@@ -82,64 +113,17 @@ export function ProjectFolder({
   /* the row at the foot of a case study: the same card, sized to sit three
      across instead of two */
   compact?: boolean;
+  /* flora's triptych: siblings sit side by side as equal flex panels and the
+     hovered one grows while the rest give up the width, pure CSS (`flex`
+     is animatable, so no JS drives the expand) */
+  row?: boolean;
 }) {
   const router = useRouter();
   const prefersReduced = useReducedMotion();
-  const stageRef = useRef<HTMLDivElement>(null);
-  const [mouse, setMouse] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const Screen = screens[project.slug];
-  const phone = project.shape === "phone";
   const href = project.href ?? `/work/${project.slug}`;
-
-  /* Touch has no hover, so on those devices the card opens itself once it is
-     well inside the viewport. Pointer devices keep the hover reveal. */
-  const [openInView, setOpenInView] = useState(false);
-  useEffect(() => {
-    const el = stageRef.current;
-    if (!el || !window.matchMedia("(hover: none)").matches) return;
-    const io = new IntersectionObserver(
-      ([entry]) => setOpenInView(entry.intersectionRatio > 0.6),
-      { threshold: [0, 0.6, 1] },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  /* pointer position inside the card, in pixels, for the trailing pill and the
-     light that follows it */
-  const cx = useMotionValue(0);
-  const cy = useMotionValue(0);
-  const x = useSpring(cx, { stiffness: 380, damping: 32, mass: 0.6 });
-  const y = useSpring(cy, { stiffness: 380, damping: 32, mass: 0.6 });
-
-  /* and the same position normalised to -0.5…0.5, which is what the screen
-     leans on. A product shot that turns slightly toward you reads as an object
-     on the card rather than a picture pasted onto it. */
-  const nx = useMotionValue(0);
-  const ny = useMotionValue(0);
-  const tilt = { stiffness: 170, damping: 20, mass: 0.7 };
-  const rotateY = useSpring(useTransform(nx, (v) => v * 8), tilt);
-  const rotateX = useSpring(useTransform(ny, (v) => v * -6), tilt);
-
-  const onMove = (e: React.PointerEvent) => {
-    if (e.pointerType !== "mouse") return;
-    const rect = stageRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    if (!mouse) setMouse(true);
-    const lx = e.clientX - rect.left;
-    const ly = e.clientY - rect.top;
-    cx.set(lx);
-    cy.set(ly);
-    nx.set(lx / rect.width - 0.5);
-    ny.set(ly / rect.height - 0.5);
-  };
-
-  const onLeave = () => {
-    setMouse(false);
-    nx.set(0);
-    ny.set(0);
-  };
+  const phone = project.shape === "phone";
 
   /* Click blurs the page away and the case study arrives behind it. Modified
      clicks and reduced motion navigate the ordinary way. */
@@ -157,26 +141,6 @@ export function ProjectFolder({
     [prefersReduced, router, href],
   );
 
-  const stageState = leaving || openInView ? "open" : "rest";
-
-  /* At rest the window already fills most of the card, and on hover it grows
-     past the edges. Its layer is unclipped so nothing cuts it off. It stays
-     inside the card on small screens, where there is no room either side
-     before the viewport edge. */
-  const screenSize = compact
-    ? phone
-      ? "h-[74%]"
-      : "w-[86%]"
-    : full
-      ? phone
-        ? "h-[80%] md:h-[88%]"
-        : "w-[84%] md:w-[66%]"
-      : phone
-      ? "h-[70%] md:h-[80%]"
-      : wide
-        ? "w-[82%] md:w-[88%]"
-        : "w-[84%] md:w-[94%]";
-
   return (
     <motion.li
       initial={{ opacity: 0, y: 22 }}
@@ -188,154 +152,134 @@ export function ProjectFolder({
           ? "col-span-1"
           : full
             ? "col-span-1 md:col-span-12"
-            : `col-span-1 ${wide ? "md:col-span-7" : "md:col-span-5"}`
+            : row
+              ? "min-w-0 md:min-w-[80px] md:flex-1 md:transition-[flex-grow] md:duration-[600ms] md:[transition-timing-function:cubic-bezier(0.32,0.72,0,1)] md:hover:flex-[2.1] md:focus-within:flex-[2.1]"
+              : `col-span-1 ${wide ? "md:col-span-7" : "md:col-span-5"}`
       }
     >
-      <Link href={href} onClick={onClick} className="group block">
-        <motion.div
-          ref={stageRef}
-          initial="rest"
-          animate={stageState}
-          whileHover="open"
-          whileFocus="open"
-          onPointerMove={onMove}
-          onPointerLeave={onLeave}
-          className={`relative isolate ${
+      <Link href={href} onClick={onClick} className="group block h-full">
+        <div
+          className={`v2-tint v2-card-bezel relative isolate flex h-full flex-col overflow-hidden rounded-[24px] border border-[var(--v2-line)] transition-colors duration-300 group-hover:border-[var(--v2-line-strong)] ${
+            leaving ? "opacity-0" : ""
+          } ${
             compact
               ? "h-[230px] md:h-[260px]"
               : full
-                ? phone
-                  ? "h-[360px] md:h-[440px]"
-                  : "h-[420px] md:h-[560px]"
-                : "h-[400px] md:h-[520px]"
+                ? "h-[70vh] md:h-[85vh]"
+                : row
+                  ? "h-[380px] md:h-[560px]"
+                  : "h-[400px] md:h-[520px]"
           }`}
+          style={
+            {
+              "--tint": project.bg,
+              "--tint-dark": project.bgDark,
+              transition: "opacity 300ms ease",
+              /* a project.dark card (Meinerva) keeps a near-black tint in
+                 BOTH themes, so the ink tokens the text and line art read
+                 must not flip to the light theme's dark values — that's
+                 dark-on-dark, invisible. Pin them to the dark palette
+                 (globals.css, [data-v2-theme="dark"] .v2-root) here, where
+                 the cascade puts them ahead of the theme swap. */
+              ...(project.dark
+                ? {
+                    "--v2-ink": "#f2f2f4",
+                    "--v2-secondary": "#a8a8b0",
+                    "--v2-label": "#8f8f98",
+                    "--v2-line": "rgba(255, 255, 255, 0.1)",
+                    "--v2-line-strong": "rgba(255, 255, 255, 0.24)",
+                    "--v2-warn": "#e79170",
+                    "--v2-invert-bg": "#f2f2f4",
+                    "--v2-invert-ink": "#0c0c0e",
+                  }
+                : null),
+            } as React.CSSProperties
+          }
         >
-          {/* layer 1: the tinted panel and the keyword cards, clipped.
-              `grain` lays a static noise tile over the tint, so the colour has
-              some tooth instead of reading as flat fill. */}
+          {/* header, footer and the art area are stacked in normal flow (not
+              three overlaid absolute layers) so the art's slot is whatever
+              space is actually left over, never a guessed padding number —
+              header and footer can never be overlapped by it, however many
+              lines their text wraps to. */}
           <div
-            className={`v2-tint grain absolute inset-0 overflow-hidden rounded-[28px] ${
-              project.dark ? "grain-dark" : ""
+            className={`z-10 flex shrink-0 items-center gap-2 font-mono uppercase tracking-[0.18em] text-[var(--v2-ink)] ${
+              compact ? "p-4 text-[10px]" : "p-6 text-[11px] md:p-9"
             }`}
-            style={
-              {
-                "--tint": project.bg,
-                "--tint-dark": project.bgDark,
-              } as React.CSSProperties
-            }
           >
-            {/* the light the pointer carries. A fixed size disc translated by
-                the pointer springs, so it is a transform and never a repaint.
-                Blend rather than paint, so it lifts the tint instead of
-                greying it. */}
-            <motion.span
-              aria-hidden
-              style={prefersReduced || !mouse ? { opacity: 0 } : { x, y }}
-              variants={{ rest: { opacity: 0 }, open: { opacity: mouse && !prefersReduced ? 1 : 0 } }}
-              transition={{ duration: 0.35, ease: EASE }}
-              className={`pointer-events-none absolute left-0 top-0 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full ${
-                project.dark ? "mix-blend-soft-light" : "mix-blend-overlay"
-              }`}
-            >
-              <span className="block h-full w-full rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.9)_0%,rgba(255,255,255,0)_68%)]" />
-            </motion.span>
-
-            {!compact && project.tags.map((tag, i) => {
-              const d = deal(i);
-              return (
-                <motion.div
-                  key={tag}
-                  aria-hidden
-                  variants={{
-                    rest: { x: 0, y: "16%", opacity: 0 },
-                    open: { x: d.x, y: d.y, opacity: 1 },
-                  }}
-                  transition={{ ...SPRING, delay: 0.1 + i * 0.075 }}
-                  className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
-                >
-                  <motion.span
-                    variants={{
-                      rest: { rotate: 0, scale: 0.7 },
-                      open: { rotate: d.rotate, scale: 1 },
-                    }}
-                    transition={{ ...SPRING, delay: 0.1 + i * 0.075 }}
-                    className={`v2-chip inline-flex items-center gap-2 whitespace-nowrap rounded-xl px-3.5 py-2 font-mono text-[11px] uppercase tracking-[0.14em] shadow-[0_18px_36px_-18px_rgba(0,0,0,0.75)] ${
-                      project.dark ? "v2-chip--ondark" : ""
-                    }`}
-                  >
-                    <span className="v2-chip__dot h-1 w-1 shrink-0 rounded-full" />
-                    {tag}
-                  </motion.span>
-                </motion.div>
-              );
-            })}
-          </div>
-
-          {/* layer 2: the screen, unclipped so it can grow past the card.
-              The perspective lives on the wrapper, so the lean is real
-              rotation rather than a skew. */}
-          <div
-            className="absolute inset-0 z-10 flex items-center justify-center"
-            style={{ perspective: 1100 }}
-          >
-            <motion.div
-              variants={{
-                rest: { scale: 1, y: "0%" },
-                open: compact
-                  ? { scale: 1.07, y: "-3%" }
-                  : { scale: 1.14, y: "-7%" },
-              }}
-              style={prefersReduced ? undefined : { rotateX, rotateY }}
-              transition={SPRING}
-              className={`flex items-center justify-center shadow-[0_22px_44px_-8px_rgba(0,0,0,0.28)] ${
-                phone ? "rounded-[30px]" : "rounded-[18px]"
-              } ${compact ? "shadow-[0_14px_28px_-8px_rgba(0,0,0,0.26)]" : ""} ${screenSize}`}
-            >
-              <Screen className={phone ? "h-full w-auto" : "h-auto w-full"} />
-            </motion.div>
-          </div>
-
-          {/* cursor companion, mouse only */}
-          <motion.span
-            aria-hidden
-            style={prefersReduced || !mouse ? undefined : { x, y }}
-            variants={{
-              rest: { opacity: 0, scale: 0.8 },
-              open: { opacity: mouse && !prefersReduced && !leaving ? 1 : 0, scale: 1 },
-            }}
-            transition={{ duration: 0.2, ease: EASE }}
-            className="pointer-events-none absolute left-0 top-0 z-30 -translate-x-1/2 translate-y-5 whitespace-nowrap rounded-full bg-[var(--v2-invert-bg)] px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--v2-invert-ink)]"
-          >
-            Read case study
-          </motion.span>
-        </motion.div>
-
-        <div className={compact ? "mt-4 px-1" : "mt-5 px-1"}>
-          <p className="mb-2 flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--v2-ink)]">
-            {project.feature}
+            <span className="text-[var(--v2-label)]">{String(index + 1).padStart(2, "0")}</span>
+            <span>{project.title}</span>
             {project.academic && (
-              <span className="rounded-full border border-[var(--v2-line-strong)] px-2 py-0.5 text-[var(--v2-label)]">
+              <span className="rounded-full border border-[var(--v2-line-strong)] px-2 py-0.5 text-[var(--v2-secondary)]">
                 Academic
               </span>
             )}
-          </p>
-          <h3
-            className={`max-w-[24ch] font-display font-light tracking-[-0.03em] transition-opacity duration-300 group-hover:opacity-70 ${
-              compact
-                ? "text-[17px] leading-[1.2]"
-                : "text-[24px] leading-[1.14] md:text-[30px]"
+          </div>
+
+          {/* the product shot, centered in whatever's left between header
+              and footer. No scrim behind it: the art is line work, not a
+              photo, so it needs no darkening to keep the text above legible. */}
+          <div
+            className={`flex min-h-0 flex-1 items-center justify-center ${
+              compact ? "px-5 py-2" : full ? "px-10 py-4 md:px-16 md:py-6" : "px-6 py-3 md:px-8 md:py-4"
             }`}
           >
-            {project.headline}
-          </h3>
-          <p className="mt-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--v2-label)]">
-            {compact
-              ? `${project.title} · ${project.year}`
-              : `${project.title} · ${project.year} · ${project.tags.join(" · ")}`}
-          </p>
+            {/* h-full on both axes, not the width-driven h-auto this used to
+                be: that let a wide screen compute its own height from the
+                viewBox aspect ratio alone, ignoring how tall this flex-1
+                slot actually is — on the short compact cards (the row at a
+                case study's foot) it overflowed both into the header above
+                and the footer below. preserveAspectRatio="meet" on the SVGs
+                (ProductScreens.tsx) does the actual fitting: it shrinks to
+                whatever box it's given, on both axes, never crops, never
+                spills. */}
+            <div className={`relative h-full ${phone ? "w-auto" : "w-full"}`}>
+              <Screen
+                className={`block h-full transition-transform duration-500 ease-out group-hover:-translate-y-1 group-hover:scale-[1.05] ${
+                  phone ? "w-auto" : "w-full"
+                }`}
+              />
+              {!compact && !prefersReduced && (
+                <CursorLoop
+                  stops={cursorRoute[project.slug]}
+                  viewBox={screenBox[project.slug]}
+                  pointer={phone ? "touch" : "mouse"}
+                  accent={cursorAccent[project.slug]}
+                  className="transition-transform duration-500 ease-out group-hover:-translate-y-1 group-hover:scale-[1.05]"
+                />
+              )}
+            </div>
+          </div>
+
+          {/* footer: headline + meta line, bottom-left */}
+          <div
+            className={`z-10 shrink-0 ${compact ? "p-4" : "p-6 md:p-9"}`}
+          >
+            <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--v2-secondary)]">
+              {project.feature}
+            </p>
+            <h3
+              className={`max-w-[24ch] font-display font-light tracking-[-0.03em] text-[var(--v2-ink)] ${
+                compact ? "text-[17px] leading-[1.2]" : "text-[24px] leading-[1.14] md:text-[30px]"
+              }`}
+            >
+              {project.headline}
+            </h3>
+            {!compact && (
+              <p className="mt-2.5 max-w-[30ch] font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--v2-secondary)]">
+                {project.year} · {project.tags.join(" · ")}
+              </p>
+            )}
+          </div>
+
+          {/* case-study affordance, bottom-right, on hover/focus only */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute bottom-6 right-6 z-10 hidden rounded-full border border-[var(--v2-line-strong)] bg-[var(--v2-invert-bg)] px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--v2-invert-ink)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 md:block"
+          >
+            Read case study
+          </span>
         </div>
       </Link>
-
     </motion.li>
   );
 }

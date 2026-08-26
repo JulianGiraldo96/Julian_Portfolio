@@ -18,7 +18,15 @@ export const SPRING = {
   mass: 0.9,
 };
 
-export const DURATION = { fast: 0.35, base: 0.6, slow: 0.8 } as const;
+export const DURATION = {
+  fast: 0.35,
+  base: 0.6,
+  slow: 0.8,
+  /* hover: colour and small glyph changes. flood: a fill or a label crossing
+     a button, the largest thing a hover is allowed to move. */
+  hover: 0.2,
+  flood: 0.26,
+} as const;
 
 /* An element arriving as it scrolls into view. `once` so nothing re-animates
    on the way back up, `amount: 0.15` so tall blocks start before their bottom

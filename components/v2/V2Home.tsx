@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { MotionConfig, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TopBar } from "./TopBar";
 import { V2Button } from "./V2Button";
-import { EASE, reveal } from "./motion";
+import { DURATION, EASE, reveal } from "./motion";
 import { ProjectFolder } from "./ProjectFolder";
 import { academic, professional, showOtherThings } from "./projects";
 
@@ -127,7 +128,7 @@ function CopyGlyph({ copied }: { copied: boolean }) {
       className="h-[1.15em] w-[1.15em] shrink-0 opacity-80"
     >
       {copied ? (
-        <path d="M4.5 12.5 9.5 17.5 19.5 6.5" />
+        <path pathLength={1} className="v2-check-draw" d="M4.5 12.5 9.5 17.5 19.5 6.5" />
       ) : (
         <>
           <rect x="9" y="9" width="11" height="11" rx="2.5" />
@@ -163,53 +164,108 @@ export function V2Home() {
   );
 }
 
+/* The hero's claim is dense data made calm, so the hero proves it with the
+   densest thing on the site: a ledger of the five systems, each with the one
+   number that survived, doubling as navigation. */
+const ledger = [
+  { name: "ERP Duo", stat: "9 locations", mark: "now", href: "/work/erp-duo", live: true },
+  { name: "Scan Memory", stat: "-30% errors", mark: "2025", href: "/work/scan-memory", live: true },
+  { name: "TaurusWebs", stat: "6h to 1h", mark: "2020", href: "/work/taurus", live: true },
+  { name: "Savee", stat: "0 to 1", mark: "2025", href: "/work/savee", live: false },
+  { name: "Meinerva", stat: "thesis", mark: "2025", href: "/work/meinerva", live: false },
+];
+
 function Intro() {
   const { copied, copy } = useCopyEmail();
 
   return (
-    <section aria-label="Introduction" className="pb-16 pt-16 text-center md:pb-24 md:pt-28">
-      <p className="v2-rise flex flex-wrap items-center justify-center gap-2">
-        <span className="grain relative inline-flex items-center gap-2 rounded-full bg-[var(--v2-surface)] px-3.5 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--v2-accent)]">
-          <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--v2-accent)]" />
-          Open for work
-        </span>
-        <span className="grain relative inline-block rounded-full bg-[var(--v2-surface)] px-3.5 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--v2-secondary)]">
-          Berlin, DE
-        </span>
-      </p>
+    <section aria-label="Introduction" className="pb-16 pt-12 md:pb-24 md:pt-20">
+      <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-12 md:gap-8">
+        <div className="md:col-span-7">
+          <p className="v2-rise flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--v2-secondary)]">
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[var(--v2-accent)]" />
+            <span className="text-[var(--v2-accent)]">Open for work</span>
+            <span aria-hidden className="text-[var(--v2-label)]">&middot;</span>
+            <span>Product Designer</span>
+            <span aria-hidden className="text-[var(--v2-label)]">&middot;</span>
+            <span>Berlin, DE</span>
+          </p>
 
-      <h1
-        className="v2-rise v2-rise-1 mx-auto mt-9 max-w-[900px] text-balance font-display text-[clamp(2.1rem,5vw,4rem)] font-extralight leading-[1.06] tracking-[-0.04em]"
-      >
-        Product Designer in Berlin. I make dense, data heavy products feel calm
-        and usable.
-      </h1>
+          <h1 className="v2-rise v2-rise-1 mt-7 text-balance font-display text-[clamp(2.4rem,5.2vw,4.6rem)] font-extralight leading-[1.04] tracking-[-0.045em]">
+            <span className="sr-only">Product Designer in Berlin. </span>
+            I make dense, data&nbsp;heavy products feel{" "}
+            <span className="font-normal">calm</span> and usable.
+          </h1>
 
-      <p
-        className="v2-rise v2-rise-2 mx-auto mt-7 max-w-[560px] text-[16px] leading-relaxed text-[var(--v2-secondary)] md:text-[18px]"
-      >
-        4 years in product, 8+ years designing. I design products I also use
-        myself: the ERP I built at Duo Sicilian Ice Cream runs daily across nine
-        locations and six departments.
-      </p>
+          <p className="v2-rise v2-rise-2 mt-7 max-w-[560px] text-[16px] leading-relaxed text-[var(--v2-secondary)] md:text-[18px]">
+            4 years in product, 8+ years designing. I design products I also use
+            myself: the ERP I built at Duo Sicilian Ice Cream runs daily across
+            nine locations and six departments.
+          </p>
 
-      <p className="v2-rise v2-rise-3 mt-9 flex flex-wrap items-center justify-center gap-2">
-        <V2Button href={LINKEDIN} tone="outline">
-          LinkedIn
-        </V2Button>
-        <V2Button
-          onClick={copy}
-          shortLabel="Email"
-          ariaLabel={`Copy email address, ${EMAIL}`}
-          trailing={<CopyGlyph copied={copied} />}
+          <p className="v2-rise v2-rise-3 mt-9 flex flex-wrap items-center gap-2">
+            <V2Button href={LINKEDIN} tone="outline">
+              LinkedIn
+            </V2Button>
+            <V2Button
+              onClick={copy}
+              shortLabel="Email"
+              ariaLabel={`Copy email address, ${EMAIL}`}
+              trailing={<CopyGlyph copied={copied} />}
+            >
+              {EMAIL}
+            </V2Button>
+            <V2Button href={CV} tone="outline">
+              CV
+            </V2Button>
+            <CopiedStatus copied={copied} />
+          </p>
+        </div>
+
+        <nav
+          aria-label="Case studies index"
+          className="v2-rise v2-rise-4 w-full max-w-[430px] md:col-span-5 md:justify-self-end"
         >
-          {EMAIL}
-        </V2Button>
-        <V2Button href={CV} tone="outline">
-          CV
-        </V2Button>
-        <CopiedStatus copied={copied} />
-      </p>
+          <div className="grain relative overflow-hidden rounded-[20px] border border-[var(--v2-line)] bg-[var(--v2-surface)] p-2">
+            <div className="flex items-baseline justify-between px-3 pb-2.5 pt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--v2-label)]">
+              <span>Systems</span>
+              <span>2020 to now</span>
+            </div>
+            <ul className="list-none">
+              {ledger.map((r, i) => (
+                <li
+                  key={r.name}
+                  className="v2-rise"
+                  style={{ animationDelay: `${480 + i * 90}ms` }}
+                >
+                  <Link
+                    href={r.href}
+                    className="group flex items-center justify-between gap-3 rounded-[12px] px-3 py-3 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors duration-200 hover:bg-[var(--v2-invert-bg)] hover:text-[var(--v2-invert-ink)] focus-visible:bg-[var(--v2-invert-bg)] focus-visible:text-[var(--v2-invert-ink)]"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <span
+                        aria-hidden
+                        className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+                          r.live
+                            ? "bg-[var(--v2-accent)]"
+                            : "border border-current opacity-60"
+                        }`}
+                      />
+                      {r.name}
+                    </span>
+                    <span className="flex items-center gap-3 text-[var(--v2-label)] transition-colors duration-200 group-hover:text-[var(--v2-invert-ink)]">
+                      <span>{r.stat}</span>
+                      <span className="w-[4ch] text-right opacity-70">
+                        {r.mark}
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </nav>
+      </div>
     </section>
   );
 }
@@ -265,13 +321,28 @@ function ProjectGrid({
   );
 }
 
+/* The flora.ai triptych: three cards sit side by side as equal flex panels,
+   and hovering one grows it while its siblings give up the width — pure CSS
+   via the `flex` property on ProjectFolder's `row` mode, no JS state. Stacks
+   vertically on mobile, where there's no width to trade. */
 function SelectedWork() {
   return (
-    <section id="work" aria-labelledby="work-heading" className="scroll-mt-24 pb-6">
-      <SectionHeading id="work-heading" aside={`${professional.length} shipped`}>
+    <section
+      id="work"
+      aria-labelledby="work-heading"
+      className="scroll-mt-24 border-t border-[var(--v2-line)] pb-6 pt-10 md:pt-14"
+    >
+      <h2
+        id="work-heading"
+        className="mb-8 font-mono text-[12px] uppercase tracking-[0.2em] md:mb-12"
+      >
         Selected work
-      </SectionHeading>
-      <ProjectGrid list={professional} />
+      </h2>
+      <ul className="flex list-none flex-col gap-6 md:flex-row md:items-stretch md:gap-4">
+        {professional.map((p, i) => (
+          <ProjectFolder key={p.slug} project={p} index={i} wide={false} row />
+        ))}
+      </ul>
     </section>
   );
 }
@@ -354,7 +425,7 @@ function Footer() {
       aria-labelledby="contact-heading"
       className="mx-auto max-w-[1240px] scroll-mt-24 px-5 pb-14 pt-20 md:px-8 md:pb-20 md:pt-28"
     >
-      <div className="grid grid-cols-1 gap-8 border-t border-[var(--v2-line)] pt-10 md:grid-cols-12">
+      <div className="grid grid-cols-1 gap-10 border-t border-[var(--v2-line)] pt-10 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-5">
           <h2
             id="contact-heading"
@@ -366,17 +437,28 @@ function Footer() {
             Open to Product Design roles in Berlin or remote. Happy to walk you
             through any of these projects.
           </p>
+
+          {/* the badge that opened the page closes it too, so the footer
+              reads as an answer to the hero rather than an afterthought */}
+          <span className="grain relative mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--v2-surface)] px-3.5 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--v2-accent)]">
+            <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--v2-accent)]" />
+            Open for work
+          </span>
         </div>
 
-        <div className="w-full space-y-2 md:col-span-7 md:max-w-[460px] md:justify-self-end">
-          <LinkRow href={CV} label="CV, PDF" />
-          <LinkRow href={LINKEDIN} label="LinkedIn" />
-          <LinkRow
-            onClick={copy}
-            label={EMAIL}
-            ariaLabel={`Copy email address, ${EMAIL}`}
-            trailing={<CopyGlyph copied={copied} />}
-          />
+        <div className="w-full md:col-span-7 md:max-w-[460px] md:justify-self-end">
+          {/* one grained, bordered card, the same material as the hero's
+              systems ledger: the two bookend each other. */}
+          <div className="grain relative overflow-hidden rounded-[20px] border border-[var(--v2-line)] bg-[var(--v2-surface)] p-2">
+            <LinkRow href={CV} label="CV, PDF" />
+            <LinkRow href={LINKEDIN} label="LinkedIn" />
+            <LinkRow
+              onClick={copy}
+              label={EMAIL}
+              ariaLabel={`Copy email address, ${EMAIL}`}
+              trailing={<CopyGlyph copied={copied} />}
+            />
+          </div>
           <CopiedStatus copied={copied} />
         </div>
       </div>
@@ -413,8 +495,8 @@ function LinkRow({
     initial: "rest",
     whileHover: "on",
     whileFocus: "on",
-    whileTap: { scale: 0.995 },
-    className: `group grain relative isolate flex w-full min-h-[52px] items-center justify-between gap-3 overflow-hidden rounded-2xl bg-[var(--v2-surface)] px-5 text-left font-mono text-[11px] uppercase tracking-[0.14em] ${className}`,
+    whileTap: { scale: 0.98 },
+    className: `group relative isolate flex w-full min-h-[48px] items-center justify-between gap-3 overflow-hidden rounded-[12px] px-4 text-left font-mono text-[11px] uppercase tracking-[0.14em] ${className}`,
   };
 
   const inner = (
@@ -422,17 +504,17 @@ function LinkRow({
       <motion.span
         aria-hidden
         variants={{ rest: { scaleX: 0 }, on: { scaleX: 1 } }}
-        transition={{ duration: 0.45, ease: EASE }}
+        transition={{ duration: DURATION.flood, ease: EASE }}
         className="absolute inset-0 -z-10 origin-left bg-[var(--v2-invert-bg)]"
       />
       <motion.span
         variants={{ rest: { color: "var(--v2-ink)" }, on: { color: "var(--v2-invert-ink)" } }}
-        transition={{ duration: 0.3, ease: EASE }}
+        transition={{ duration: DURATION.hover, ease: EASE }}
         className="relative block h-[1.15em] flex-1 overflow-hidden text-left"
       >
         <motion.span
           variants={{ rest: { y: "0%" }, on: { y: "-50%" } }}
-          transition={{ duration: 0.42, ease: EASE }}
+          transition={{ duration: DURATION.flood, ease: EASE }}
           className="block"
         >
           <span className="block truncate leading-[1.15em]">{label}</span>
@@ -457,7 +539,7 @@ function LinkRow({
                 on: { x: 3, y: -3, color: "var(--v2-invert-ink)" },
               }
         }
-        transition={{ duration: 0.32, ease: EASE }}
+        transition={{ duration: DURATION.hover, ease: EASE }}
         className="relative flex shrink-0 items-center"
       >
         {trailing ?? "↗"}

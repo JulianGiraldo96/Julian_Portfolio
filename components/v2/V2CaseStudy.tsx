@@ -211,7 +211,27 @@ function Hero({
       {/* the cover is the LCP element, so its entrance is a keyframe too */}
       <figure
         className="v2-tint grain v2-rise v2-rise-2 v2-settle relative mt-12 overflow-hidden rounded-[28px] md:mt-16"
-        style={{ "--tint": tint, "--tint-dark": tintDark } as React.CSSProperties}
+        style={
+          {
+            "--tint": tint,
+            "--tint-dark": tintDark,
+            /* Meinerva's plate is near-black in both themes, so the line
+               art's ink tokens must not flip to the light theme's dark
+               values (dark-on-dark, invisible) — same pinning as
+               ProjectFolder does for its `dark` cards. Keyed off the tint
+               itself so any future always-dark plate gets it too. */
+            ...(coverScreen === "meinerva"
+              ? {
+                  "--v2-ink": "#f2f2f4",
+                  "--v2-secondary": "#a8a8b0",
+                  "--v2-label": "#8f8f98",
+                  "--v2-line": "rgba(255, 255, 255, 0.1)",
+                  "--v2-line-strong": "rgba(255, 255, 255, 0.24)",
+                  "--v2-warn": "#e79170",
+                }
+              : null),
+          } as React.CSSProperties
+        }
       >
         {Screen ? (
           <div className={coverPhone ? "px-6 py-10 md:py-16" : "px-[6%] py-[5%]"}>
@@ -676,7 +696,11 @@ function SectionBlock({ section, index }: { section: V2Section; index: number })
 
 /* The end of a case study is the best moment to offer another one, so it ends
    with the same cards the home page uses rather than a line of text. Same
-   component, `compact`, three across. */
+   component, same `row` treatment as the home page's "Selected work" triptych
+   (flex siblings, the hovered one grows, taller cards) rather than a
+   `compact` grid: `compact`'s fixed 230-260px card was too short for the art
+   at its natural size, and shrinking the art to fit read worse than just
+   giving it the room the home cards already have. */
 function MoreWork({ currentSlug }: { currentSlug: string }) {
   /* three, so the row stays one clean line however long the list grows */
   const rest = work.filter((p) => p.slug !== currentSlug).slice(0, 3);
@@ -698,9 +722,9 @@ function MoreWork({ currentSlug }: { currentSlug: string }) {
         </Link>
       </div>
 
-      <ul className="grid list-none grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 md:gap-5">
+      <ul className="flex list-none flex-col gap-6 md:flex-row md:items-stretch md:gap-4">
         {rest.map((project, i) => (
-          <ProjectFolder key={project.slug} project={project} index={i} wide={false} compact />
+          <ProjectFolder key={project.slug} project={project} index={i} wide={false} row />
         ))}
       </ul>
     </section>

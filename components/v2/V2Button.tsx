@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
-import { EASE } from "./motion";
+import { DURATION, EASE } from "./motion";
 
 /* The contact buttons.
 
@@ -74,7 +74,7 @@ export function V2Button({
       color: on ? hoverInk : restInk,
       borderColor: solid && !on ? "rgba(0, 0, 0, 0)" : "var(--v2-line-strong)",
     },
-    transition: { duration: 0.3, ease: EASE },
+    transition: { duration: DURATION.hover, ease: EASE },
     whileTap: prefersReduced ? undefined : { scale: 0.97 },
     className: `relative isolate inline-flex min-h-[46px] items-center gap-1.5 overflow-hidden rounded-full px-5 font-mono text-[11px] uppercase tracking-[0.16em] ${
       solid ? "border border-[rgba(0,0,0,0)] bg-[var(--v2-invert-bg)]" : "border"
@@ -89,7 +89,7 @@ export function V2Button({
         aria-hidden
         initial={false}
         animate={{ scale: on ? 1 : 0 }}
-        transition={{ duration: 0.45, ease: EASE }}
+        transition={{ duration: on ? DURATION.flood : DURATION.hover, ease: EASE }}
         style={{
           left: `${origin.x}%`,
           top: `${origin.y}%`,

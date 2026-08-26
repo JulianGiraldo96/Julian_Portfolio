@@ -54,7 +54,7 @@ body {
    tokens, so it inverts correctly in both themes. */
 .v2-root ::selection,
 .v2-root::selection {
-  background: var(--v2-ink);
+  background: var(--v2-accent);
   color: var(--v2-bg);
 }
 
@@ -110,6 +110,19 @@ body {
   --v2-cool-bg: #14192240;
 
   color-scheme: dark;
+}
+
+/* ---------------------------------------------------------------------------
+   Theme-switch sweep (hpanel-style circular reveal).
+   The default cross-fade View Transitions ship with is switched off; Theme.tsx
+   drives the actual animation itself, growing a circle clip-path on the new
+   snapshot from the toggle's own position. Without this override the built-in
+   fade would run underneath it and muddy the edge of the circle.
+--------------------------------------------------------------------------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 /* ---------------------------------------------------------------------------
@@ -464,17 +477,17 @@ body {
 }
 
 .v2-rise {
-  animation: v2-rise 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: v2-rise 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .v2-settle > * {
   animation: v2-settle 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.v2-rise-1 { animation-delay: 60ms; }
-.v2-rise-2 { animation-delay: 120ms; }
-.v2-rise-3 { animation-delay: 180ms; }
-.v2-rise-4 { animation-delay: 240ms; }
+.v2-rise-1 { animation-delay: 100ms; }
+.v2-rise-2 { animation-delay: 200ms; }
+.v2-rise-3 { animation-delay: 300ms; }
+.v2-rise-4 { animation-delay: 400ms; }
 
 @media (prefers-reduced-motion: reduce) {
   .v2-rise,
@@ -504,7 +517,7 @@ body {
 }
 
 .v2-dots-run .v2-dot {
-  animation: v2-dot-in 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: v2-dot-in 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -584,4 +597,80 @@ html.lenis body {
 
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
+}
+
+/* ---------------------------------------------------------------------------
+   The top bar earns its surface. At the top of the page there is nothing
+   under it to separate, so it starts as bare text; the hairline and the
+   glass fill arrive with the first scroll.
+--------------------------------------------------------------------------- */
+.v2-topbar {
+  border-bottom: 1px solid rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
+  transition:
+    border-color 300ms ease,
+    background-color 300ms ease;
+}
+
+.v2-topbar[data-scrolled="true"] {
+  border-bottom-color: var(--v2-line);
+  background-color: var(--v2-header);
+}
+
+/* The copied check draws itself, tip to tip. pathLength=1 on the path makes
+   the dash arithmetic unit free. */
+@keyframes v2-check-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.v2-check-draw {
+  stroke-dasharray: 1;
+  animation: v2-check-draw 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-check-draw {
+    animation: none;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Project card bezel. The tint panel used to be a flat colour fill with no
+   edge; a hairline border (added inline) plus this ambient shadow gives it
+   the same lifted-off-the-page read as the ledger and footer cards, so every
+   surface on the site shares one material language.
+--------------------------------------------------------------------------- */
+.v2-card-bezel {
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.04),
+    0 24px 48px -28px rgba(0, 0, 0, 0.4);
+}
+
+[data-v2-theme="dark"] .v2-card-bezel {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04),
+    0 24px 48px -28px rgba(0, 0, 0, 0.65);
+}
+
+/* ---------------------------------------------------------------------------
+   The headline stat that breaks a project card's top edge. Its shadow has to
+   read as clearly heavier than .v2-card-bezel's, or the two surfaces
+   flatten into one and the "floating above" read is lost.
+--------------------------------------------------------------------------- */
+.v2-stat-float {
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    0 28px 48px -16px rgba(0, 0, 0, 0.28);
+}
+
+[data-v2-theme="dark"] .v2-stat-float {
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 28px 48px -16px rgba(0, 0, 0, 0.7);
 }

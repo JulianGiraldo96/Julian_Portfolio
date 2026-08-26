@@ -85,7 +85,7 @@ function Row({ row }: { row: DotRow }) {
               <span
                 key={i}
                 aria-hidden
-                style={{ animationDelay: `${120 + i * 30}ms` }}
+                style={{ animationDelay: `${350 + i * 45}ms` }}
                 className={`v2-dot block ${DOT} ${
                   i < before
                     ? "bg-[var(--v2-label)]"
@@ -109,7 +109,7 @@ function Row({ row }: { row: DotRow }) {
                   key={i}
                   aria-hidden
                   style={{
-                    animationDelay: `${120 + row.total * 30 + i * 30}ms`,
+                    animationDelay: `${350 + row.total * 45 + i * 45}ms`,
                   }}
                   className={`v2-dot block ${DOT} ${
                     left
@@ -123,8 +123,8 @@ function Row({ row }: { row: DotRow }) {
               <motion.span
                 variants={{ rest: { opacity: 0 }, run: { opacity: 1 } }}
                 transition={{
-                  duration: 0.4,
-                  delay: 0.12 + row.total * 0.06 + 0.2,
+                  duration: 0.5,
+                  delay: 0.35 + row.total * 0.09 + 0.3,
                 }}
                 className="ml-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--v2-label)]"
               >

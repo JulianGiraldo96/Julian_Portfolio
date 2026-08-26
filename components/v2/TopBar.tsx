@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { BerlinClock } from "../Clock";
 import { ThemeToggle } from "./Theme";
 import { showOtherThings } from "./projects";
@@ -22,8 +23,22 @@ export function TopBar({ home = false }: { home?: boolean }) {
      travel back to the home page first */
   const href = (hash: string) => (home ? hash : `/${hash}`);
 
+  /* The bar earns its surface. At the top of the page there is nothing under
+     it to separate, so it starts as bare text; the hairline and the glass
+     fill arrive with the first scroll. */
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--v2-line)] bg-[var(--v2-header)] backdrop-blur-xl">
+    <header
+      data-scrolled={scrolled}
+      className="v2-topbar sticky top-0 z-50 backdrop-blur-xl"
+    >
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-[var(--v2-invert-bg)] focus:px-5 focus:py-3 focus:text-[14px] focus:text-[var(--v2-invert-ink)]"
@@ -50,7 +65,7 @@ export function TopBar({ home = false }: { home?: boolean }) {
                   {l.label}
                   <span
                     aria-hidden
-                    className="absolute inset-x-0 -bottom-0.5 h-px origin-right scale-x-0 bg-current transition-transform duration-500 ease-out group-hover:origin-left group-hover:scale-x-100"
+                    className="absolute inset-x-0 -bottom-0.5 h-px origin-right scale-x-0 bg-current transition-transform duration-200 ease-out motion-reduce:transition-none group-hover:origin-left group-hover:scale-x-100"
                   />
                 </a>
               </li>
