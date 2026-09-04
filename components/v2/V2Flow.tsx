@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { EASE } from "./motion";
+import { DURATION, EASE } from "./motion";
 
 /* An automation canvas, not a picture of one.
 
@@ -250,7 +250,7 @@ export function V2Flow({ spec, caption }: { spec: FlowSpec; caption?: string }) 
           <motion.div
             key={label}
             variants={{ rest: { opacity: 0, y: 8 }, run: { opacity: 1, y: 0 } }}
-            transition={{ duration: 0.6, delay: 0.1 + i * 0.12, ease: EASE }}
+            transition={{ duration: DURATION.base, delay: 0.1 + i * 0.12, ease: EASE }}
           >
             <span className="mb-2 block h-px w-full origin-left bg-[var(--v2-line-strong)]" />
             <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--v2-label)]">
@@ -308,7 +308,7 @@ export function V2Flow({ spec, caption }: { spec: FlowSpec; caption?: string }) 
                 rest: { pathLength: 0, opacity: 0 },
                 run: { pathLength: 1, opacity: 1 },
               }}
-              transition={{ duration: 1.2, delay: 0.7 + w.order * 0.12, ease: EASE }}
+              transition={{ duration: DURATION.draw, delay: 0.7 + w.order * 0.12, ease: EASE }}
             />
           ))}
         </svg>
@@ -320,7 +320,7 @@ export function V2Flow({ spec, caption }: { spec: FlowSpec; caption?: string }) 
             <motion.span
               key={`${w.key}-label`}
               variants={{ rest: { opacity: 0, scale: 0.9 }, run: { opacity: 1, scale: 1 } }}
-              transition={{ duration: 0.5, delay: 1.15 + w.order * 0.12, ease: EASE }}
+              transition={{ duration: DURATION.base, delay: 1.15 + w.order * 0.12, ease: EASE }}
               style={{ left: w.mx, top: w.my }}
               className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border border-[var(--v2-line)] bg-[var(--v2-bg)] px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--v2-label)]"
             >
@@ -342,7 +342,7 @@ export function V2Flow({ spec, caption }: { spec: FlowSpec; caption?: string }) 
                 rest: { opacity: 0, y: 12, scale: 0.97 },
                 run: { opacity: 1, y: 0, scale: 1 },
               }}
-              transition={{ duration: 0.6, delay: 0.2 + i * 0.08, ease: EASE }}
+              transition={{ duration: DURATION.base, delay: 0.2 + i * 0.08, ease: EASE }}
               className={`v2-pad relative rounded-2xl border px-4 py-3.5 ${
                 padStyle[node.kind ?? "step"]
               }`}

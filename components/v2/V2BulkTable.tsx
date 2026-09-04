@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
-import { EASE } from "./motion";
+import { DURATION, EASE, SPRING } from "./motion";
 
 /* The centrepiece: the old one-record-at-a-time form beside the table that
    replaced it. The v1 version put a fixed width table inside a horizontal
@@ -66,7 +66,7 @@ export function V2BulkTable({ caption }: { caption?: string }) {
               {view === v && (
                 <motion.span
                   layoutId="bulk-tab"
-                  transition={{ type: "spring", stiffness: 380, damping: 34 }}
+                  transition={SPRING}
                   className="absolute inset-0 rounded-full bg-[var(--v2-invert-bg)]"
                 />
               )}
@@ -86,19 +86,30 @@ export function V2BulkTable({ caption }: { caption?: string }) {
         </span>
       </div>
 
-      {/* mode="wait" so the two never overlap and the height never jumps twice */}
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={view}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.32, ease: EASE }}
-          className="grain relative overflow-hidden rounded-[24px] border border-[var(--v2-line)] bg-[var(--v2-surface)]"
-        >
-          {view === "before" ? <BeforeForm /> : <AfterTable />}
-        </motion.div>
-      </AnimatePresence>
+      {/* The toggle has to feel instant, so the incoming panel starts the frame
+          it is asked for rather than waiting out the old one's exit (mode="wait"
+          used to cost ~0.6s round trip). `popLayout` pulls the leaving panel out
+          of flow; `layout` on the frame then eases its own height between the
+          two — the form and the table are very different heights, and without
+          this the card would teleport. */}
+      <motion.div
+        layout
+        transition={{ layout: { duration: DURATION.base, ease: EASE } }}
+        className="grain relative overflow-hidden rounded-[24px] border border-[var(--v2-line)] bg-[var(--v2-surface)]"
+      >
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.div
+            key={view}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: DURATION.fast, ease: EASE }}
+            className="relative"
+          >
+            {view === "before" ? <BeforeForm /> : <AfterTable />}
+          </motion.div>
+        </AnimatePresence>
+      </motion.div>
 
       {caption && (
         <p className="mt-4 font-mono text-[11px] uppercase leading-relaxed tracking-[0.14em] text-[var(--v2-label)]">
@@ -122,7 +133,7 @@ function BeforeForm() {
             key={f.label}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: i * 0.05, ease: EASE }}
+            transition={{ duration: DURATION.fast, delay: i * 0.05, ease: EASE }}
             className="block rounded-xl border border-[var(--v2-line)] bg-[var(--v2-bg)] px-4 py-3"
           >
             <span className="block font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--v2-label)]">
@@ -154,7 +165,7 @@ function AfterTable() {
             key={a}
             initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: i * 0.06, ease: EASE }}
+            transition={{ duration: DURATION.fast, delay: i * 0.06, ease: EASE }}
             className="rounded-full border border-[var(--v2-line-strong)] bg-[var(--v2-bg)] px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--v2-secondary)]"
           >
             {a}
@@ -196,7 +207,7 @@ function AfterTable() {
               key={a.tag}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.1 + i * 0.045 }}
+              transition={{ duration: DURATION.fast, delay: 0.1 + i * 0.045, ease: EASE }}
               className="border-t border-[var(--v2-line)] text-[13px]"
             >
               <th scope="row" className="px-4 py-3 font-mono text-[12px] font-normal md:px-6">

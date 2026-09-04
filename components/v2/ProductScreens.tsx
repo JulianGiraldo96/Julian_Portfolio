@@ -351,7 +351,7 @@ export function ScanMemoryScreen({ className = "" }: { className?: string }) {
       <text x="28" y="32.5" fontSize="6.2" fontWeight="600" fill={TEXT}>
         Mitte · Torstraße
       </text>
-      <path d="M120 26 l3.2 3.2 3.2-3.2" stroke={accent} strokeWidth="1.1" fill="none" strokeLinecap="round" />
+      <path d="M112 26 l3.2 3.2 3.2-3.2" stroke={accent} strokeWidth="1.1" fill="none" strokeLinecap="round" strokeLinejoin="round" />
 
       <g>
         <circle cx="142" cy="29" r="2.2" fill={accent} />
@@ -403,26 +403,29 @@ export function ScanMemoryScreen({ className = "" }: { className?: string }) {
             <rect x="150" y={y - 2} width="70" height="5" rx="2.5" fill="none" stroke={LINE} />
             <rect x="150" y={y - 2} width={(r.n / 12) * 70} height="5" rx="2.5" fill={accent} fillOpacity="0.5" />
 
-            <text x="256" y={y + 2.4} fontSize="6.6" fontWeight="700" fill={TEXT} textAnchor="middle">
+            {/* −  n  +  : nudge this line's count up or down by a unit */}
+            <g strokeLinecap="round">
+              <rect x="238" y={y - 4} width="9" height="9" rx="2.5" fill="none" stroke={LINE_STRONG} />
+              <line x1="240.6" y1={y + 0.5} x2="244.4" y2={y + 0.5} stroke={TEXT_MUTED} strokeWidth="1.1" />
+              <rect x="269" y={y - 4} width="9" height="9" rx="2.5" fill="none" stroke={LINE_STRONG} />
+              <line x1="271.6" y1={y + 0.5} x2="275.4" y2={y + 0.5} stroke={TEXT_MUTED} strokeWidth="1.1" />
+              <line x1="273.5" y1={y - 1.4} x2="273.5" y2={y + 2.4} stroke={TEXT_MUTED} strokeWidth="1.1" />
+            </g>
+            <text x="258" y={y + 2.4} fontSize="6.6" fontWeight="700" fill={TEXT} textAnchor="middle">
               {r.n}
             </text>
 
-            {/* far right: the whole row goes, or you step into it */}
-            {on ? (
-              <g stroke={RED} strokeWidth="1.1" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="316" y1={y - 2.5} x2="322" y2={y + 3.5} />
-                <line x1="322" y1={y - 2.5} x2="316" y2={y + 3.5} />
-              </g>
-            ) : (
-              <path
-                d={`M316 ${y - 3} l3.4 3.4 l-3.4 3.4`}
-                stroke={TEXT_MUTED}
-                strokeWidth="1.2"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            )}
+            {/* far right: drop this line's units */}
+            <g
+              stroke={on ? RED : TEXT_MUTED}
+              strokeWidth="1.1"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="314" y1={y - 3} x2="320" y2={y + 3} />
+              <line x1="320" y1={y - 3} x2="314" y2={y + 3} />
+            </g>
           </g>
         );
       })}

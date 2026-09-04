@@ -2,7 +2,7 @@
 
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
-import { EASE } from "./motion";
+import { DURATION, EASE } from "./motion";
 
 /* Results as counted dots.
 
@@ -60,7 +60,7 @@ function Row({ row }: { row: DotRow }) {
     >
       <motion.p
         variants={{ rest: { opacity: 0, y: 8 }, run: { opacity: 1, y: 0 } }}
-        transition={{ duration: 0.45, ease: EASE }}
+        transition={{ duration: DURATION.fast, ease: EASE }}
         className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--v2-label)]"
       >
         {row.label}
@@ -68,7 +68,7 @@ function Row({ row }: { row: DotRow }) {
 
       <motion.p
         variants={{ rest: { opacity: 0, y: 12 }, run: { opacity: 1, y: 0 } }}
-        transition={{ duration: 0.55, delay: 0.06, ease: EASE }}
+        transition={{ duration: DURATION.base, delay: 0.06, ease: EASE }}
         className="mt-3 font-display text-[clamp(2.2rem,5vw,3.4rem)] font-extralight leading-none tracking-[-0.045em]"
       >
         {row.value}
@@ -123,7 +123,7 @@ function Row({ row }: { row: DotRow }) {
               <motion.span
                 variants={{ rest: { opacity: 0 }, run: { opacity: 1 } }}
                 transition={{
-                  duration: 0.5,
+                  duration: DURATION.base,
                   delay: 0.35 + row.total * 0.09 + 0.3,
                 }}
                 className="ml-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--v2-label)]"
@@ -137,7 +137,7 @@ function Row({ row }: { row: DotRow }) {
 
       <motion.p
         variants={{ rest: { opacity: 0 }, run: { opacity: 1 } }}
-        transition={{ duration: 0.5, delay: 0.35 }}
+        transition={{ duration: DURATION.base, delay: 0.35 }}
         className="mt-6 max-w-[58ch] text-[14px] leading-relaxed text-[var(--v2-secondary)]"
       >
         {row.note}

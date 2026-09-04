@@ -10,9 +10,10 @@ import { V2DotStat, type DotRow } from "./V2DotStat";
 import { wireframes, type WireSlug } from "./Wireframes";
 import { V2Video } from "./V2Video";
 import { ProjectFolder } from "./ProjectFolder";
-import { screens, type ScreenSlug } from "./ProductScreens";
+import { type ScreenSlug } from "./ProductScreens";
+import { CardDemo, screenAspect } from "./CardDemo";
 import { work } from "./projects";
-import { EASE, reveal } from "./motion";
+import { DURATION, EASE, reveal } from "./motion";
 
 /* A case study in the v2 language: Outfit light for anything with a voice,
    Geist Mono uppercase for the numbering, one measure of running text.
@@ -149,7 +150,7 @@ function Reveal({
       initial={{ opacity: 0, y: 26 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.55, delay, ease: EASE }}
+      transition={{ duration: DURATION.base, delay, ease: EASE }}
       style={style}
       className={`overflow-hidden ${className}`}
     >
@@ -157,7 +158,7 @@ function Reveal({
         initial={{ scale: 1.07 }}
         whileInView={{ scale: 1 }}
         viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.9, delay, ease: EASE }}
+        transition={{ duration: DURATION.slow, delay, ease: EASE }}
       >
         {children}
       </motion.div>
@@ -178,7 +179,6 @@ function Hero({
   tint: string;
   tintDark: string;
 }) {
-  const Screen = coverScreen ? screens[coverScreen] : null;
   /* a phone drawn at the full width of the panel is about two thousand pixels
      tall and reads as a mistake, so phone shaped covers are capped and centred
      while desktop ones still fill the plate */
@@ -233,13 +233,19 @@ function Hero({
           } as React.CSSProperties
         }
       >
-        {Screen ? (
+        {coverScreen ? (
           <div className={coverPhone ? "px-6 py-10 md:py-16" : "px-[6%] py-[5%]"}>
-            <Screen
-              className={`h-auto w-full drop-shadow-none ${
-                coverPhone ? "mx-auto max-w-[240px] md:max-w-[280px]" : ""
-              }`}
-            />
+            {/* the hero runs the same live demo as the home card — the case
+               study opens on the product being used, not a screenshot of it.
+               aspect-ratio reserves the exact box the mockup's own viewBox
+               needs (screenAspect), so nothing letterboxes and there is no
+               layout shift once CardDemo mounts. */}
+            <div
+              className={coverPhone ? "mx-auto max-w-[240px] md:max-w-[280px]" : "w-full"}
+              style={{ aspectRatio: screenAspect(coverScreen) }}
+            >
+              <CardDemo slug={coverScreen} phone={coverPhone} />
+            </div>
           </div>
         ) : cover ? (
           <Image
@@ -294,7 +300,7 @@ function SectionShell({
         initial={{ opacity: 0, y: 8 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
-        transition={{ duration: 0.45, ease: EASE }}
+        transition={{ duration: DURATION.fast, ease: EASE }}
         className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--v2-label)]"
       >
         {label}
@@ -303,7 +309,7 @@ function SectionShell({
         initial={{ opacity: 0, y: 14 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
-        transition={{ duration: 0.6, delay: 0.06, ease: EASE }}
+        transition={{ duration: DURATION.base, delay: 0.06, ease: EASE }}
         className={
           layout === "split"
             ? "mt-4 max-w-[18ch] font-display text-[26px] font-light leading-[1.1] tracking-[-0.035em] md:sticky md:top-24 md:text-[32px]"
@@ -330,7 +336,7 @@ function SectionShell({
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true, amount: 0.8 }}
-          transition={{ duration: 0.8, ease: EASE }}
+          transition={{ duration: DURATION.slow, ease: EASE }}
           className="mb-8 h-px w-full origin-left bg-[var(--v2-line)]"
         />
       )}
@@ -362,7 +368,7 @@ function Body({ body, lead = false }: { body?: string[]; lead?: boolean }) {
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.55, delay: i * 0.07, ease: EASE }}
+          transition={{ duration: DURATION.base, delay: i * 0.07, ease: EASE }}
           className={
             lead
               ? "max-w-[46ch] text-[19px] leading-[1.55] md:text-[22px]"
@@ -385,13 +391,13 @@ function Stats({ stats }: { stats: V2Stat[] }) {
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.6, delay: i * 0.1, ease: EASE }}
+          transition={{ duration: DURATION.base, delay: i * 0.1, ease: EASE }}
         >
           <motion.span
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
             viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.6, delay: 0.12 + i * 0.1, ease: EASE }}
+            transition={{ duration: DURATION.base, delay: 0.12 + i * 0.1, ease: EASE }}
             className="mb-4 block h-px w-full origin-left bg-[var(--v2-line-strong)]"
           />
           <p className="font-display text-[clamp(2.2rem,5vw,3.1rem)] font-extralight leading-none tracking-[-0.045em]">
@@ -421,7 +427,7 @@ function SectionBlock({ section, index }: { section: V2Section; index: number })
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.55, delay: i * 0.08, ease: EASE }}
+                transition={{ duration: DURATION.base, delay: i * 0.08, ease: EASE }}
                 className="grain relative overflow-hidden rounded-[20px] border border-[var(--v2-line)] bg-[var(--v2-bg)] px-5 py-6"
               >
                 <h3 className="relative z-10 font-mono text-[11px] uppercase tracking-[0.16em]">
@@ -455,7 +461,7 @@ function SectionBlock({ section, index }: { section: V2Section; index: number })
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.55, delay: (i % 2) * 0.08, ease: EASE }}
+                transition={{ duration: DURATION.base, delay: (i % 2) * 0.08, ease: EASE }}
               >
                 <span className="font-mono text-[11px] tracking-[0.16em] text-[var(--v2-label)]">
                   {String(i + 1).padStart(2, "0")}
@@ -483,7 +489,7 @@ function SectionBlock({ section, index }: { section: V2Section; index: number })
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: (i % 3) * 0.07, ease: EASE }}
+                transition={{ duration: DURATION.base, delay: (i % 3) * 0.07, ease: EASE }}
                 className="grain relative overflow-hidden rounded-[18px] border border-[var(--v2-line)] bg-[var(--v2-bg)] px-5 py-5"
               >
                 <p className="relative z-10 text-[15px] leading-snug">{q.question}</p>
@@ -571,7 +577,7 @@ function SectionBlock({ section, index }: { section: V2Section; index: number })
                   initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.25 }}
-                  transition={{ duration: 0.5, delay: (i % 4) * 0.07, ease: EASE }}
+                  transition={{ duration: DURATION.base, delay: (i % 4) * 0.07, ease: EASE }}
                 >
                   {/* the frame label sits above the frame, the way it does on a
                       Figma canvas */}

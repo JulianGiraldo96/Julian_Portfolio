@@ -99,7 +99,10 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
         },
         {
           duration: 650,
-          easing: "ease-in-out",
+          /* the built-in ease-in-out is too weak for a sweep this size — it
+             crawls at both ends. a strong custom in-out keeps the circle
+             moving through the middle where the eye is. */
+          easing: "cubic-bezier(0.77, 0, 0.175, 1)",
           pseudoElement: "::view-transition-new(root)",
         },
       );

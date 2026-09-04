@@ -92,7 +92,7 @@ export function RouteVeil() {
   return (
     <div
       aria-hidden
-      className="v2-veil pointer-events-none fixed inset-0 z-[200] backdrop-blur-2xl backdrop-saturate-125"
+      className="v2-veil pointer-events-none fixed inset-0 z-[200] backdrop-blur-lg backdrop-saturate-125"
       data-on={visible}
     />
   );

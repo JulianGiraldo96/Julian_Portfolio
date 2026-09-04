@@ -5,68 +5,9 @@ import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
 import { useCallback, useState } from "react";
 import { screens, type ScreenSlug } from "./ProductScreens";
-import { CursorLoop, type CursorStop } from "./CursorLoop";
+import { CardDemo } from "./CardDemo";
 import { startRouteVeil } from "./RouteVeil";
-import { EASE } from "./motion";
-
-/* viewBox of each mockup, matched to its own <svg viewBox> in
-   ProductScreens.tsx so the fake-cursor overlay lines up exactly. Savee is
-   the real exported screenshot (780x1688), not a viewBox we drew, so the
-   route below is an estimate of where a shopping-list's checkboxes sit. */
-const screenBox: Record<ScreenSlug, string> = {
-  "erp-duo": "0 0 360 240",
-  "scan-memory": "0 0 360 240",
-  taurus: "0 0 360 240",
-  savee: "0 0 780 1688",
-  meinerva: "0 0 170 320",
-};
-
-/* each product's own brand colour, pulled from its mockup in
-   ProductScreens.tsx, so the cursor loop's glow reads as that product
-   reacting rather than a generic system effect. */
-const cursorAccent: Record<ScreenSlug, string> = {
-  "erp-duo": "#2E8A77",
-  "scan-memory": "#2E8A77",
-  taurus: "#1F5FBF",
-  savee: "#7ED957",
-  meinerva: "#C6A96B",
-};
-
-/* one small "someone is using this" loop per product: on desktop screens the
-   pointer hovers a nav item or row (the real control lights up, like an
-   actual :hover) then clicks the thing that does something. Phone screens
-   (Meinerva, Savee) don't hover — a finger only taps, so their routes are
-   click-only. */
-const cursorRoute: Record<ScreenSlug, CursorStop[]> = {
-  "erp-duo": [
-    { x: 64.5, y: 37, box: { x: 18, y: 14, w: 73, h: 46, rx: 8 } }, // stat: Revenue
-    { x: 101, y: 110, box: { x: 18, y: 72, w: 166, h: 76, rx: 8 } }, // chart panel
-    { x: 218, y: 101, click: true, box: { x: 196, y: 72, w: 146, h: 76, rx: 8 } }, // alerts panel
-    { x: 289, y: 187, click: true, box: { x: 256, y: 176, w: 66, h: 22, rx: 11 } }, // status pill
-  ],
-  taurus: [
-    { x: 153, y: 27, box: { x: 118, y: 16, w: 70, h: 22, rx: 11 } }, // "Pegar filas"
-    { x: 64, y: 27, click: true, box: { x: 18, y: 16, w: 92, h: 22, rx: 11 } }, // "Carga múltiple"
-    { x: 22.5, y: 58, box: { x: 18, y: 53.5, w: 9, h: 9, rx: 2 } }, // header checkbox
-    { x: 298, y: 220, click: true, box: { x: 254, y: 210, w: 88, h: 20, rx: 10 } }, // "Guardar" button
-  ],
-  "scan-memory": [
-    { x: 73, y: 29, box: { x: 18, y: 18, w: 110, h: 22, rx: 11 } }, // store picker
-    { x: 287, y: 29, box: { x: 232, y: 18, w: 110, h: 22, rx: 11 } }, // scan field
-    { x: 32.5, y: 90, click: true, box: { x: 28, y: 85.5, w: 9, h: 9, rx: 2.5 } }, // toggle first row
-    { x: 294, y: 208, click: true, box: { x: 246, y: 198, w: 96, h: 20, rx: 10 } }, // accept button
-  ],
-  meinerva: [
-    { x: 60, y: 68, click: true, box: { x: 40, y: 48, w: 40, h: 40, rx: 20 } }, // tap the artwork
-    { x: 30, y: 234.5, click: true, box: { x: 18, y: 226, w: 76, h: 17, rx: 8.5 } }, // tap "Unlock hint"
-    { x: 28, y: 275, click: true, box: { x: 18, y: 268, w: 134, h: 14, rx: 7 } }, // tap a critique
-  ],
-  savee: [
-    { x: 90, y: 640, click: true },
-    { x: 90, y: 800, click: true },
-    { x: 90, y: 1120, click: true },
-  ],
-};
+import { DURATION, EASE } from "./motion";
 
 /* Card frame ported from flora.ai's "Process" triptych: the product shot
    floats centered in the card, smaller than the frame with room around it
@@ -146,7 +87,7 @@ export function ProjectFolder({
       initial={{ opacity: 0, y: 22 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6, delay: (index % 3) * 0.07, ease: EASE }}
+      transition={{ duration: DURATION.base, delay: (index % 3) * 0.07, ease: EASE }}
       className={
         compact
           ? "col-span-1"
@@ -232,20 +173,20 @@ export function ProjectFolder({
                 (ProductScreens.tsx) does the actual fitting: it shrinks to
                 whatever box it's given, on both axes, never crops, never
                 spills. */}
-            <div className={`relative h-full ${phone ? "w-auto" : "w-full"}`}>
-              <Screen
-                className={`block h-full transition-transform duration-500 ease-out group-hover:-translate-y-1 group-hover:scale-[1.05] ${
-                  phone ? "w-auto" : "w-full"
-                }`}
-              />
-              {!compact && !prefersReduced && (
-                <CursorLoop
-                  stops={cursorRoute[project.slug]}
-                  viewBox={screenBox[project.slug]}
-                  pointer={phone ? "touch" : "mouse"}
-                  accent={cursorAccent[project.slug]}
-                  className="transition-transform duration-500 ease-out group-hover:-translate-y-1 group-hover:scale-[1.05]"
-                />
+            <div
+              className={`relative h-full ${
+                phone ? "w-auto" : "w-full"
+              } transition-transform duration-500 ease-out group-hover:-translate-y-1 group-hover:scale-[1.05]`}
+            >
+              {/* the row at a case study's foot uses the still screen; every
+                  other card runs the demo (pointer + zoom + results). CardDemo
+                  keeps its own SVG shell mounted so server and client match,
+                  and animates nothing until it is in view and motion is
+                  allowed. */}
+              {compact ? (
+                <Screen className={`block h-full ${phone ? "w-auto" : "w-full"}`} />
+              ) : (
+                <CardDemo slug={project.slug} phone={phone} />
               )}
             </div>
           </div>
