@@ -1,0 +1,171 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Meinerva \u00b7 Look, Write, Then Compare",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "output": "05-meinerva-sequence.html"
+  },
+  "lanes": [
+    {
+      "id": "visitor",
+      "label": "Visitor"
+    },
+    {
+      "id": "system",
+      "label": "The Work"
+    }
+  ],
+  "phases": [
+    {
+      "id": "arrive",
+      "label": "Arrive",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "look",
+      "label": "Look",
+      "fromCol": 2,
+      "toCol": 2
+    },
+    {
+      "id": "write",
+      "label": "Write",
+      "fromCol": 3,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "compare",
+      "label": "Compare",
+      "fromCol": 4,
+      "toCol": 5
+    }
+  ],
+  "mainPath": [
+    "scan",
+    "dndlook",
+    "halftone",
+    "write",
+    "unlocked",
+    "community"
+  ],
+  "nodes": [
+    {
+      "id": "scan",
+      "lane": "visitor",
+      "col": 0,
+      "type": "external",
+      "label": "Scan The Work",
+      "sublabel": "QR or NFC beside the piece",
+      "width": 168
+    },
+    {
+      "id": "dndlook",
+      "lane": "system",
+      "col": 1,
+      "type": "cloud",
+      "label": "Do Not Disturb, Look",
+      "sublabel": "twenty seconds, phone silenced",
+      "width": 168
+    },
+    {
+      "id": "halftone",
+      "lane": "system",
+      "col": 2,
+      "type": "frontend",
+      "label": "Held In Halftone",
+      "sublabel": "black and white, no context",
+      "width": 168
+    },
+    {
+      "id": "write",
+      "lane": "visitor",
+      "col": 3,
+      "type": "backend",
+      "label": "Write A Critique",
+      "tag": "decision",
+      "width": 168
+    },
+    {
+      "id": "unlocked",
+      "lane": "system",
+      "col": 4,
+      "type": "cloud",
+      "label": "Unlocked In Colour",
+      "sublabel": "hints and artist context open",
+      "width": 168
+    },
+    {
+      "id": "community",
+      "lane": "visitor",
+      "col": 5,
+      "type": "backend",
+      "label": "Community Appears",
+      "sublabel": "yours, starred, relevant, artist last",
+      "width": 168
+    }
+  ],
+  "edges": [
+    {
+      "id": "scan-dndlook",
+      "from": "scan",
+      "to": "dndlook",
+      "variant": "default"
+    },
+    {
+      "id": "dndlook-halftone",
+      "from": "dndlook",
+      "to": "halftone",
+      "variant": "default"
+    },
+    {
+      "id": "halftone-write",
+      "from": "halftone",
+      "to": "write",
+      "variant": "default"
+    },
+    {
+      "id": "write-unlocked",
+      "from": "write",
+      "to": "unlocked",
+      "label": "submitted",
+      "variant": "emphasis"
+    },
+    {
+      "id": "write-halftone",
+      "from": "write",
+      "to": "halftone",
+      "label": "cancelled",
+      "variant": "dashed",
+      "role": "branch"
+    },
+    {
+      "id": "unlocked-community",
+      "from": "unlocked",
+      "to": "community",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "violet",
+      "title": "Order is the argument",
+      "items": [
+        "The artwork stays in halftone until a critique is submitted",
+        "The artist's own commentary is the last thing anybody sees"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Three journeys, one rule",
+      "items": [
+        "Museum work, a scanned QR or NFC",
+        "An album or ticketed event, unlocked when it ends",
+        "The friction is identical: no interpretation before your own"
+      ]
+    }
+  ]
+}

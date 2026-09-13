@@ -271,6 +271,7 @@ export default function ErpDuoV2Page() {
               "The most travelled path in the system: create a document, fill the customer and the items, let the stock check run, surface anything critical, and send it to production through role based review.",
             ],
             caption: "The stock check runs on entry, so a shortage is caught before anyone approves it.",
+            archifySrc: "/flows/erp-duo-order-flow.html",
             spec: {
               phases: [
                 "1 · New document",
@@ -282,7 +283,7 @@ export default function ErpDuoV2Page() {
                 {
                   id: "new",
                   col: 1,
-                  row: 2,
+                  row: 1,
                   kind: "start",
                   title: "New document",
                   sub: "order, delivery or invoice",
@@ -290,14 +291,14 @@ export default function ErpDuoV2Page() {
                 {
                   id: "fill",
                   col: 2,
-                  row: 2,
+                  row: 1,
                   title: "Customer and items",
                   sub: "pulled from the client and product records",
                 },
                 {
                   id: "stock",
                   col: 3,
-                  row: 2,
+                  row: 1,
                   kind: "auto",
                   title: "Stock check",
                   sub: "runs on entry, against every location",
@@ -305,7 +306,7 @@ export default function ErpDuoV2Page() {
                 {
                   id: "critical",
                   col: 3,
-                  row: 3,
+                  row: 2,
                   kind: "alert",
                   title: "Critical item",
                   sub: "flagged in the row and in the sidebar count",
@@ -313,7 +314,7 @@ export default function ErpDuoV2Page() {
                 {
                   id: "review",
                   col: 4,
-                  row: 2,
+                  row: 1,
                   kind: "decision",
                   title: "Approved by the owning role",
                 },
@@ -333,6 +334,29 @@ export default function ErpDuoV2Page() {
                 { from: "stock", to: "review" },
                 { from: "review", to: "prod", label: "yes" },
                 { from: "critical", to: "fill", label: "resolve", dashed: true },
+              ],
+              lanes: [
+                { row: 1, label: "The document" },
+                { row: 2, label: "If something's short" },
+                { row: 3, label: "Result" },
+              ],
+              cards: [
+                {
+                  title: "Caught before approval",
+                  items: [
+                    "The stock check runs the moment the document is filled",
+                    "A shortage is flagged before anyone can approve it",
+                    "Critical items surface in the row and the sidebar count",
+                  ],
+                },
+                {
+                  title: "Traceable by design",
+                  items: [
+                    "Review is role based, not a blanket approval",
+                    "Every document carries a timestamped history",
+                    "Resolving a shortage returns you to the same document",
+                  ],
+                },
               ],
             },
           },

@@ -43,10 +43,26 @@ export type FlowEdge = {
   dashed?: boolean;
 };
 
+/* A labeled horizontal band: which authored `row` it covers, and what to call
+   it. Purely descriptive of what already sits in that row, so it never moves
+   a pad; it only draws a frame around the ones already there. Two lanes with
+   the same label on consecutive rows read as one continuous band. */
+export type FlowLane = {
+  row: number;
+  label: string;
+};
+
+export type FlowCard = {
+  title: string;
+  items: string[];
+};
+
 export type FlowSpec = {
   phases: string[];
   nodes: FlowNode[];
   edges: FlowEdge[];
+  lanes?: FlowLane[];
+  cards?: FlowCard[];
 };
 
 const padStyle: Record<FlowKind, string> = {
@@ -58,6 +74,30 @@ const padStyle: Record<FlowKind, string> = {
   end: "bg-[var(--v2-accent-bg)] border-[var(--v2-accent)] text-[var(--v2-accent)]",
 };
 
+/* the legend's dot borrows the same accent each kind already renders in,
+   so the key never invents a colour the diagram itself does not use */
+const kindDot: Record<FlowKind, string> = {
+  start: "var(--v2-invert-bg)",
+  step: "var(--v2-line-strong)",
+  decision: "var(--v2-line-strong)",
+  auto: "var(--v2-cool)",
+  alert: "var(--v2-warn)",
+  end: "var(--v2-accent)",
+};
+
+const kindLabel: Record<FlowKind, string> = {
+  start: "Starts here",
+  step: "Step",
+  decision: "Decision",
+  auto: "Automatic",
+  alert: "Needs attention",
+  end: "Result",
+};
+
+/* kept in a fixed order so the legend reads left to right the same way
+   regardless of the order nodes happen to appear in the spec */
+const kindOrder: FlowKind[] = ["start", "step", "auto", "decision", "alert", "end"];
+
 type Wire = {
   key: string;
   d: string;
@@ -66,6 +106,13 @@ type Wire = {
   mx: number;
   my: number;
   order: number;
+};
+
+type LaneBand = {
+  key: string;
+  label: string;
+  top: number;
+  bottom: number;
 };
 
 /* Which edge of a pad a wire leaves from and arrives at. Decided from the
@@ -91,12 +138,18 @@ function planEdges(nodes: FlowNode[], edges: FlowEdge[]): Planned[] {
 }
 
 export function V2Flow({ spec, caption }: { spec: FlowSpec; caption?: string }) {
-  const { phases, nodes, edges } = spec;
+  const { phases, nodes, edges, lanes: laneSpecs, cards } = spec;
   const wrapRef = useRef<HTMLDivElement>(null);
   const [wires, setWires] = useState<Wire[]>([]);
+  const [laneBands, setLaneBands] = useState<LaneBand[]>([]);
   const [size, setSize] = useState({ w: 0, h: 0 });
 
   const plan = useMemo(() => planEdges(nodes, edges), [nodes, edges]);
+
+  const usedKinds = useMemo(
+    () => kindOrder.filter((k) => nodes.some((n) => (n.kind ?? "step") === k)),
+    [nodes]
+  );
 
   const measure = useCallback(() => {
     const wrap = wrapRef.current;
@@ -190,7 +243,39 @@ export function V2Flow({ spec, caption }: { spec: FlowSpec; caption?: string }) 
 
     setWires(next);
     setSize({ w: wr.width, h: wr.height });
-  }, [plan]);
+
+    /* Lane bands read the same authored grid the pads already sit in: no
+       separate coordinate system to keep in sync. A lane on a row nothing
+       occupies, or the whole feature on a stacked phone column where rows
+       stop meaning anything, simply draws nothing. */
+    if (stacked || !laneSpecs || laneSpecs.length === 0) {
+      setLaneBands([]);
+    } else {
+      const pad = 18;
+      const raw: { label: string; top: number; bottom: number }[] = [];
+      for (const lane of laneSpecs) {
+        const rowNodes = nodes.filter((n) => n.row === lane.row);
+        const rects = rowNodes.map((n) => rect(n.id)).filter((r): r is DOMRect => !!r);
+        if (!rects.length) continue;
+        raw.push({
+          label: lane.label,
+          top: Math.min(...rects.map((r) => r.top)) - wr.top - pad,
+          bottom: Math.max(...rects.map((r) => r.bottom)) - wr.top + pad,
+        });
+      }
+      /* consecutive rows sharing a label are one story, drawn as one band */
+      const merged: LaneBand[] = [];
+      for (const band of raw) {
+        const prev = merged[merged.length - 1];
+        if (prev && prev.label === band.label) {
+          prev.bottom = band.bottom;
+        } else {
+          merged.push({ key: `${band.label}-${merged.length}`, ...band });
+        }
+      }
+      setLaneBands(merged);
+    }
+  }, [plan, nodes, laneSpecs]);
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -261,6 +346,22 @@ export function V2Flow({ spec, caption }: { spec: FlowSpec; caption?: string }) 
       </div>
 
       <div ref={wrapRef} className="relative">
+        {/* labeled lanes, a frame drawn around rows that already exist */}
+        {laneBands.map((band, i) => (
+          <motion.div
+            key={band.key}
+            aria-hidden
+            variants={{ rest: { opacity: 0 }, run: { opacity: 1 } }}
+            transition={{ duration: DURATION.base, delay: 0.05 + i * 0.06, ease: EASE }}
+            style={{ top: band.top, height: band.bottom - band.top }}
+            className="pointer-events-none absolute inset-x-0 z-0 rounded-[20px] border border-dashed border-[var(--v2-line)]"
+          >
+            <span className="absolute -top-2.5 left-4 bg-[var(--v2-bg)] px-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--v2-label)]">
+              {band.label}
+            </span>
+          </motion.div>
+        ))}
+
         {/* the wires, under the pads and deaf to the pointer */}
         <svg
           aria-hidden
@@ -374,6 +475,54 @@ export function V2Flow({ spec, caption }: { spec: FlowSpec; caption?: string }) 
           ))}
         </div>
       </div>
+
+      {usedKinds.length > 1 && (
+        <motion.ul
+          variants={{ rest: { opacity: 0, y: 6 }, run: { opacity: 1, y: 0 } }}
+          transition={{ duration: DURATION.base, delay: 0.35, ease: EASE }}
+          className="mt-6 flex list-none flex-wrap gap-x-5 gap-y-2"
+        >
+          {usedKinds.map((k) => (
+            <li key={k} className="flex items-center gap-2">
+              <span
+                aria-hidden
+                className="inline-block h-2 w-2 rounded-full"
+                style={{ background: kindDot[k] }}
+              />
+              <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--v2-label)]">
+                {kindLabel[k]}
+              </span>
+            </li>
+          ))}
+        </motion.ul>
+      )}
+
+      {cards && cards.length > 0 && (
+        <ul className="mt-7 grid list-none grid-cols-1 gap-4 sm:grid-cols-2">
+          {cards.map((c, i) => (
+            <motion.li
+              key={c.title}
+              variants={{ rest: { opacity: 0, y: 16 }, run: { opacity: 1, y: 0 } }}
+              transition={{ duration: DURATION.base, delay: 0.45 + i * 0.1, ease: EASE }}
+              className="grain relative overflow-hidden rounded-[20px] border border-[var(--v2-line)] bg-[var(--v2-bg)] px-5 py-6"
+            >
+              <h3 className="relative z-10 font-mono text-[11px] uppercase tracking-[0.16em]">
+                {c.title}
+              </h3>
+              <ul className="relative z-10 mt-3 list-none space-y-1.5">
+                {c.items.map((item) => (
+                  <li
+                    key={item}
+                    className="text-[13px] leading-relaxed text-[var(--v2-secondary)]"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </motion.li>
+          ))}
+        </ul>
+      )}
 
       {caption && (
         <p className="mt-7 border-t border-[var(--v2-line)] pt-4 font-mono text-[11px] uppercase leading-relaxed tracking-[0.14em] text-[var(--v2-label)]">

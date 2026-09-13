@@ -1,0 +1,179 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "ERP Duo \u00b7 Order to Production",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "output": "01-erp-duo-order-flow.html"
+  },
+  "lanes": [
+    {
+      "id": "action",
+      "label": "Document"
+    },
+    {
+      "id": "system",
+      "label": "Automatic Checks"
+    },
+    {
+      "id": "exception",
+      "label": "Exceptions",
+      "variant": "exception"
+    }
+  ],
+  "phases": [
+    {
+      "id": "new",
+      "label": "New document",
+      "fromCol": 0,
+      "toCol": 0
+    },
+    {
+      "id": "fillp",
+      "label": "Fill it",
+      "fromCol": 1,
+      "toCol": 1
+    },
+    {
+      "id": "checks",
+      "label": "Automatic checks",
+      "fromCol": 2,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "send",
+      "label": "Review and send",
+      "fromCol": 4,
+      "toCol": 4
+    }
+  ],
+  "mainPath": [
+    "new",
+    "fill",
+    "stock",
+    "review",
+    "prod"
+  ],
+  "nodes": [
+    {
+      "id": "new",
+      "lane": "action",
+      "col": 0,
+      "type": "external",
+      "label": "New Document",
+      "sublabel": "order, delivery, or invoice",
+      "width": 168
+    },
+    {
+      "id": "fill",
+      "lane": "action",
+      "col": 1,
+      "type": "frontend",
+      "label": "Fill Details",
+      "sublabel": "customer and items, pulled from records",
+      "width": 168
+    },
+    {
+      "id": "stock",
+      "lane": "system",
+      "col": 2,
+      "type": "cloud",
+      "label": "Stock Check",
+      "sublabel": "runs automatically on entry",
+      "width": 168
+    },
+    {
+      "id": "critical",
+      "lane": "exception",
+      "col": 3,
+      "type": "security",
+      "label": "Critical Item",
+      "sublabel": "flagged in the row and the sidebar",
+      "width": 168
+    },
+    {
+      "id": "review",
+      "lane": "action",
+      "col": 3,
+      "type": "backend",
+      "label": "Owner Review",
+      "sublabel": "approved by the owning role",
+      "tag": "decision",
+      "width": 168
+    },
+    {
+      "id": "prod",
+      "lane": "action",
+      "col": 4,
+      "type": "backend",
+      "label": "Sent to Production",
+      "sublabel": "a timestamped trail behind it",
+      "width": 168
+    }
+  ],
+  "edges": [
+    {
+      "id": "new-fill",
+      "from": "new",
+      "to": "fill",
+      "variant": "default"
+    },
+    {
+      "id": "fill-stock",
+      "from": "fill",
+      "to": "stock",
+      "variant": "default"
+    },
+    {
+      "id": "stock-critical",
+      "from": "stock",
+      "to": "critical",
+      "label": "short",
+      "variant": "security",
+      "role": "branch"
+    },
+    {
+      "id": "stock-review",
+      "from": "stock",
+      "to": "review",
+      "variant": "emphasis"
+    },
+    {
+      "id": "review-prod",
+      "from": "review",
+      "to": "prod",
+      "label": "yes",
+      "variant": "emphasis"
+    },
+    {
+      "id": "critical-fill",
+      "from": "critical",
+      "to": "fill",
+      "label": "resolve",
+      "variant": "dashed",
+      "role": "branch"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Caught before approval",
+      "items": [
+        "The stock check runs the moment the document is filled",
+        "A shortage is flagged before anyone can approve it",
+        "Critical items surface in the row and the sidebar count"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Traceable by design",
+      "items": [
+        "Review is role based, not a blanket approval",
+        "Every document carries a timestamped history",
+        "Resolving a shortage returns you to the same document"
+      ]
+    }
+  ]
+}

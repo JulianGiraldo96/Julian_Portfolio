@@ -1,0 +1,177 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Duo Scan Memory \u00b7 After, The Count Builds Itself",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "output": "04-scan-memory-after.html"
+  },
+  "lanes": [
+    {
+      "id": "action",
+      "label": "At The Bay"
+    },
+    {
+      "id": "system",
+      "label": "The Screen"
+    },
+    {
+      "id": "exception",
+      "label": "Fixing A Mistake",
+      "variant": "exception"
+    }
+  ],
+  "phases": [
+    {
+      "id": "store",
+      "label": "Choose the store",
+      "fromCol": 0,
+      "toCol": 0
+    },
+    {
+      "id": "scan",
+      "label": "Scan",
+      "fromCol": 1,
+      "toCol": 1
+    },
+    {
+      "id": "count",
+      "label": "See the count",
+      "fromCol": 2,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "send",
+      "label": "Send it",
+      "fromCol": 4,
+      "toCol": 4
+    }
+  ],
+  "mainPath": [
+    "store",
+    "scan",
+    "list",
+    "wrong",
+    "accept"
+  ],
+  "nodes": [
+    {
+      "id": "store",
+      "lane": "action",
+      "col": 0,
+      "type": "external",
+      "label": "Pick The Store",
+      "sublabel": "same dropdown, before the first scan",
+      "width": 168
+    },
+    {
+      "id": "scan",
+      "lane": "action",
+      "col": 1,
+      "type": "frontend",
+      "label": "Scan As Before",
+      "sublabel": "same handheld, nothing new to learn",
+      "width": 168
+    },
+    {
+      "id": "list",
+      "lane": "system",
+      "col": 2,
+      "type": "cloud",
+      "label": "Count Builds Itself",
+      "sublabel": "every flavour, live, with a total",
+      "width": 168
+    },
+    {
+      "id": "wrong",
+      "lane": "action",
+      "col": 3,
+      "type": "backend",
+      "label": "Something Scanned Wrong",
+      "tag": "decision",
+      "width": 168
+    },
+    {
+      "id": "accept",
+      "lane": "action",
+      "col": 4,
+      "type": "backend",
+      "label": "Accept",
+      "sublabel": "straight into the ERP, nothing retyped",
+      "width": 168
+    },
+    {
+      "id": "remove",
+      "lane": "exception",
+      "col": 4,
+      "type": "security",
+      "label": "Remove Unit",
+      "sublabel": "scan that same unit again to take it off",
+      "width": 168
+    }
+  ],
+  "edges": [
+    {
+      "id": "store-scan",
+      "from": "store",
+      "to": "scan",
+      "variant": "default"
+    },
+    {
+      "id": "scan-list",
+      "from": "scan",
+      "to": "list",
+      "variant": "default"
+    },
+    {
+      "id": "list-wrong",
+      "from": "list",
+      "to": "wrong",
+      "variant": "default"
+    },
+    {
+      "id": "wrong-accept",
+      "from": "wrong",
+      "to": "accept",
+      "label": "no",
+      "variant": "emphasis"
+    },
+    {
+      "id": "wrong-remove",
+      "from": "wrong",
+      "to": "remove",
+      "label": "yes",
+      "variant": "security",
+      "role": "branch"
+    },
+    {
+      "id": "remove-list",
+      "from": "remove",
+      "to": "list",
+      "label": "again",
+      "variant": "dashed",
+      "role": "branch"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Feedback survives the walk",
+      "items": [
+        "The list lives on screen the whole time, not for one second",
+        "A mistake is undone the same way it was made: scan again"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "The result",
+      "items": [
+        "Inventory errors down about 30%",
+        "Loading bay time down 15 to 20%",
+        "Unstacking a pallet to find a miscount is gone"
+      ]
+    }
+  ]
+}

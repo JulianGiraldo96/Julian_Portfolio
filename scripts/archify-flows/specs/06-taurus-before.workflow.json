@@ -1,0 +1,188 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "TaurusWebs \u00b7 Before, One Animal At A Time",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "output": "06-taurus-before.html"
+  },
+  "lanes": [
+    {
+      "id": "action",
+      "label": "The Form"
+    },
+    {
+      "id": "exception",
+      "label": "Where It Breaks",
+      "variant": "exception"
+    }
+  ],
+  "phases": [
+    {
+      "id": "open",
+      "label": "New record",
+      "fromCol": 0,
+      "toCol": 0
+    },
+    {
+      "id": "add",
+      "label": "Add animal",
+      "fromCol": 1,
+      "toCol": 1
+    },
+    {
+      "id": "fillp",
+      "label": "Fill six fields",
+      "fromCol": 2,
+      "toCol": 2,
+      "variant": "emphasis"
+    },
+    {
+      "id": "again",
+      "label": "Save, then again",
+      "fromCol": 3,
+      "toCol": 5
+    }
+  ],
+  "mainPath": [
+    "open",
+    "add",
+    "fill",
+    "save",
+    "more",
+    "gave"
+  ],
+  "nodes": [
+    {
+      "id": "open",
+      "lane": "action",
+      "col": 0,
+      "type": "external",
+      "label": "Open Animals Module",
+      "sublabel": "a new farm, nothing loaded yet",
+      "width": 168
+    },
+    {
+      "id": "add",
+      "lane": "action",
+      "col": 1,
+      "type": "frontend",
+      "label": "Add Animal",
+      "sublabel": "the single record form",
+      "width": 168
+    },
+    {
+      "id": "fill",
+      "lane": "action",
+      "col": 2,
+      "type": "backend",
+      "label": "Type Every Field",
+      "sublabel": "six fields, one at a time",
+      "width": 168
+    },
+    {
+      "id": "missing",
+      "lane": "exception",
+      "col": 3,
+      "type": "security",
+      "label": "Missing Field",
+      "sublabel": "blocks the save, back to the form",
+      "width": 168
+    },
+    {
+      "id": "save",
+      "lane": "action",
+      "col": 3,
+      "type": "backend",
+      "label": "Save One Record",
+      "sublabel": "one done, dozens still to go",
+      "width": 168
+    },
+    {
+      "id": "more",
+      "lane": "action",
+      "col": 4,
+      "type": "backend",
+      "label": "More To Add",
+      "tag": "decision",
+      "width": 168
+    },
+    {
+      "id": "gave",
+      "lane": "exception",
+      "col": 5,
+      "type": "security",
+      "label": "Gave Up",
+      "sublabel": "only the key animals entered",
+      "width": 168
+    }
+  ],
+  "edges": [
+    {
+      "id": "open-add",
+      "from": "open",
+      "to": "add",
+      "variant": "default"
+    },
+    {
+      "id": "add-fill",
+      "from": "add",
+      "to": "fill",
+      "variant": "default"
+    },
+    {
+      "id": "fill-missing",
+      "from": "fill",
+      "to": "missing",
+      "label": "empty",
+      "variant": "security",
+      "role": "branch"
+    },
+    {
+      "id": "fill-save",
+      "from": "fill",
+      "to": "save",
+      "variant": "emphasis"
+    },
+    {
+      "id": "save-more",
+      "from": "save",
+      "to": "more",
+      "variant": "emphasis"
+    },
+    {
+      "id": "more-fill",
+      "from": "more",
+      "to": "fill",
+      "label": "yes, again",
+      "variant": "dashed",
+      "role": "branch"
+    },
+    {
+      "id": "more-gave",
+      "from": "more",
+      "to": "gave",
+      "label": "no patience left",
+      "variant": "security"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "One animal, one trip",
+      "items": [
+        "Six or seven fields, one save, repeat for every animal",
+        "A 70 head farm took the better part of a working day"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "The cost of the loop",
+      "items": [
+        "Ranchers entered only the key animals and stopped",
+        "The data was never complete enough to trust"
+      ]
+    }
+  ]
+}

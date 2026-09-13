@@ -6,6 +6,8 @@ import { MotionConfig, motion } from "motion/react";
 import { TopBar } from "./TopBar";
 import { V2BulkTable } from "./V2BulkTable";
 import { V2Flow, type FlowSpec } from "./V2Flow";
+import { V2ArchifyFlow } from "./V2ArchifyFlow";
+import { V2FlowCards } from "./V2FlowCards";
 import { V2DotStat, type DotRow } from "./V2DotStat";
 import { wireframes, type WireSlug } from "./Wireframes";
 import { V2Video } from "./V2Video";
@@ -58,7 +60,7 @@ export type V2Section = Common &
     | { kind: "list"; items: V2Item[] }
     | { kind: "questions"; items: V2Question[] }
     | { kind: "gallery"; columns: 2 | 3; images: V2Image[]; feature?: boolean }
-    | { kind: "flow"; spec: FlowSpec; caption?: string }
+    | { kind: "flow"; spec: FlowSpec; caption?: string; archifySrc?: string }
     | { kind: "bulktable"; caption?: string }
     | { kind: "dots"; rows: DotRow[] }
     | { kind: "video"; src: string; poster?: string; caption?: string; ratio?: number }
@@ -559,7 +561,14 @@ function SectionBlock({ section, index }: { section: V2Section; index: number })
         <SectionShell label={label} heading={heading} tone={tone ?? "band"} layout="wide">
           <Body body={section.body} />
           <div className="mt-9">
-            <V2Flow spec={section.spec} caption={section.caption} />
+            {section.archifySrc ? (
+              <>
+                <V2ArchifyFlow src={section.archifySrc} title={heading} />
+                <V2FlowCards cards={section.spec.cards} caption={section.caption} />
+              </>
+            ) : (
+              <V2Flow spec={section.spec} caption={section.caption} />
+            )}
           </div>
         </SectionShell>
       );

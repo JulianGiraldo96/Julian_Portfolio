@@ -1,0 +1,171 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Savee \u00b7 The Anti-Waste Loop",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "output": "02-savee-anti-waste-loop.html"
+  },
+  "lanes": [
+    {
+      "id": "action",
+      "label": "You"
+    },
+    {
+      "id": "system",
+      "label": "The App"
+    }
+  ],
+  "phases": [
+    {
+      "id": "watch",
+      "label": "Watch",
+      "fromCol": 0,
+      "toCol": 0
+    },
+    {
+      "id": "save",
+      "label": "Save",
+      "fromCol": 1,
+      "toCol": 1
+    },
+    {
+      "id": "plan",
+      "label": "Schedule and size",
+      "fromCol": 2,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "cook",
+      "label": "Shop and cook",
+      "fromCol": 4,
+      "toCol": 5
+    }
+  ],
+  "mainPath": [
+    "feed",
+    "keep",
+    "date",
+    "scale",
+    "shop",
+    "cook"
+  ],
+  "nodes": [
+    {
+      "id": "feed",
+      "lane": "action",
+      "col": 0,
+      "type": "external",
+      "label": "A Recipe Plays",
+      "sublabel": "short, full bleed video",
+      "width": 168
+    },
+    {
+      "id": "keep",
+      "lane": "action",
+      "col": 1,
+      "type": "backend",
+      "label": "Worth Cooking",
+      "sublabel": "tap the fork to save it",
+      "tag": "decision",
+      "width": 168
+    },
+    {
+      "id": "date",
+      "lane": "action",
+      "col": 2,
+      "type": "frontend",
+      "label": "Schedule It",
+      "sublabel": "the recipe lands on a day",
+      "width": 168
+    },
+    {
+      "id": "scale",
+      "lane": "system",
+      "col": 3,
+      "type": "cloud",
+      "label": "Sized and Listed",
+      "sublabel": "portions scale it, aisle sorts it",
+      "width": 168
+    },
+    {
+      "id": "shop",
+      "lane": "action",
+      "col": 4,
+      "type": "frontend",
+      "label": "Buy Exactly That",
+      "sublabel": "only what a meal actually needs",
+      "width": 168
+    },
+    {
+      "id": "cook",
+      "lane": "action",
+      "col": 5,
+      "type": "backend",
+      "label": "Cook What You Bought",
+      "sublabel": "the week ends with an empty fridge",
+      "width": 168
+    }
+  ],
+  "edges": [
+    {
+      "id": "feed-keep",
+      "from": "feed",
+      "to": "keep",
+      "variant": "default"
+    },
+    {
+      "id": "keep-date",
+      "from": "keep",
+      "to": "date",
+      "label": "yes",
+      "variant": "emphasis"
+    },
+    {
+      "id": "keep-feed",
+      "from": "keep",
+      "to": "feed",
+      "label": "no",
+      "variant": "dashed",
+      "role": "branch"
+    },
+    {
+      "id": "date-scale",
+      "from": "date",
+      "to": "scale",
+      "variant": "default"
+    },
+    {
+      "id": "scale-shop",
+      "from": "scale",
+      "to": "shop",
+      "variant": "emphasis"
+    },
+    {
+      "id": "shop-cook",
+      "from": "shop",
+      "to": "cook",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "No entry for impulse",
+      "items": [
+        "The list only ever holds what a scheduled recipe asked for",
+        "An impulse buy has nowhere to enter the list"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Portions do the math",
+      "items": [
+        "The stepper scales every quantity on the list",
+        "Cooking for two instead of four halves the shop"
+      ]
+    }
+  ]
+}

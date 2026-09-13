@@ -1,0 +1,140 @@
+
+/* ==========================================================================
+   Julian's portfolio skin, layered on top of Archify's own "classic" theme.
+   Same tool, same structure, same interaction — only the tokens change.
+   The diagram's own SVG font stays JetBrains Mono on purpose: node width
+   was measured against that font's metrics, and swapping it here would
+   overflow text out of the rounded boxes. Everything else (header, cards,
+   toolbar, legend) is plain HTML and repaints safely.
+   ========================================================================== */
+
+:root,
+[data-theme="dark"] {
+  --bg: #0c0c0e;
+  --grid: transparent;
+  --text: #f2f2f4;
+  --text-muted: #a8a8b0;
+  --text-dim: #8f8f98;
+  --text-faint: #8f8f98;
+
+  --panel: #17171a;
+  --panel-border: rgba(255, 255, 255, 0.1);
+  --lane-fill: transparent;
+  --lane-stroke: rgba(255, 255, 255, 0.1);
+
+  --arrow: rgba(255, 255, 255, 0.24);
+  --arrow-emphasis: #6fbf7f;
+
+  --mask: #0c0c0e;
+
+  --frontend-fill:    rgba(255, 255, 255, 0.03);
+  --frontend-stroke:  rgba(255, 255, 255, 0.24);
+  --backend-fill:     rgba(255, 255, 255, 0.03);
+  --backend-stroke:   rgba(255, 255, 255, 0.24);
+  --database-fill:    rgba(255, 255, 255, 0.03);
+  --database-stroke:  rgba(255, 255, 255, 0.24);
+  --cloud-fill:       #14192240;
+  --cloud-stroke:     #8ab0e6;
+  --security-fill:    #241713;
+  --security-stroke:  #e79170;
+  --messagebus-fill:  rgba(255, 255, 255, 0.03);
+  --messagebus-stroke:rgba(255, 255, 255, 0.24);
+  --external-fill:    #f2f2f4;
+  --external-stroke:  transparent;
+
+  --toolbar-bg:       rgba(23, 23, 26, 0.92);
+  --toolbar-border:   rgba(255, 255, 255, 0.1);
+  --toolbar-text:     #f2f2f4;
+  --toolbar-hover:    #202024;
+  --toolbar-menu-bg:  #17171a;
+
+  /* not part of Archify's own token set; used only by the two rules below */
+  --v2-invert-ink: #0c0c0e;
+  --v2-accent: #6fbf7f;
+  --v2-accent-bg: #14201a;
+}
+
+[data-theme="light"] {
+  --bg: #ffffff;
+  --grid: transparent;
+  --text: #1d1d1f;
+  --text-muted: #55555a;
+  --text-dim: #6e6e73;
+  --text-faint: #6e6e73;
+
+  --panel: #f5f5f7;
+  --panel-border: rgba(0, 0, 0, 0.08);
+  --lane-fill: transparent;
+  --lane-stroke: rgba(0, 0, 0, 0.08);
+
+  --arrow: rgba(0, 0, 0, 0.16);
+  --arrow-emphasis: #3a7d44;
+
+  --mask: #ffffff;
+
+  --frontend-fill:    rgba(0, 0, 0, 0.02);
+  --frontend-stroke:  rgba(0, 0, 0, 0.16);
+  --backend-fill:     rgba(0, 0, 0, 0.02);
+  --backend-stroke:   rgba(0, 0, 0, 0.16);
+  --database-fill:    rgba(0, 0, 0, 0.02);
+  --database-stroke:  rgba(0, 0, 0, 0.16);
+  --cloud-fill:       #eef2fa;
+  --cloud-stroke:     #2f5d9e;
+  --security-fill:    #fbf0ec;
+  --security-stroke:  #a8482a;
+  --messagebus-fill:  rgba(0, 0, 0, 0.02);
+  --messagebus-stroke:rgba(0, 0, 0, 0.16);
+  --external-fill:    #1d1d1f;
+  --external-stroke:  transparent;
+
+  --toolbar-bg:       rgba(245, 245, 247, 0.92);
+  --toolbar-border:   rgba(0, 0, 0, 0.08);
+  --toolbar-text:     #1d1d1f;
+  --toolbar-hover:    #ebebef;
+  --toolbar-menu-bg:  #f5f5f7;
+
+  --v2-invert-ink: #ffffff;
+  --v2-accent: #3a7d44;
+  --v2-accent-bg: #edf5ef;
+}
+
+/* the external/"start" node is now an inverted solid pill (Archify's own
+   .c-external already does that via --external-fill); its label was still
+   painted with the page's own ink, invisible on its own inverted fill */
+[data-node-kind="external"] .t-primary,
+[data-node-kind="external"] .t-muted {
+  fill: var(--v2-invert-ink) !important;
+}
+
+/* the one node per diagram that is the flow's actual successful outcome
+   gets the site's single green accent, the same way V2Flow's "end" kind
+   does — everything else stays a neutral, borderless step.
+   One id per diagram: taurus-after "add", erp-duo "prod", savee "cook",
+   scan-memory-after "accept", meinerva "community". The two "before"
+   diagrams (taurus-before, scan-memory-before) end on friction, not
+   success, so they deliberately have no id listed here and stay unaccented. */
+[data-node-id="add"] .c-backend,
+[data-node-id="add"] .c-external,
+[data-node-id="prod"] .c-backend,
+[data-node-id="prod"] .c-external,
+[data-node-id="cook"] .c-backend,
+[data-node-id="cook"] .c-external,
+[data-node-id="accept"] .c-backend,
+[data-node-id="accept"] .c-external,
+[data-node-id="community"] .c-backend,
+[data-node-id="community"] .c-external {
+  fill: var(--v2-accent-bg) !important;
+  stroke: var(--v2-accent) !important;
+}
+[data-node-id="add"] .s-backend,
+[data-node-id="add"] .s-external,
+[data-node-id="prod"] .s-backend,
+[data-node-id="prod"] .s-external,
+[data-node-id="cook"] .s-backend,
+[data-node-id="cook"] .s-external,
+[data-node-id="accept"] .s-backend,
+[data-node-id="accept"] .s-external,
+[data-node-id="community"] .s-backend,
+[data-node-id="community"] .s-external {
+  color: var(--v2-accent) !important;
+}

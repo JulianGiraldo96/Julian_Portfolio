@@ -117,6 +117,7 @@ export default function ScanMemoryPage() {
             ],
             caption:
               "The last phase is the cost: unstacking a delivery by hand to find a mistake the screen could have prevented.",
+            archifySrc: "/flows/scan-memory-before.html",
             spec: {
               phases: [
                 "1 · Scan at the bay",
@@ -181,6 +182,20 @@ export default function ScanMemoryPage() {
                 { from: "extra", to: "check" },
                 { from: "check", to: "boxes", label: "no" },
                 { from: "boxes", to: "type" },
+              ],
+              lanes: [
+                { row: 2, label: "At the bay" },
+                { row: 3, label: "Where it falls apart" },
+              ],
+              cards: [
+                {
+                  title: "A write only screen",
+                  items: [
+                    "The screen showed exactly one thing: the last barcode read",
+                    "No running total meant nobody could see a shortage forming",
+                    "Finding the miscount meant unstacking a delivery by hand",
+                  ],
+                },
               ],
             },
           },
@@ -263,6 +278,7 @@ export default function ScanMemoryPage() {
               "Same scanner, same bay, same movements. The difference is that the screen now holds everything that has happened, and offers the two things you actually want at the end: send it, or take one back off.",
             ],
             caption: "No paper, no keyboard, and nothing to recount.",
+            archifySrc: "/flows/scan-memory-after.html",
             spec: {
               phases: [
                 "1 · Choose the store",
@@ -324,6 +340,28 @@ export default function ScanMemoryPage() {
                 { from: "wrong", to: "accept", label: "no" },
                 { from: "wrong", to: "remove", label: "yes" },
                 { from: "remove", to: "list" },
+              ],
+              lanes: [
+                { row: 1, label: "On the screen" },
+                { row: 2, label: "At the bay" },
+                { row: 4, label: "If something's off" },
+              ],
+              cards: [
+                {
+                  title: "Feedback survives the walk",
+                  items: [
+                    "The list lives on screen the whole time, not for one second",
+                    "A mistake is undone the same way it was made: scan again",
+                  ],
+                },
+                {
+                  title: "The result",
+                  items: [
+                    "Inventory errors down about 30%",
+                    "Loading bay time down 15 to 20%",
+                    "Unstacking a pallet to find a miscount is gone",
+                  ],
+                },
               ],
             },
           },

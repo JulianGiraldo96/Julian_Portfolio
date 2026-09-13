@@ -1,0 +1,212 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "TaurusWebs \u00b7 After, One Table Ingests The Herd",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "output": "07-taurus-after.html"
+  },
+  "lanes": [
+    {
+      "id": "action",
+      "label": "The Table"
+    },
+    {
+      "id": "system",
+      "label": "Bringing In The Herd"
+    }
+  ],
+  "phases": [
+    {
+      "id": "paddockp",
+      "label": "Choose paddock",
+      "fromCol": 0,
+      "toCol": 0
+    },
+    {
+      "id": "source",
+      "label": "Where they come from",
+      "fromCol": 1,
+      "toCol": 2,
+      "variant": "emphasis"
+    },
+    {
+      "id": "fillp",
+      "label": "Names and detail",
+      "fromCol": 3,
+      "toCol": 3
+    },
+    {
+      "id": "ingest",
+      "label": "Add to system",
+      "fromCol": 4,
+      "toCol": 5
+    }
+  ],
+  "mainPath": [
+    "paddock",
+    "move",
+    "sheet",
+    "migrate",
+    "validate",
+    "add"
+  ],
+  "nodes": [
+    {
+      "id": "paddock",
+      "lane": "action",
+      "col": 0,
+      "type": "external",
+      "label": "Choose Paddock",
+      "sublabel": "where the batch lands",
+      "width": 140
+    },
+    {
+      "id": "move",
+      "lane": "action",
+      "col": 1,
+      "type": "backend",
+      "label": "Moving Animals",
+      "tag": "decision",
+      "width": 140,
+      "sublabel": "moving animals you already have"
+    },
+    {
+      "id": "select",
+      "lane": "action",
+      "col": 2,
+      "type": "frontend",
+      "label": "Select Them",
+      "sublabel": "they keep their history",
+      "width": 140
+    },
+    {
+      "id": "sheet",
+      "lane": "system",
+      "col": 2,
+      "type": "backend",
+      "label": "From A Sheet",
+      "tag": "decision",
+      "width": 140,
+      "sublabel": "already in a spreadsheet"
+    },
+    {
+      "id": "migrate",
+      "lane": "system",
+      "col": 3,
+      "type": "cloud",
+      "label": "Migrate Sheet",
+      "sublabel": "the herd kept in Excel",
+      "width": 140
+    },
+    {
+      "id": "newrows",
+      "lane": "action",
+      "col": 3,
+      "type": "cloud",
+      "label": "Create Rows",
+      "sublabel": "presets fill the rest",
+      "width": 140
+    },
+    {
+      "id": "validate",
+      "lane": "action",
+      "col": 4,
+      "type": "backend",
+      "label": "Validate Rows",
+      "sublabel": "bad weights, duplicate tags",
+      "width": 140
+    },
+    {
+      "id": "add",
+      "lane": "action",
+      "col": 5,
+      "type": "backend",
+      "label": "Add Animals",
+      "sublabel": "the whole herd, in one pass",
+      "width": 140
+    }
+  ],
+  "edges": [
+    {
+      "id": "paddock-move",
+      "from": "paddock",
+      "to": "move",
+      "variant": "default"
+    },
+    {
+      "id": "move-select",
+      "from": "move",
+      "to": "select",
+      "label": "yes",
+      "variant": "default"
+    },
+    {
+      "id": "move-sheet",
+      "from": "move",
+      "to": "sheet",
+      "label": "no",
+      "variant": "emphasis"
+    },
+    {
+      "id": "sheet-migrate",
+      "from": "sheet",
+      "to": "migrate",
+      "label": "yes",
+      "variant": "emphasis"
+    },
+    {
+      "id": "sheet-newrows",
+      "from": "sheet",
+      "to": "newrows",
+      "label": "no",
+      "variant": "default"
+    },
+    {
+      "id": "select-validate",
+      "from": "select",
+      "to": "validate",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top"
+    },
+    {
+      "id": "migrate-validate",
+      "from": "migrate",
+      "to": "validate",
+      "variant": "emphasis"
+    },
+    {
+      "id": "newrows-validate",
+      "from": "newrows",
+      "to": "validate",
+      "variant": "default"
+    },
+    {
+      "id": "validate-add",
+      "from": "validate",
+      "to": "add",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "One surface, three ways in",
+      "items": [
+        "Already tracked animals: select them, keep their history",
+        "Already in a spreadsheet: paste it, the sheet migrates",
+        "Brand new: presets and fill-down handle the repeats"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Validated before it lands",
+      "items": [
+        "Bad weights and duplicate tags flagged in the row, not after",
+        "100% of new farms and 98% of tracked farms now load this way"
+      ]
+    }
+  ]
+}

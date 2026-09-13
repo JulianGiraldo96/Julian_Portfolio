@@ -1,0 +1,168 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Duo Scan Memory \u00b7 Before, The Blind Count",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "output": "03-scan-memory-before.html"
+  },
+  "lanes": [
+    {
+      "id": "action",
+      "label": "At The Bay"
+    },
+    {
+      "id": "exception",
+      "label": "What Goes Wrong",
+      "variant": "exception"
+    }
+  ],
+  "phases": [
+    {
+      "id": "scan",
+      "label": "Scan at the bay",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "blind",
+      "label": "No way to check",
+      "fromCol": 2,
+      "toCol": 3,
+      "variant": "security"
+    },
+    {
+      "id": "fix",
+      "label": "Fix it by hand",
+      "fromCol": 4,
+      "toCol": 5
+    }
+  ],
+  "mainPath": [
+    "bay",
+    "last",
+    "blind",
+    "extra",
+    "check",
+    "boxes",
+    "retype"
+  ],
+  "nodes": [
+    {
+      "id": "bay",
+      "lane": "action",
+      "col": 0,
+      "type": "external",
+      "label": "Scan At The Loading Bay",
+      "sublabel": "handheld scanner, screen far away",
+      "width": 168
+    },
+    {
+      "id": "last",
+      "lane": "action",
+      "col": 1,
+      "type": "frontend",
+      "label": "Only Last Code Shows",
+      "sublabel": "each scan replaces the last",
+      "width": 168
+    },
+    {
+      "id": "blind",
+      "lane": "exception",
+      "col": 2,
+      "type": "security",
+      "label": "No Running Total",
+      "sublabel": "extra or wrong units go unnoticed",
+      "width": 168
+    },
+    {
+      "id": "extra",
+      "lane": "exception",
+      "col": 3,
+      "type": "security",
+      "label": "Extra Units Scanned",
+      "sublabel": "wrong flavour, wrong pallet",
+      "width": 168
+    },
+    {
+      "id": "check",
+      "lane": "action",
+      "col": 3,
+      "type": "backend",
+      "label": "Store Total Checked",
+      "sublabel": "checked against the delivery",
+      "tag": "decision",
+      "width": 168
+    },
+    {
+      "id": "boxes",
+      "lane": "exception",
+      "col": 4,
+      "type": "security",
+      "label": "Unstack The Delivery",
+      "sublabel": "unstacked by hand to find the error",
+      "width": 168
+    },
+    {
+      "id": "retype",
+      "lane": "exception",
+      "col": 5,
+      "type": "security",
+      "label": "Recount, Then Retype",
+      "sublabel": "recounted on paper, then typed in",
+      "width": 168
+    }
+  ],
+  "edges": [
+    {
+      "id": "bay-last",
+      "from": "bay",
+      "to": "last",
+      "variant": "default"
+    },
+    {
+      "id": "last-blind",
+      "from": "last",
+      "to": "blind",
+      "variant": "security"
+    },
+    {
+      "id": "blind-extra",
+      "from": "blind",
+      "to": "extra",
+      "variant": "default"
+    },
+    {
+      "id": "extra-check",
+      "from": "extra",
+      "to": "check",
+      "variant": "default"
+    },
+    {
+      "id": "check-boxes",
+      "from": "check",
+      "to": "boxes",
+      "label": "no match",
+      "variant": "security",
+      "role": "error"
+    },
+    {
+      "id": "boxes-retype",
+      "from": "boxes",
+      "to": "retype",
+      "variant": "security"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "A write only screen",
+      "items": [
+        "The screen showed exactly one thing: the last barcode read",
+        "No running total meant nobody could see a shortage forming",
+        "Finding the miscount meant unstacking a delivery by hand"
+      ]
+    }
+  ]
+}
