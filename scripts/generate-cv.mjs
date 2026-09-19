@@ -209,9 +209,8 @@ const html = `<!doctype html>
     font-family: "Geist Mono", ui-monospace, "Courier New", monospace;
     font-size: 7.6pt;
     color: var(--muted);
-    white-space: nowrap;
   }
-  .earlier .when::before { content: "· "; }
+  
 
   .skillgroup { margin-bottom: 3.8mm; }
   .skillgroup:last-child { margin-bottom: 0; }
@@ -260,8 +259,8 @@ const html = `<!doctype html>
         <h2>Experience</h2>
 
         <div class="job">
-          <div class="job-line"><span class="org">Duo Sicilian Ice Cream</span>, <span class="title">Product Designer</span> <span class="meta">/ Berlin, Germany / On-site</span></div>
-          <div class="job-date">October 2024 - Present</div>
+          <div class="job-line"><span class="org">Duo Sicilian Ice Cream</span>, <span class="title">Product Designer</span></div>
+          <div class="job-date">Berlin, Germany / On-site / October 2024 - Present</div>
           <ul>
             <li>Designed and shipped Duo's internal ERP from zero: 13 modules, 40+ document types and 6 permission roles, in daily use across 9 locations and 6 departments.</li>
             <li>Ran discovery interviews and built the information architecture for 40+ document types, turning operational goals into user flows, wireframes, high-fidelity mockups and interactive prototypes, on a design system of components, patterns and design tokens I maintain.</li>
@@ -272,16 +271,16 @@ const html = `<!doctype html>
         </div>
 
         <div class="job">
-          <div class="job-line"><span class="org">Duo Sicilian Ice Cream</span>, <span class="title">Food Counter Clerk</span> <span class="meta">/ Berlin, Germany / On-site</span></div>
-          <div class="job-date">June 2024 - October 2024</div>
+          <div class="job-line"><span class="org">Duo Sicilian Ice Cream</span>, <span class="title">Food Counter Clerk</span></div>
+          <div class="job-date">Berlin, Germany / On-site / June 2024 - October 2024</div>
           <ul>
             <li>Counter and production support after relocating to Berlin, moving into the product design role in October 2024.</li>
           </ul>
         </div>
 
         <div class="job">
-          <div class="job-line"><span class="org">TaurusWebs</span>, <span class="title">Product Designer</span> <span class="meta">/ Bogota, Colombia / Remote</span></div>
-          <div class="job-date">October 2024 - Present</div>
+          <div class="job-line"><span class="org">TaurusWebs</span>, <span class="title">Product Designer</span></div>
+          <div class="job-date">Bogota, Colombia / Remote / October 2024 - Present</div>
           <ul>
             <li>Led the design of the Taurus Ecosystem, integrating a CRM, a knowledge base and encrypted chat into one platform behind single sign-on.</li>
             <li>Owned the whole process, from discovery and information architecture to user flows and stakeholder presentations, working cross-functionally with product managers, engineers and clients across several projects.</li>
@@ -289,8 +288,8 @@ const html = `<!doctype html>
         </div>
 
         <div class="job">
-          <div class="job-line"><span class="org">Blok Foods Ltd, Greens Supermarket Group</span>, <span class="title">Lead Designer</span> <span class="meta">/ Malta / On-site</span></div>
-          <div class="job-date">February 2022 - November 2023</div>
+          <div class="job-line"><span class="org">Blok Foods Ltd, Greens Supermarket Group</span>, <span class="title">Lead Designer</span></div>
+          <div class="job-date">Malta / On-site / February 2022 - November 2023</div>
           <ul>
             <li>Lead designer on contract for the Blok Foods brand, covering brand identity, packaging, in-store communication and web.</li>
           </ul>
@@ -319,10 +318,12 @@ const html = `<!doctype html>
         <div class="block">
           <div class="b1">Anthropic</div>
           <div class="b2">Claude Code in Action</div>
+          <div class="b3">April 2026 / ID hyx4hjandy5c</div>
         </div>
         <div class="block">
           <div class="b1">Anthropic</div>
           <div class="b2">Introduction to Agent Skills</div>
+          <div class="b3">May 2026 / ID 8gkk3jtb3sgt</div>
         </div>
       </section>
 
@@ -363,8 +364,8 @@ const html = `<!doctype html>
         <h2>Experience continued</h2>
 
         <div class="job">
-          <div class="job-line"><span class="org">TaurusWebs</span>, <span class="title">Junior Product Designer</span> <span class="meta">/ Bogota, Colombia / Remote</span></div>
-          <div class="job-date">February 2022 - September 2024</div>
+          <div class="job-line"><span class="org">TaurusWebs</span>, <span class="title">Junior Product Designer</span></div>
+          <div class="job-date">Bogota, Colombia / Remote / February 2022 - September 2024</div>
           <ul>
             <li>Moved from interface design into product design, focusing on user flows and interactive prototypes.</li>
             <li>Worked closely with engineers to improve usability on B2B platforms and commercial SaaS products, running iterative cycles that kept solutions user-centered while meeting business goals.</li>
@@ -372,8 +373,8 @@ const html = `<!doctype html>
         </div>
 
         <div class="job">
-          <div class="job-line"><span class="org">TaurusWebs</span>, <span class="title">User Experience Designer</span> <span class="meta">/ Bogota, Colombia / Remote</span></div>
-          <div class="job-date">February 2019 - January 2022</div>
+          <div class="job-line"><span class="org">TaurusWebs</span>, <span class="title">User Experience Designer</span></div>
+          <div class="job-date">Bogota, Colombia / Remote / February 2019 - January 2022</div>
           <ul>
             <li>Rebuilt bulk data entry for livestock farms: loading a 70-animal farm went from ~6 hours to ~1 hour, and per animal from 5 minutes to under 1 minute.</li>
             <li>100% of new farms onboard through the bulk flow and 98% of tracked farms migrated to it; Fedegan reporting went from ~167 hours to under 33 hours per month.</li>
@@ -381,8 +382,8 @@ const html = `<!doctype html>
         </div>
 
         <div class="job">
-          <div class="job-line"><span class="org">Greens Supermarket</span>, <span class="title">Senior Graphic Designer</span> <span class="meta">/ Swieqi, Malta / On-site</span></div>
-          <div class="job-date">September 2021 - November 2023</div>
+          <div class="job-line"><span class="org">Greens Supermarket</span>, <span class="title">Senior Graphic Designer</span></div>
+          <div class="job-date">Swieqi, Malta / On-site / September 2021 - November 2023</div>
           <ul>
             <li>Led visual identity and digital design across three food brands in the Greens Group: Greens Supermarket, Fresh To Go and Blok Foods.</li>
             <li>Designed and launched several brand websites, led the identity system across photography, video, animation and packaging, and built the guidelines that held output consistent across the creative team.</li>
@@ -394,11 +395,11 @@ const html = `<!doctype html>
       <section>
         <h2>Earlier experience</h2>
         <div class="earlier">
-          <div class="row"><span class="who"><span class="org">Fresh To Go Foods Ltd, Greens Supermarket Group</span>, <span class="title">Senior Graphic Designer</span> <span class="meta">/ Swieqi, Malta</span></span> <span class="when">September 2019 - November 2023</span></div>
-          <div class="row"><span class="who"><span class="org">Greens Supermarket</span>, <span class="title">Graphic Designer</span> <span class="meta">/ Swieqi, Malta</span></span> <span class="when">August 2019 - August 2021</span></div>
-          <div class="row"><span class="who"><span class="org">Sanitas Medical Center</span>, <span class="title">Lead Animator</span> <span class="meta">/ Colombia</span></span> <span class="when">February 2019 - May 2019</span></div>
-          <div class="row"><span class="who"><span class="org">Rama Judicial, Consejo Superior de la Judicatura</span>, <span class="title">Graphic Designer</span> <span class="meta">/ Colombia</span></span> <span class="when">September 2018 - January 2019</span></div>
-          <div class="row"><span class="who"><span class="org">Agencia Trompo, in-house at Politecnico Grancolombiano</span>, <span class="title">Junior Graphic Designer</span> <span class="meta">/ Bogota, Colombia</span></span> <span class="when">February 2017 - February 2018</span></div>
+          <div class="row"><span class="who"><span class="org">Fresh To Go Foods Ltd, Greens Supermarket Group</span>, <span class="title">Senior Graphic Designer</span></span>, <span class="when">Swieqi, Malta / September 2019 - November 2023</span></div>
+          <div class="row"><span class="who"><span class="org">Greens Supermarket</span>, <span class="title">Graphic Designer</span></span>, <span class="when">Swieqi, Malta / August 2019 - August 2021</span></div>
+          <div class="row"><span class="who"><span class="org">Sanitas Medical Center</span>, <span class="title">Lead Animator</span></span>, <span class="when">Colombia / February 2019 - May 2019</span></div>
+          <div class="row"><span class="who"><span class="org">Rama Judicial, Consejo Superior de la Judicatura</span>, <span class="title">Graphic Designer</span></span>, <span class="when">Colombia / September 2018 - January 2019</span></div>
+          <div class="row"><span class="who"><span class="org">Agencia Trompo, in-house at Politecnico Grancolombiano</span>, <span class="title">Junior Graphic Designer</span></span>, <span class="when">Bogota, Colombia / February 2017 - February 2018</span></div>
         </div>
       </section>
 
@@ -406,8 +407,8 @@ const html = `<!doctype html>
         <h2>Projects</h2>
 
         <div class="job">
-          <div class="job-line"><span class="org">Finanzas Familiares</span>, <span class="title">Product Designer and Developer</span> <span class="meta">/ Berlin, Germany / Self-initiated</span></div>
-          <div class="job-date">July 2025 - Present, live at finanzas.juliang.de</div>
+          <div class="job-line"><span class="org">Finanzas Familiares</span>, <span class="title">Product Designer and Developer</span></div>
+          <div class="job-date">Berlin, Germany / Self-initiated / July 2025 - Present, live at finanzas.juliang.de</div>
           <ul>
             <li>Designed and built a household finance progressive web app in daily use: dashboard, budgets per category, bills, subscriptions and planner, over ~595 transactions.</li>
             <li>Connected two banks through Open Banking, importing every 3 hours, and replaced magic-link sign-in with a 6-digit code after the link kept opening a session outside the installed app. React, TypeScript and Vite on Supabase, web push, on Vercel.</li>
@@ -415,8 +416,8 @@ const html = `<!doctype html>
         </div>
 
         <div class="job">
-          <div class="job-line"><span class="org">NotchTunes</span>, <span class="title">Product Designer and Developer</span> <span class="meta">/ Berlin, Germany / Self-initiated</span></div>
-          <div class="job-date">July 2025 - Present, macOS app</div>
+          <div class="job-line"><span class="org">NotchTunes</span>, <span class="title">Product Designer and Developer</span></div>
+          <div class="job-date">Berlin, Germany / Self-initiated / July 2025 - Present, macOS app</div>
           <ul>
             <li>Designed a music widget that lives in the MacBook notch: collapsed it is the artwork and a three-bar equalizer, and hovering opens transport, scrubbing and volume.</li>
             <li>Unified four players behind one interface: Apple Music and Spotify over AppleScript, YouTube and YouTube Music by reading the page video in Safari or Chrome. Controls the system silently refuses are verified on the next poll and dimmed, so the UI never lies about state.</li>
