@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import clsx from "clsx";
-import { QUADRANT_BY_ID, type Task } from "@/lib/decisive/types";
+import { QUADRANT_BY_ID, type Task } from "@/lib/todone/types";
 import {
   WEEKDAY_INITIALS,
   fromISO,
@@ -10,8 +10,8 @@ import {
   monthGrid,
   monthLabel,
   todayISO,
-} from "@/lib/decisive/dates";
-import { useDrag } from "@/lib/decisive/drag";
+} from "@/lib/todone/dates";
+import { useDrag } from "@/lib/todone/drag";
 import { TaskRow } from "./TaskRow";
 import { rowActions, type BoardActions } from "./Matrix";
 

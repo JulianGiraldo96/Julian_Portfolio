@@ -3,28 +3,28 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import clsx from "clsx";
-import "@/components/decisive/decisive.css";
-import { useTasks } from "@/lib/decisive/store";
-import { DragProvider, type DropPayload } from "@/lib/decisive/drag";
-import type { QuadrantId, Task } from "@/lib/decisive/types";
-import { Capture } from "@/components/decisive/Capture";
-import { Matrix, type BoardActions } from "@/components/decisive/Matrix";
-import { CalendarView } from "@/components/decisive/CalendarView";
-import { Notifications } from "@/components/decisive/Notifications";
-import { Archive } from "@/components/decisive/Archive";
-import { TaskRow } from "@/components/decisive/TaskRow";
-import { UndoToast } from "@/components/decisive/UndoToast";
-import { Shortcuts } from "@/components/decisive/Shortcuts";
+import "@/components/todone/todone.css";
+import { useTasks } from "@/lib/todone/store";
+import { DragProvider, type DropPayload } from "@/lib/todone/drag";
+import type { QuadrantId, Task } from "@/lib/todone/types";
+import { Capture } from "@/components/todone/Capture";
+import { Matrix, type BoardActions } from "@/components/todone/Matrix";
+import { CalendarView } from "@/components/todone/CalendarView";
+import { Notifications } from "@/components/todone/Notifications";
+import { Archive } from "@/components/todone/Archive";
+import { TaskRow } from "@/components/todone/TaskRow";
+import { UndoToast } from "@/components/todone/UndoToast";
+import { Shortcuts } from "@/components/todone/Shortcuts";
 
 type View = "matrix" | "calendar";
 
-/* Decisive, running live inside the portfolio.
+/* ToDone, running live inside the portfolio.
 
    This is the same board as the standalone app, minus its own theme toggle:
    here it follows the site's theme rather than keeping one of its own. The
    tasks are still yours and still local, which is the point of showing it as
    a working thing rather than a screenshot. */
-export default function DecisivePreview() {
+export default function ToDonePreview() {
   const store = useTasks();
   const { toggle, patch, schedule, move, remove, undoLast } = store;
   const [view, setView] = useState<View>("matrix");
@@ -83,13 +83,13 @@ export default function DecisivePreview() {
   const active = store.tasks.filter((t) => !t.done).length;
 
   return (
-    <div className="dcv">
+    <div className="tdn">
       <DragProvider onDrop={onDrop} renderCard={renderGhost}>
         <div className="shell">
           <header className={clsx("topbar", scrolled && "is-scrolled")}>
             <div className="topbar-inner">
               <div className="mr-auto min-w-0">
-                <h1 className="wordmark">Decisive</h1>
+                <h1 className="wordmark">ToDone</h1>
                 <p className="hidden text-[13px] text-[var(--label)] sm:block">
                   One capture field, four consequence quadrants, a calendar of deadlines.
                 </p>
@@ -116,7 +116,7 @@ export default function DecisivePreview() {
               </Link>
 
               <a
-                href="https://github.com/JulianGiraldo96/decisive"
+                href="https://github.com/JulianGiraldo96/todone"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Source on GitHub"
@@ -171,7 +171,7 @@ export default function DecisivePreview() {
                   <Shortcuts />
                   <Dot />
                   <a
-                    href="https://github.com/JulianGiraldo96/decisive"
+                    href="https://github.com/JulianGiraldo96/todone"
                     target="_blank"
                     rel="noreferrer"
                     className="foot-link"

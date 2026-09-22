@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import clsx from "clsx";
-import { QUADRANT_BY_ID, type Task } from "@/lib/decisive/types";
-import { addDays, daysUntil, formatDue, todayISO } from "@/lib/decisive/dates";
+import { QUADRANT_BY_ID, type Task } from "@/lib/todone/types";
+import { addDays, daysUntil, formatDue, todayISO } from "@/lib/todone/dates";
 
 /* Notifications, at the top, where a deadline can still change the day.
 

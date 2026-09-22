@@ -2,8 +2,8 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import clsx from "clsx";
-import { QUADRANTS, type QuadrantId, type Task } from "@/lib/decisive/types";
-import { addDays, todayISO } from "@/lib/decisive/dates";
+import { QUADRANTS, type QuadrantId, type Task } from "@/lib/todone/types";
+import { addDays, todayISO } from "@/lib/todone/dates";
 
 /* The keyboard path.
 

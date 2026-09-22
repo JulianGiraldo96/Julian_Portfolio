@@ -1,9 +1,9 @@
 "use client";
 
 import clsx from "clsx";
-import { QUADRANTS, type QuadrantId, type Task } from "@/lib/decisive/types";
-import { dueState } from "@/lib/decisive/dates";
-import { useDrag } from "@/lib/decisive/drag";
+import { QUADRANTS, type QuadrantId, type Task } from "@/lib/todone/types";
+import { dueState } from "@/lib/todone/dates";
+import { useDrag } from "@/lib/todone/drag";
 import { TaskRow, type RowActions } from "./TaskRow";
 
 /* The matrix.
@@ -76,7 +76,7 @@ export function Matrix({ tasks, actions }: { tasks: Task[]; actions: BoardAction
                 data-drop-value={meta.id}
                 aria-label={`${meta.label}: ${meta.rule}`}
                 className={clsx(
-                  "quadrant dcv-grain rise",
+                  "quadrant tdn-grain rise",
                   `rise-${index + 1}`,
                   isOver && "is-over",
                   isTarget && !isOver && "is-candidate",

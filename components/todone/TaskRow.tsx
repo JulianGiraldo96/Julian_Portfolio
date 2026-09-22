@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
-import type { QuadrantId, Task } from "@/lib/decisive/types";
-import { dueState, formatDue } from "@/lib/decisive/dates";
-import { useDrag } from "@/lib/decisive/drag";
+import type { QuadrantId, Task } from "@/lib/todone/types";
+import { dueState, formatDue } from "@/lib/todone/dates";
+import { useDrag } from "@/lib/todone/drag";
 import { TaskMenu } from "./TaskMenu";
 
 /* Only the two states that cost you something get a colour. Giving every date

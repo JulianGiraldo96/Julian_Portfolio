@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import clsx from "clsx";
-import { QUADRANT_BY_ID, type Task } from "@/lib/decisive/types";
+import { QUADRANT_BY_ID, type Task } from "@/lib/todone/types";
 
 /* Completed work, kept but folded away.
 

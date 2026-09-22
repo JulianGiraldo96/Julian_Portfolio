@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
-import { QUADRANTS, type QuadrantId } from "@/lib/decisive/types";
-import { formatDue, parseCapture } from "@/lib/decisive/dates";
+import { QUADRANTS, type QuadrantId } from "@/lib/todone/types";
+import { formatDue, parseCapture } from "@/lib/todone/dates";
 
 /* One capture field.
 
