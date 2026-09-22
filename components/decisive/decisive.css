@@ -1,0 +1,790 @@
+/* Decisive, embedded.
+
+   The standalone app at github.com/JulianGiraldo96/decisive ships this as its
+   global stylesheet. Here every rule is scoped under .dcv instead, because an
+   app route inside the portfolio must not repaint the portfolio: a stylesheet
+   imported by one route in the App Router is still a global stylesheet, and it
+   stays loaded once you navigate away from it.
+
+   Two other changes follow from living here. The tokens hang off .dcv rather
+   than :root, and the dark set answers to the portfolio's own
+   html[data-v2-theme="dark"] rather than to a theme this route controls, so
+   the board follows the site's switch instead of fighting it. The keyframes
+   are prefixed, and .grain became .dcv-grain, since the portfolio already has
+   one of its own. */
+
+/* ===========================================================================
+   Tokens
+
+   One palette, defined once, redefined for dark. Nothing in a component ever
+   names a colour directly: a raw hex in a component is a colour that will be
+   wrong in one of the two themes and nobody will notice until a screenshot.
+
+   Dark values are picked against #0c0c0e. Body text clears 4.5:1 in both
+   themes and secondary text clears 3:1.
+   ======================================================================== */
+.dcv {
+  --bg: #ffffff;
+  --surface: #f6f6f8;
+  --surface-2: #ececf0;
+  --ink: #1d1d1f;
+  --secondary: #55555a;
+  --label: #6e6e73;
+  --line: rgba(0, 0, 0, 0.08);
+  --line-strong: rgba(0, 0, 0, 0.18);
+  --invert-bg: #1d1d1f;
+  --invert-ink: #ffffff;
+  --glass: rgba(255, 255, 255, 0.72);
+  --accent: #34713f;
+  --accent-bg: #e8f2ea;
+  --warn: #a8482a;
+  --warn-bg: #fbefeb;
+  --cool: #2f5d9e;
+  --cool-bg: #eaf0fa;
+
+  /* Motion. One rhythm for the whole app: if two things move at two speeds
+     for no reason, the interface reads as two interfaces. */
+  --fast: 140ms;
+  --base: 220ms;
+  --slow: 320ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+
+  color-scheme: light;
+}
+
+html[data-v2-theme="dark"] .dcv {
+  --bg: #0c0c0e;
+  --surface: #161619;
+  --surface-2: #202024;
+  --ink: #f2f2f4;
+  --secondary: #a8a8b0;
+  --label: #8f8f98;
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.24);
+  --invert-bg: #f2f2f4;
+  --invert-ink: #0c0c0e;
+  --glass: rgba(14, 14, 17, 0.72);
+  --accent: #6fbf7f;
+  --accent-bg: #15211a;
+  --warn: #e79170;
+  --warn-bg: #241713;
+  --cool: #8ab0e6;
+  --cool-bg: #151a24;
+
+  color-scheme: dark;
+}
+
+.dcv * {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dcv {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  /* Tabular figures wherever a number sits in a column, so counts and dates
+     never shuffle their own width as they change. */
+  font-variant-numeric: proportional-nums;
+}
+
+.dcv .tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.dcv ::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.dcv :focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Quadrant tone. One declaration on the section and the dot, the count, the
+   chips and the drop ring all read from it. */
+.dcv [data-tone="warn"] { --tone: var(--warn); --tone-bg: var(--warn-bg); }
+
+.dcv [data-tone="accent"] { --tone: var(--accent); --tone-bg: var(--accent-bg); }
+
+.dcv [data-tone="cool"] { --tone: var(--cool); --tone-bg: var(--cool-bg); }
+
+.dcv [data-tone="label"] { --tone: var(--label); --tone-bg: var(--surface-2); }
+
+/* ===========================================================================
+   Shell and chrome
+   ======================================================================== */
+.dcv .shell {
+  min-height: 100dvh;
+}
+
+/* The bar is a translucent layer the board scrolls under, not an opaque strip
+   that eats a band of the page. At the very top there is nothing beneath it
+   to separate, so it wears no material at all until the first scroll. */
+.dcv .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid transparent;
+  background-color: transparent;
+  /* The blur is always on and only the tint fades in.
+
+     Two other shapes of this were tried and both failed for reasons worth
+     recording. Declaring the filter only in the scrolled state does nothing,
+     because a backdrop-filter cannot be transitioned from `none`. Declaring
+     it as blur(0px) saturate(100%) so it has somewhere to animate from gets
+     minified to `blur()saturate()`, which is invalid, so the whole
+     declaration is dropped and the bar ends up as flat translucent paint with
+     the board legible straight through it.
+
+     Leaving it on costs nothing at the top of the page, where the only thing
+     behind the bar is the flat page background and a blur of it is a blur of
+     nothing.
+
+     The prefixed property is deliberately not written by hand: the build adds
+     it, and declaring both makes the minifier collapse the pair down to the
+     prefixed one alone, which Chrome then ignores. */
+  backdrop-filter: blur(24px) saturate(180%);
+  transition:
+    background-color var(--slow) ease,
+    border-color var(--slow) ease;
+}
+
+.dcv .topbar.is-scrolled {
+  background-color: var(--glass);
+  border-bottom-color: var(--line);
+  backdrop-filter: blur(24px) saturate(180%);
+}
+
+.dcv .topbar-inner {
+  margin: 0 auto;
+  display: flex;
+  max-width: 1180px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 14px 16px;
+}
+
+.dcv .board {
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: 8px 16px 120px;
+}
+
+@media (min-width: 768px) {
+  .dcv .topbar-inner, .dcv .board {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+/* Tracking is size specific: large type reads too loose at default spacing,
+   small type reads too tight. One value for everything is wrong somewhere. */
+.dcv .wordmark {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 25px;
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.dcv .axis {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--label);
+}
+
+.dcv .axis-v {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.dcv .kbd {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  padding: 2px 5px;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--secondary);
+}
+
+/* ===========================================================================
+   Press feedback
+
+   Every tappable thing answers on pointer down, not on release. The moment
+   feedback waits for the click, directness falls off a cliff.
+   ======================================================================== */
+.dcv .tap {
+  transition: transform var(--fast) var(--ease-out), background-color var(--fast) ease,
+    color var(--fast) ease, border-color var(--fast) ease, opacity var(--fast) ease;
+  touch-action: manipulation;
+}
+
+.dcv .tap:active {
+  transform: scale(0.96);
+}
+
+.dcv .segment {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+
+.dcv .segment-item {
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--secondary);
+}
+
+.dcv .segment-item:hover {
+  color: var(--ink);
+}
+
+.dcv .segment-item.is-on {
+  background: var(--invert-bg);
+  color: var(--invert-ink);
+}
+
+.dcv .pill, .dcv .pill-icon {
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--secondary);
+}
+
+.dcv .pill {
+  min-height: 36px;
+  padding: 0 14px;
+  font-size: 12px;
+}
+
+.dcv .pill-icon {
+  height: 36px;
+  width: 36px;
+}
+
+.dcv .pill:hover, .dcv .pill-icon:hover {
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+
+.dcv .quiet-button {
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 11px;
+  color: var(--secondary);
+}
+
+.dcv .quiet-button:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.dcv .chevron {
+  transition: transform var(--base) var(--ease-out);
+}
+
+.dcv .chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.dcv .chevron.is-open-right {
+  transform: rotate(90deg);
+}
+
+/* ===========================================================================
+   Surfaces
+
+   Elevation is a scale, not a value per component: flat panels sit on the
+   page, the capture field and menus float above it, the dragged card floats
+   above everything. Bigger surfaces read as thicker.
+   ======================================================================== */
+.dcv .notice, .dcv .capture, .dcv .panel, .dcv .quadrant, .dcv .archive {
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.dcv .notice {
+  overflow: hidden;
+}
+
+.dcv .capture {
+  background: var(--bg);
+  padding: 7px;
+  box-shadow: 0 1px 1px rgb(0 0 0 / 0.04), 0 18px 40px -28px rgb(0 0 0 / 0.42);
+  transition: border-color var(--base) ease, box-shadow var(--base) ease;
+}
+
+.dcv .capture:focus-within {
+  border-color: var(--line-strong);
+  box-shadow: 0 1px 1px rgb(0 0 0 / 0.04), 0 22px 50px -28px rgb(0 0 0 / 0.5);
+}
+
+html[data-v2-theme="dark"] .dcv .capture {
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.04), 0 18px 40px -28px rgb(0 0 0 / 0.7);
+}
+
+.dcv .panel, .dcv .quadrant {
+  padding: 12px;
+}
+
+.dcv .quadrant {
+  position: relative;
+  display: flex;
+  min-height: 224px;
+  flex-direction: column;
+  transition: border-color var(--base) ease, background-color var(--base) ease;
+}
+
+.dcv .quadrant-title {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.dcv .panel-title {
+  margin-bottom: 8px;
+  padding-inline: 4px;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.dcv .month-title {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* While something is in the air, every quadrant that is not the one it came
+   from says so quietly, and the one under the pointer says so loudly. Telling
+   the user where a thing can land beats making them find out. */
+.dcv .quadrant.is-candidate {
+  border-color: var(--line-strong);
+}
+
+.dcv .quadrant.is-over {
+  border-color: var(--tone);
+  background: var(--tone-bg);
+}
+
+/* Static film grain: one inlined turbulence tile painted as a background
+   image, so it never moves and costs nothing per frame. */
+.dcv .dcv-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  mix-blend-mode: multiply;
+  opacity: 0.18;
+}
+
+html[data-v2-theme="dark"] .dcv .dcv-grain::after {
+  mix-blend-mode: overlay;
+  opacity: 0.24;
+}
+
+/* ===========================================================================
+   Capture
+   ======================================================================== */
+.dcv .due-chip {
+  flex: none;
+  border-radius: 999px;
+  background: var(--accent-bg);
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.dcv .add-button {
+  flex: none;
+  min-height: 36px;
+  border-radius: 999px;
+  background: var(--invert-bg);
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--invert-ink);
+}
+
+.dcv .add-button:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.dcv .quadrant-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  border-radius: 999px;
+  padding: 0 10px;
+  font-size: 12px;
+  color: var(--label);
+}
+
+.dcv .quadrant-chip:hover {
+  color: var(--ink);
+}
+
+.dcv .quadrant-chip.is-on {
+  background: var(--tone-bg);
+  color: var(--tone);
+}
+
+/* ===========================================================================
+   Notifications
+   ======================================================================== */
+.dcv .band-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  background: var(--tone-bg);
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--tone);
+}
+
+.dcv .notice-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  padding: 6px 8px;
+  transition: background-color var(--fast) ease;
+}
+
+.dcv .notice-row:hover {
+  background: var(--bg);
+}
+
+/* ===========================================================================
+   Task rows and the card in flight
+   ======================================================================== */
+.dcv .task-row {
+  transition: border-color var(--base) ease, background-color var(--base) ease,
+    transform var(--base) var(--ease-out), opacity var(--base) ease;
+  cursor: grab;
+}
+
+.dcv .task-row:hover {
+  border-color: var(--line-strong);
+}
+
+.dcv .task-row:active {
+  cursor: grabbing;
+}
+
+/* The row the dragged card came from stays in place and dims. Removing it
+   would reflow the column under the pointer, which is the one thing a drag
+   must never do. */
+.dcv .task-row.is-lifted {
+  opacity: 0.32;
+  border-style: dashed;
+}
+
+/* The card under the pointer is the heaviest surface on screen, because it is
+   the one that is actually off the page. */
+.dcv .drag-ghost {
+  border-radius: 12px;
+  box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.38), 0 2px 8px rgb(0 0 0 / 0.14);
+  cursor: grabbing;
+}
+
+html[data-v2-theme="dark"] .dcv .drag-ghost {
+  box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.7), 0 2px 8px rgb(0 0 0 / 0.5);
+}
+
+/* ===========================================================================
+   Menus
+
+   Anchored to the control that opened them and scaled from that corner, so
+   the relationship between the button and the panel is never in doubt.
+   ======================================================================== */
+.dcv .menu-surface {
+  border: 1px solid var(--line);
+  background: var(--glass);
+  backdrop-filter: blur(22px) saturate(180%);
+  box-shadow: 0 16px 40px -16px rgb(0 0 0 / 0.36), 0 2px 6px rgb(0 0 0 / 0.1);
+  animation: dcv-menu-in 200ms var(--ease-out) both;
+}
+
+html[data-v2-theme="dark"] .dcv .menu-surface {
+  box-shadow: 0 16px 40px -16px rgb(0 0 0 / 0.72), 0 2px 6px rgb(0 0 0 / 0.5);
+}
+
+.dcv .menu-item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 13px;
+  color: var(--secondary);
+  transition: background-color var(--fast) ease, color var(--fast) ease;
+}
+
+.dcv .menu-item:hover, .dcv .menu-item:focus-visible {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+@keyframes dcv-menu-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ===========================================================================
+   Calendar
+
+   Six fixed weeks, so paging through months never changes the page height and
+   the panel beside it never jumps.
+   ======================================================================== */
+.dcv .calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: border-color var(--base) ease;
+}
+
+.dcv .calendar-grid.is-receiving {
+  border-color: var(--line-strong);
+}
+
+.dcv .calendar-cell {
+  display: block;
+  width: 100%;
+  min-height: 104px;
+  padding: 7px;
+  text-align: left;
+  background: var(--bg);
+  transition: background-color var(--fast) ease, box-shadow var(--fast) ease;
+}
+
+.dcv .calendar-cell[data-weekend="true"] {
+  background: color-mix(in srgb, var(--surface) 45%, var(--bg));
+}
+
+.dcv .calendar-cell[data-outside="true"] {
+  background: var(--surface);
+}
+
+.dcv .calendar-cell[data-today="true"] {
+  background: var(--accent-bg);
+}
+
+.dcv .calendar-cell.is-selected {
+  box-shadow: inset 0 0 0 1.5px var(--line-strong);
+}
+
+.dcv .calendar-cell.is-over {
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.dcv .calendar-date {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--label);
+}
+
+.dcv .calendar-cell[data-today="true"] .calendar-date {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.dcv .day-chip, .dcv .rail-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 7px;
+  font-size: 11px;
+  line-height: 1.25;
+  cursor: grab;
+  background: var(--tone-bg);
+  color: var(--tone);
+  transition: transform var(--fast) var(--ease-out);
+}
+
+.dcv .day-chip {
+  padding: 3px 6px;
+  overflow: hidden;
+}
+
+.dcv .day-chip:active, .dcv .rail-chip:active {
+  cursor: grabbing;
+  transform: scale(0.97);
+}
+
+.dcv .rail-chip {
+  max-width: 100%;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  padding: 7px 9px;
+  font-size: 12px;
+  color: var(--secondary);
+}
+
+@media (max-width: 767px) {
+  .dcv .calendar-cell {
+    min-height: 68px;
+    padding: 4px;
+  }
+}
+
+/* ===========================================================================
+   Footer, toast
+   ======================================================================== */
+.dcv .foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  padding: 18px 4px 0;
+  font-size: 12px;
+  color: var(--label);
+}
+
+.dcv .foot-link {
+  color: inherit;
+  transition: color var(--fast) ease;
+}
+
+.dcv .foot-link:hover {
+  color: var(--ink);
+}
+
+.dcv .toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  z-index: 40;
+  display: flex;
+  translate: -50% 0;
+  align-items: center;
+  gap: 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--glass);
+  backdrop-filter: blur(22px) saturate(180%);
+  padding: 7px 7px 7px 16px;
+  box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.45);
+}
+
+.dcv .toast-action {
+  border-radius: 999px;
+  background: var(--invert-bg);
+  padding: 6px 13px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--invert-ink);
+}
+
+@keyframes dcv-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.dcv .rise {
+  animation: dcv-rise 520ms var(--ease-out) both;
+}
+
+.dcv .rise-1 { animation-delay: 50ms; }
+
+.dcv .rise-2 { animation-delay: 100ms; }
+
+.dcv .rise-3 { animation-delay: 150ms; }
+
+.dcv .rise-4 { animation-delay: 200ms; }
+
+@keyframes dcv-breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.dcv .breathe {
+  animation: dcv-breathe 2.6s ease-in-out infinite;
+}
+
+/* ===========================================================================
+   Accessibility preferences
+
+   Three independent signals, each handled on its own terms. Reduced motion
+   does not mean no feedback, it means feedback that does not move.
+   ======================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .dcv .rise, .dcv .breathe, .dcv .menu-surface {
+    animation: none;
+  }
+  .dcv .tap, .dcv .task-row, .dcv .chevron, .dcv .day-chip, .dcv .rail-chip, .dcv .calendar-cell, .dcv .quadrant, .dcv .capture, .dcv .topbar {
+    transition-duration: 1ms;
+  }
+  .dcv .tap:active, .dcv .day-chip:active, .dcv .rail-chip:active {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .dcv .topbar.is-scrolled, .dcv .menu-surface, .dcv .toast {
+    background: var(--bg);
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .dcv {
+    --line: rgba(0, 0, 0, 0.3);
+    --line-strong: rgba(0, 0, 0, 0.6);
+    --label: #4a4a4f;
+  }
+  html[data-v2-theme="dark"] .dcv {
+    --line: rgba(255, 255, 255, 0.34);
+    --line-strong: rgba(255, 255, 255, 0.66);
+    --label: #c2c2c9;
+  }
+  .dcv .topbar.is-scrolled, .dcv .menu-surface, .dcv .toast {
+    background: var(--bg);
+    backdrop-filter: none;
+  }
+}
