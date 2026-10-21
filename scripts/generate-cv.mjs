@@ -242,7 +242,7 @@ const html = `<!doctype html>
     <div class="contact">
       <div><span class="lbl">Linkedin</span> <span class="val">/julian-gr</span></div>
       <div><span class="lbl">Portfolio</span> <span class="val">juliang.de</span></div>
-      <div>+49 151 5884 4518</div>
+      <div>+49 176 23670893</div>
       <div>application@juliang.de</div>
     </div>
   </div>

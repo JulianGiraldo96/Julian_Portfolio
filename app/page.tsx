@@ -89,7 +89,7 @@ const structuredData = {
             url: `${SITE}/work/scan-memory`,
             datePublished: "2025",
             about:
-              "A receiving screen for Duo's inventory app that remembers every unit scanned, grouped by flavour, cutting inventory errors by around 30% and ending the manual recounts at the loading bay.",
+              "A receiving screen for Duo's inventory app that remembers every unit scanned, grouped by flavour, cutting inventory errors by around 35% and ending the manual recounts at the loading bay.",
             creator: { "@id": `${SITE}/#julian` },
           },
         },

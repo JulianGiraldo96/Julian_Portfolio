@@ -1,18 +1,17 @@
-/* One portrait per product, sitting on its card and on its case study cover.
-   Four are line-art, drawn from the real interfaces: Duo's ERP (teal status
+/* One drawing per product, sitting on its card and on its case study cover.
+   All line art, drawn from the real interfaces: Duo's ERP (teal status
    system, KPI row, shift row), Duo Scan Memory, TaurusWebs' bulk entry grid
-   (blue), Meinerva's dark reading screen. Stroke only, no filled panels, so
-   the card's own tint shows through and the drawing reads like a wireframe
-   rather than a screenshot: outline boxes, thin dividers, each product's own
-   accent colour used only on the few things worth pointing at (a status dot,
-   a chart line, a checked box). Savee is the exception and is the real
-   exported screen; see the note above it. No filter of any kind here: a
-   drop-shadow is a CSS filter, and a filter region on a scaled element inside
-   an `isolate` stacking context is what painted the hard edged ghost
+   (blue), and the two mobile ones as three phones each (Savee drawn,
+   Meinerva from its real prototype screens, see below). All five share one
+   360 x 240 frame, so every card is the same kind of object. Stroke only,
+   no filled panels, so the card's own tint shows through and the drawing reads
+   like a wireframe rather than a screenshot: outline boxes, thin dividers,
+   each product's own accent colour used only on the few things worth pointing
+   at (a status dot, a chart line, a checked box). No filter of any kind here:
+   a drop-shadow is a CSS filter, and a filter region on a scaled element
+   inside an `isolate` stacking context is what painted the hard edged ghost
    rectangle beside the first card. Decorative: every card names its product
    in text, so these are aria-hidden. */
-
-import Image from "next/image";
 
 /* CSS custom properties, not hex: the same tokens the rest of v2 uses to
    flip between light and dark (globals.css, .v2-root), so the line work
@@ -211,117 +210,273 @@ export function TaurusScreen({ className = "" }: { className?: string }) {
   );
 }
 
-/* ---------- Savee ---------- */
-/* The only one here that is not drawn. This is the real shopping list screen
-   exported from the Figma file, so the card shows the product rather than my
-   reading of it.
-   It ships as a raster, not as the SVG it was exported as. Figma writes the
-   frosted panels as `foreignObject` with `backdrop-filter`, and Chrome refuses
-   to render foreign content when an SVG is the src of an `<img>`, so the blur
-   and the angular gradients would silently drop out. Rasterised at 2x the
-   export is 35KB against the SVG's 2.4MB. Source kept in
-   OLD/savee-cover-source/.
-   The radius is written per axis so the corners stay circular at every size
-   the card renders: at this aspect 14% of the width is 6.5% of the height. */
-export function SaveeScreen({ className = "" }: { className?: string }) {
+/* ---------- Phones (Savee, Meinerva) ---------- */
+/* The two mobile products are drawn as three phones in a row on the same
+   360 x 240 frame as the desktop ones, each phone one step of the flow with
+   its step named underneath, so the card reads as an app being used rather
+   than as a dashboard. Phone geometry is shared with CardDemo, which places
+   its pointer and results in these same coordinates. */
+export const PHONE = { w: 98, h: 212, y: 4, xs: [11, 131, 251], rx: 14 } as const;
+
+/* a point on a 390 x 844 prototype screen, mapped onto phone `i` */
+export function onPhone(i: number, px: number, py: number) {
+  const k = PHONE.w / 390;
+  return { x: PHONE.xs[i] + px * k, y: PHONE.y + py * k };
+}
+
+function StepLabels({ steps }: { steps: string[] }) {
   return (
-    <Image
-      src="/projects/savee/cover-screen.webp"
-      alt=""
-      aria-hidden
-      width={780}
-      height={1688}
-      sizes="(max-width: 768px) 60vw, 300px"
-      className={className}
-      style={{ borderRadius: "14% / 6.5%" }}
-    />
+    <>
+      {steps.map((t, i) => (
+        <text
+          key={t}
+          x={PHONE.xs[i] + PHONE.w / 2}
+          y="233"
+          fontSize="5.2"
+          fill={TEXT_DIM}
+          textAnchor="middle"
+          letterSpacing="0.5"
+        >
+          <tspan fill={TEXT_MUTED}>{String(i + 1).padStart(2, "0")}</tspan>
+          {"  "}
+          {t.toUpperCase()}
+        </text>
+      ))}
+    </>
   );
 }
 
-/* ---------- Meinerva ---------- */
-export function MeinervaScreen({ className = "" }: { className?: string }) {
-  const accent = "#C6A96B";
-  const dots = Array.from({ length: 40 }, (_, i) => {
-    const t = i / 39;
-    return {
-      x: 30 + t * 110,
-      y: 136 + Math.sin(t * Math.PI * 3) * 8 + Math.cos(t * Math.PI * 5) * 2.6,
-      r: 0.7 + (i % 4) * 0.22,
-    };
-  });
+/* ---------- Savee ---------- */
+/* Drawn from the real screens: the SAVEE wordmark, the toggle in the corner,
+   the floating tab bar, the list grouped by aisle. Watch a recipe short, add
+   it, and the list on the third phone fills with its ingredients (CardDemo
+   draws that part). */
+export const SAVEE_ACCENT = "#6CC24A";
+
+function SaveeChrome({ active, corner }: { active: number; corner: "plus" | "play" | "fork" }) {
+  const a = SAVEE_ACCENT;
+  return (
+    <>
+      <text x="8" y="11" fontSize="4.2" fontWeight="600" fill={TEXT_DIM}>
+        18:12
+      </text>
+      <rect x="83" y="7.2" width="8" height="4" rx="1.2" fill="none" stroke={TEXT_MUTED} strokeWidth="0.6" />
+      <text x="8" y="27" fontSize="7.4" fontWeight="800" fill={a} letterSpacing="0.3">
+        SAVEE
+      </text>
+      {corner === "plus" ? (
+        <g stroke={a} strokeWidth="0.9" fill="none" strokeLinecap="round">
+          <circle cx="86" cy="24.5" r="5" />
+          <path d="M83.6 24.5 h4.8 M86 22.1 v4.8" />
+        </g>
+      ) : (
+        <g>
+          <rect x="66" y="19.5" width="25" height="10" rx="5" fill="none" stroke={LINE_STRONG} />
+          {/* the toggle flips sides: video mode sits on the left, the
+              recipe (fork) on the right, as in the app */}
+          <circle cx={corner === "play" ? 71 : 86} cy="24.5" r="3.6" fill={a} />
+          {corner === "play" ? (
+            <path d="M70 22.6 L73 24.5 L70 26.4 Z" fill="var(--v2-bg)" />
+          ) : (
+            <path d="M84.6 26.2 L87.2 22.8 M86.2 22.4 l1.4 1.1" stroke="var(--v2-bg)" strokeWidth="0.7" strokeLinecap="round" />
+          )}
+        </g>
+      )}
+      {/* the floating tab bar */}
+      <rect x="6" y="192" width="86" height="14" rx="7" fill="none" stroke={LINE_STRONG} />
+      {[17, 33, 49, 65, 81].map((cx, i) => (
+        <circle
+          key={cx}
+          cx={cx}
+          cy="199"
+          r={i === 4 ? 3 : 2.3}
+          fill={i === active ? a : "none"}
+          fillOpacity={i === active ? 0.9 : 1}
+          stroke={i === active ? a : TEXT_MUTED}
+          strokeWidth="0.7"
+        />
+      ))}
+    </>
+  );
+}
+
+function SaveeRow({ y, name, qty, sub }: { y: number; name: string; qty: string; sub?: string }) {
+  return (
+    <g>
+      <circle cx="13" cy={y - 1.6} r="3" fill="none" stroke={LINE_STRONG} strokeWidth="0.8" />
+      <text x="20" y={y} fontSize="4.6" fill={TEXT}>
+        {name}
+      </text>
+      {sub && (
+        <text x="20" y={y + 4.6} fontSize="3.2" fill={TEXT_MUTED}>
+          {sub}
+        </text>
+      )}
+      <text x="90" y={y} fontSize="4.2" fill={TEXT_DIM} textAnchor="end">
+        {qty}
+      </text>
+    </g>
+  );
+}
+
+export function SaveeScreen({ className = "" }: { className?: string }) {
+  const a = SAVEE_ACCENT;
   return (
     <svg
-      viewBox="0 0 170 320"
+      viewBox="0 0 360 240"
       aria-hidden
       role="presentation"
       className={className}
       preserveAspectRatio="xMidYMid meet"
       fontFamily="inherit"
     >
-      <rect x="4" y="4" width="162" height="312" rx="20" fill="none" stroke={LINE} />
-      <text x="18" y="22" fontSize="6.4" fontWeight="600" fill={TEXT_MUTED}>
-        9:41
-      </text>
-
-      {/* the work, still veiled */}
-      <rect x="18" y="32" width="134" height="74" rx="9" fill="none" stroke={LINE} />
-      <circle cx="60" cy="68" r="18" fill="none" stroke={LINE_STRONG} />
-      <circle cx="98" cy="62" r="11" fill="none" stroke={LINE} />
-      <rect x="128" y="40" width="16" height="16" rx="8" fill="none" stroke={accent} />
-      <circle cx="136" cy="48" r="2.4" fill={accent} />
-
-      {/* dotted wordmark */}
-      {dots.map((d, i) => (
-        <circle key={i} cx={d.x} cy={d.y} r={d.r} fill={accent} fillOpacity={0.4 + (i % 3) * 0.12} />
-      ))}
-      <text x="85" y="154" fontSize="5.8" textAnchor="middle" fill={TEXT_MUTED} letterSpacing="1.2">
-        LOOK FIRST
-      </text>
-
-      {/* your reading */}
-      <rect x="18" y="166" width="134" height="52" rx="9" fill="none" stroke={LINE} />
-      <text x="27" y="180" fontSize="6.2" fill={TEXT_MUTED}>
-        Your reading
-      </text>
-      {[189, 199, 209].map((y, i) => (
-        <line
-          key={y}
-          x1="27"
-          y1={y}
-          x2={27 + (i === 2 ? 62 : 116 - i * 14)}
-          y2={y}
-          stroke={LINE_STRONG}
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
+      {PHONE.xs.map((x) => (
+        <rect key={x} x={x} y={PHONE.y} width={PHONE.w} height={PHONE.h} rx={PHONE.rx} fill="none" stroke={LINE_STRONG} />
       ))}
 
-      {/* the hint, locked until you write */}
-      <rect x="18" y="226" width="76" height="17" rx="8.5" fill="none" stroke={accent} />
-      <circle cx="30" cy="234.5" r="2.6" fill={accent} />
-      <text x="39" y="237" fontSize="6" fill={accent}>
-        Unlock hint
-      </text>
-
-      {/* community critiques */}
-      <text x="18" y="260" fontSize="6" fill={TEXT_MUTED}>
-        Critiques · 12
-      </text>
-      {[268, 285, 302].map((y, i) => (
-        <g key={y}>
-          <rect x={18 + i * 3} y={y} width={134 - i * 6} height="14" rx="7" fill="none" stroke={LINE} />
-          <circle cx={28 + i * 3} cy={y + 7} r="4" fill="none" stroke={LINE_STRONG} />
-          <line
-            x1={38 + i * 3}
-            y1={y + 7}
-            x2={38 + i * 3 + (72 - i * 10)}
-            y2={y + 7}
-            stroke={LINE_STRONG}
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
+      {/* 1 · the feed: a recipe short playing */}
+      <g transform={`translate(${PHONE.xs[0]} ${PHONE.y})`}>
+        <SaveeChrome active={0} corner="plus" />
+        <rect x="6" y="34" width="86" height="152" rx="8" fill="none" stroke={LINE} />
+        <path d="M6 150 Q24 124 40 136 T70 120 T92 130" fill="none" stroke={LINE_STRONG} strokeWidth="1" strokeLinecap="round" />
+        <circle cx="49" cy="100" r="10" fill="none" stroke={a} strokeWidth="1" />
+        <path d="M46 95 L54.5 100 L46 105 Z" fill={a} />
+        <g fill="none" stroke={TEXT_DIM} strokeWidth="0.8" strokeLinejoin="round">
+          <path d="M84 46.5 c-1.6-2.4-4.6-0.6-2.6 1.8 l2.6 2.6 2.6-2.6 c2-2.4-1-4.2-2.6-1.8 z" />
+          <path d="M81.6 56 h4.8 v6.4 l-2.4-1.8 -2.4 1.8 z" />
         </g>
+        <text x="12" y="167" fontSize="5.4" fontWeight="600" fill={TEXT}>
+          Tomato basil pasta
+        </text>
+        <text x="12" y="174.5" fontSize="3.8" fill={TEXT_MUTED}>
+          20 min · Easy
+        </text>
+        <line x1="12" y1="182" x2="86" y2="182" stroke={LINE_STRONG} strokeWidth="1.2" strokeLinecap="round" />
+        <line x1="12" y1="182" x2="30" y2="182" stroke={a} strokeWidth="1.2" strokeLinecap="round" />
+      </g>
+
+      {/* 2 · the recipe, with the list it brings */}
+      <g transform={`translate(${PHONE.xs[1]} ${PHONE.y})`}>
+        <SaveeChrome active={2} corner="play" />
+        <rect x="6" y="34" width="86" height="54" rx="7" fill="none" stroke={LINE} />
+        <path d="M6 70 Q26 52 44 62 T92 54" fill="none" stroke={LINE_STRONG} strokeWidth="1" strokeLinecap="round" />
+        <rect x="11" y="68" width="76" height="16" rx="4" fill="none" stroke={LINE_STRONG} />
+        <text x="15" y="75" fontSize="4.4" fontWeight="600" fill={TEXT}>
+          Tomato basil pasta
+        </text>
+        <text x="15" y="81" fontSize="3.4" fill={TEXT_MUTED}>
+          20 min · Easy
+        </text>
+        <rect x="6" y="94" width="86" height="12" rx="6" fill="none" stroke={LINE} />
+        <text x="11" y="101.6" fontSize="4.2" fill={TEXT}>
+          Adjust portions
+        </text>
+        <text x="86" y="101.6" fontSize="4.2" fill={TEXT_DIM} textAnchor="end">
+          –  2  +
+        </text>
+        <text x="49" y="120" fontSize="4.4" fontWeight="600" fill={TEXT} textAnchor="middle">
+          Shopping list for this recipe
+        </text>
+        <SaveeRow y={133} name="Tomatoes" qty="400 g" />
+        <SaveeRow y={146} name="Basil" qty="1 bunch" />
+        <SaveeRow y={159} name="Spaghetti" qty="250 g" />
+        <rect x="12" y="170" width="74" height="13" rx="6.5" fill="none" stroke={a} strokeWidth="0.9" />
+        <text x="49" y="178.4" fontSize="4.6" fontWeight="600" fill={a} textAnchor="middle">
+          + Add to list
+        </text>
+      </g>
+
+      {/* 3 · the shopping list, waiting for the recipe */}
+      <g transform={`translate(${PHONE.xs[2]} ${PHONE.y})`}>
+        <SaveeChrome active={2} corner="fork" />
+        <text x="49" y="42" fontSize="5" fontWeight="600" fill={TEXT} textAnchor="middle">
+          My shopping list
+        </text>
+        <text x="8" y="53" fontSize="3.8" fill={TEXT_MUTED}>
+          Sort by ▾
+        </text>
+        <text x="8" y="64" fontSize="4.6" fontWeight="600" fill={TEXT}>
+          Veggies & Fruits
+        </text>
+        <SaveeRow y={76} name="Blueberry" qty="25 g" />
+        <SaveeRow y={88} name="Banana" qty="1 Pcs." />
+        <text x="8" y="102" fontSize="4.6" fontWeight="600" fill={TEXT}>
+          Bakery
+        </text>
+        <SaveeRow y={114} name="Sliced bread" qty="1 Pkt." />
+        <text x="8" y="130" fontSize="4.6" fontWeight="600" fill={TEXT}>
+          From recipes
+        </text>
+        <rect x="8" y="136" width="82" height="44" rx="5" fill="none" stroke={LINE_STRONG} strokeDasharray="2 2.2" />
+        <text x="49" y="160" fontSize="4" fill={TEXT_MUTED} textAnchor="middle">
+          Add a recipe to fill this
+        </text>
+      </g>
+
+      <StepLabels steps={["Watch", "Add to list", "Shop"]} />
+    </svg>
+  );
+}
+
+/* ---------- Meinerva ---------- */
+/* The real prototype screens, not a drawing: the work is the product here, and
+   a halftone that turns into colour cannot be drawn in outline. Look for
+   twenty seconds while the phone is locked, write a critique over the work
+   still in halftone, and the work comes back in colour with the artist's
+   hints on it. CardDemo plays the transitions between these screens. */
+export const MEINERVA_ACCENT = "#C6A96B";
+
+/* clip ids are fixed, not useId: two Meinerva demos never share a page, and
+   CardDemo's overlay has to name the same clips */
+export const meinervaClip = (i: number) => `mnv-phone-${i}`;
+
+export const MEINERVA_SHOTS = {
+  lock: "/projects/meinerva/wait.webp",
+  home: "/projects/meinerva/demo/home.webp",
+  write: "/projects/meinerva/demo/write.webp",
+  observe: "/projects/meinerva/demo/observe.webp",
+  colour: "/projects/meinerva/colour.webp",
+  hint: "/projects/meinerva/hint.webp",
+};
+
+export function PhoneShot({ i, href }: { i: number; href: string }) {
+  return (
+    <image
+      href={href}
+      x={PHONE.xs[i]}
+      y={PHONE.y}
+      width={PHONE.w}
+      height={PHONE.h}
+      preserveAspectRatio="xMidYMid slice"
+      clipPath={`url(#${meinervaClip(i)})`}
+    />
+  );
+}
+
+export function MeinervaScreen({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 360 240"
+      aria-hidden
+      role="presentation"
+      className={className}
+      preserveAspectRatio="xMidYMid meet"
+      fontFamily="inherit"
+    >
+      <defs>
+        {PHONE.xs.map((x, i) => (
+          <clipPath key={x} id={meinervaClip(i)}>
+            <rect x={x} y={PHONE.y} width={PHONE.w} height={PHONE.h} rx={PHONE.rx} />
+          </clipPath>
+        ))}
+      </defs>
+      <PhoneShot i={0} href={MEINERVA_SHOTS.lock} />
+      <PhoneShot i={1} href={MEINERVA_SHOTS.home} />
+      <PhoneShot i={2} href={MEINERVA_SHOTS.observe} />
+      {PHONE.xs.map((x) => (
+        <rect key={x} x={x} y={PHONE.y} width={PHONE.w} height={PHONE.h} rx={PHONE.rx} fill="none" stroke={LINE_STRONG} />
       ))}
+      <StepLabels steps={["Look, 20 s", "Write a critique", "The work unlocks"]} />
     </svg>
   );
 }

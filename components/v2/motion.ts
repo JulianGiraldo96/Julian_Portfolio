@@ -24,6 +24,19 @@ export const SPRING = {
   bounce: 0.2,
 } as const;
 
+/* For things that open: a drawer, a panel, a row of links sliding in. Fast
+   off the mark and a long, soft landing, so an opening reads as one confident
+   move rather than an ease in and out. Osmo's "energy" curve. */
+export const ENERGY = [0.32, 0.72, 0, 1] as const;
+
+/* A spring with visible overshoot, for small glyphs that flip state (a plus
+   turning into a cross). Never for anything large. */
+export const POP = {
+  type: "spring" as const,
+  duration: 0.45,
+  bounce: 0.45,
+} as const;
+
 export const DURATION = {
   /* press: :active feedback, the fastest thing on the site */
   press: 0.14,

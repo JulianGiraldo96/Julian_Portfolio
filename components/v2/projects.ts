@@ -21,7 +21,7 @@ export const work: FolderProject[] = [
     feature: "Scan Memory",
     title: "Duo Scan Memory",
     headline: "The scanner remembers what you scanned.",
-    tags: ["Warehouse", "-30% errors", "Shipped"],
+    tags: ["Warehouse", "-35% errors", "Shipped"],
     year: "2025",
     shape: "desktop",
     bg: "#F2EFE8",
@@ -49,7 +49,7 @@ export const work: FolderProject[] = [
     headline: "Watch a recipe, and the shopping list writes itself.",
     tags: ["0 to 1", "Short video", "Zero waste"],
     year: "2025",
-    shape: "phone",
+    shape: "desktop",
     bg: "#E9F2EB",
     bgDark: "#232C25",
   },
@@ -62,21 +62,15 @@ export const work: FolderProject[] = [
     headline: "Look before you're told: making experimental art legible.",
     tags: ["Thesis", "Research", "Art & tech"],
     year: "2025",
-    shape: "phone",
+    shape: "desktop",
     bg: "#17171A",
     bgDark: "#141417",
     dark: true,
   },
 ];
 
-/* "Design and other things" is hidden until it has real graphic design work in
-   it: the tiles are currently placeholders and a banner, which undersells the
-   rest of the page. Flip this to true and the section and its nav link both
-   come back. */
-export const showOtherThings = false;
-
-/* The home page shows these as two sections: what shipped, and what was
-   written at university. Both read from the list above so a project only ever
+/* The home page's product design view shows these as two rows: what shipped,
+   and what was written at university. Both read from the list above so a project only ever
    has to be described once. */
 export const professional = work.filter((p) => !p.academic);
 export const academic = work.filter((p) => p.academic);

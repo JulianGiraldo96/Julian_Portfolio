@@ -1,9 +1,16 @@
 "use client";
 
-import { useMemo, useRef, useSyncExternalStore } from "react";
+import { useMemo, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { motion, useInView, useReducedMotion, type Easing } from "motion/react";
 import { EASE } from "./motion";
-import { screens, type ScreenSlug } from "./ProductScreens";
+import {
+  MEINERVA_ACCENT,
+  MEINERVA_SHOTS,
+  PhoneShot,
+  SAVEE_ACCENT,
+  screens,
+  type ScreenSlug,
+} from "./ProductScreens";
 
 /* the v2 theme, so a result that has to paint over the mockup (relabel a
    dropdown, dim a deleted row) can use the card's own tint. Mirrors Theme.tsx:
@@ -55,11 +62,13 @@ type Label = {
   weight?: number;
 };
 
-type Result =
+type Result = (
   | { kind: "check"; at: Box }
   | { kind: "checkSeq"; at: Box[] }
   | { kind: "flood"; at: Box }
-  | { kind: "strike"; x: number; y: number; w: number }
+  /* a line drawing itself left to right: a strike through a resolved row, a
+     progress bar filling, or (tone "ink", heavier) a line of text being typed */
+  | { kind: "strike"; x: number; y: number; w: number; tone?: "accent" | "ink"; weight?: number }
   /* a select opening: a small panel drops under `at`, one option lights up,
      it closes again — not held, a flash during the press */
   | { kind: "dropdown"; at: Box; options: string[]; pick: number }
@@ -67,7 +76,18 @@ type Result =
      place (a picker's label, a running total) */
   | { kind: "relabel"; cover: Box; label: Label }
   /* a row being removed: the tint dims it and a line strikes through */
-  | { kind: "rowOut"; row: Box; strike: { x: number; y: number; w: number } };
+  | { kind: "rowOut"; row: Box; strike: { x: number; y: number; w: number } }
+  /* new content arriving: `cover` is painted in the tint first (hiding what
+     was there, an empty state or a halftone), then each item rises in a beat
+     after the one before it */
+  /* `rise: false` for a whole screen swapping in, which must not slide */
+  | { kind: "layer"; cover?: Box; items: ReactNode[]; rise?: boolean }
+  /* a path drawing itself over `span` seconds: a countdown ring running */
+  | { kind: "draw"; d: string; span: number }
+) & {
+  /* seconds after the press this result lands, for a sequence (typed lines) */
+  lag?: number;
+};
 
 type Stop = {
   x: number;
@@ -97,9 +117,6 @@ type Demo = {
   pointer: "mouse" | "touch";
   /* the card's tint (light / dark), for results that paint over the mockup */
   tint?: [string, string];
-  /* Savee's screen is a raster export, not an SVG, so it cannot be nested for
-     the zoom — its overlay just sits on top and never zooms */
-  raster?: boolean;
   stops: Stop[];
 };
 
@@ -107,8 +124,8 @@ const ACCENT: Record<ScreenSlug, string> = {
   "erp-duo": "#2E8A77",
   "scan-memory": "#2E8A77",
   taurus: "#1F5FBF",
-  savee: "#7ED957",
-  meinerva: "#C6A96B",
+  savee: SAVEE_ACCENT,
+  meinerva: MEINERVA_ACCENT,
 };
 
 /* one row checkbox on the Taurus table, i = 0..3 */
@@ -261,34 +278,125 @@ const DEMOS: Record<ScreenSlug, Demo> = {
     ],
   },
 
-  meinerva: {
-    slug: "meinerva",
-    vbw: 170,
-    vbh: 320,
-    accent: ACCENT.meinerva,
-    phase: 1.4,
-    tempo: 1.05,
+  /* the phones (ProductScreens' PHONE): x 11 / 131 / 251, y 4, 98 x 212 */
+  savee: {
+    slug: "savee",
+    vbw: 360,
+    vbh: 240,
+    accent: ACCENT.savee,
+    phase: 3.9,
+    tempo: 1.08,
     pointer: "touch",
+    tint: ["#E9F2EB", "#232C25"],
     stops: [
-      { x: 60, y: 68, click: true, box: { x: 40, y: 48, w: 40, h: 40, rx: 20 } }, // the artwork
-      { x: 30, y: 234.5, click: true, box: { x: 18, y: 226, w: 76, h: 17, rx: 8.5 } }, // "Unlock hint"
-      { x: 28, y: 285, click: true, box: { x: 18, y: 278, w: 128, h: 14, rx: 7 } }, // a critique
+      {
+        // play the short on the feed: its progress runs on
+        x: 60,
+        y: 104,
+        click: true,
+        dwell: 1.1,
+        box: { x: 50, y: 94, w: 20, h: 20, rx: 10 },
+        zoom: 1.3,
+        results: [{ kind: "strike", x: 41, y: 186, w: 56, weight: 1.2 }],
+      },
+      {
+        // add the recipe, and the third phone's empty group fills
+        x: 180,
+        y: 180.5,
+        click: true,
+        dwell: 1.6,
+        box: { x: 143, y: 174, w: 74, h: 13, rx: 6.5 },
+        results: [
+          { kind: "flood", at: { x: 143, y: 174, w: 74, h: 13, rx: 6.5 } },
+          {
+            kind: "layer",
+            cover: { x: 258, y: 139, w: 84, h: 46 },
+            items: (
+              [
+                ["Tomatoes", "400 g", 152],
+                ["Basil", "1 bunch", 165],
+                ["Spaghetti", "250 g", 178],
+              ] as const
+            ).map(([n, q, y]) => (
+              <g key={n}>
+                <circle cx="264" cy={y - 1.6} r="3" fill="none" stroke="var(--v2-line-strong)" strokeWidth="0.8" />
+                <text x="271" y={y} fontSize="4.6" fill="var(--v2-ink)">
+                  {n}
+                </text>
+                <circle cx="318" cy={y - 1.6} r="1.2" fill={SAVEE_ACCENT} />
+                <text x="341" y={y} fontSize="4.2" fill="var(--v2-secondary)" textAnchor="end">
+                  {q}
+                </text>
+              </g>
+            )),
+          },
+        ],
+      },
+      {
+        // tick one off in the shop
+        x: 264,
+        y: 78.4,
+        click: true,
+        dwell: 1.1,
+        box: { x: 261, y: 75.4, w: 6, h: 6, rx: 3 },
+        zoom: 1.5,
+        results: [
+          { kind: "check", at: { x: 261, y: 75.4, w: 6, h: 6, rx: 3 } },
+          { kind: "strike", x: 271, y: 78.6, w: 22, tone: "ink", weight: 0.8 },
+        ],
+      },
     ],
   },
 
-  savee: {
-    slug: "savee",
-    vbw: 780,
-    vbh: 1688,
-    accent: ACCENT.savee,
-    phase: 3.9,
-    tempo: 1.15,
+  meinerva: {
+    slug: "meinerva",
+    vbw: 360,
+    vbh: 240,
+    accent: ACCENT.meinerva,
+    phase: 1.4,
+    tempo: 1,
     pointer: "touch",
-    raster: true,
+    tint: ["#17171A", "#141417"],
     stops: [
-      { x: 90, y: 640, click: true },
-      { x: 90, y: 800, click: true },
-      { x: 90, y: 1120, click: true },
+      {
+        // the phone locks for twenty seconds: look at the work, not the screen
+        x: 60,
+        y: 112,
+        dwell: 2.6,
+        zoom: 1.2,
+        results: [{ kind: "draw", d: "M60 79.5 A30 30 0 1 1 59.99 79.5", span: 1.3 }],
+      },
+      {
+        // open the critique, over the work still in halftone
+        x: 180,
+        y: 178.7,
+        click: true,
+        dwell: 1.6,
+        box: { x: 136, y: 174.4, w: 88, h: 8.6, rx: 4.3 },
+        zoom: 1.3,
+        results: [{ kind: "layer", rise: false, items: [<PhoneShot key="w" i={1} href={MEINERVA_SHOTS.write} />] }],
+      },
+      {
+        // send it, and the work comes back in colour
+        x: 219,
+        y: 116.1,
+        click: true,
+        dwell: 1.5,
+        box: { x: 215, y: 112.1, w: 8, h: 8, rx: 4 },
+        results: [{ kind: "layer", rise: false, items: [<PhoneShot key="c" i={2} href={MEINERVA_SHOTS.colour} />] }],
+      },
+      {
+        // pick a hint: the artist, in their own context
+        x: 306.8,
+        y: 83.9,
+        click: true,
+        dwell: 1.7,
+        box: { x: 303.3, y: 80.4, w: 7, h: 7, rx: 3.5 },
+        zoom: 1.4,
+        results: [
+          { kind: "layer", rise: false, lag: 0.25, items: [<PhoneShot key="h" i={2} href={MEINERVA_SHOTS.hint} />] },
+        ],
+      },
     ],
   },
 };
@@ -325,7 +433,7 @@ function build(demo: Demo) {
   /* zoom keyframes: scale plus the translate (screen user units) that centres
      the framed region under a 0,0-origin scale */
   const zps: { t: number; s: number; tx: number; ty: number }[] = [{ t: 0, s: 1, tx: 0, ty: 0 }];
-  const results: { r: Result; fire: number }[] = [];
+  const results: { r: Result; fire: number; span: number }[] = [];
 
   let t = 0;
   stops.forEach((s, i) => {
@@ -382,7 +490,9 @@ function build(demo: Demo) {
       zps.push({ t: leave + 0.32 * tempo, s: 1, tx: 0, ty: 0 });
     }
 
-    if (s.results) for (const r of s.results) results.push({ r, fire: clickAt });
+    if (s.results)
+      for (const r of s.results)
+        results.push({ r, fire: clickAt + (r.lag ?? 0) * tempo, span: r.kind === "draw" ? r.span * tempo : 0 });
 
     t = leave;
   });
@@ -431,7 +541,7 @@ function build(demo: Demo) {
       y: zps.map((z) => z.ty),
       times: norm(zps.map((z) => z.t)),
     },
-    results: results.map((x) => ({ ...x, fire: Math.min(0.9, x.fire / dur) })),
+    results: results.map((x) => ({ ...x, fire: Math.min(0.9, x.fire / dur), span: x.span / dur })),
   };
 }
 
@@ -475,7 +585,7 @@ function Overlay({ demo, built, tint }: { demo: Demo; built: Built; tint: string
       ))}
 
       {/* what each press produced */}
-      {built.results.map(({ r, fire }, i) => {
+      {built.results.map(({ r, fire, span }, i) => {
         const h = hold(fire);
         const key = `res-${i}`;
 
@@ -576,8 +686,8 @@ function Overlay({ demo, built, tint }: { demo: Demo; built: Built; tint: string
               x1={r.x}
               y1={r.y}
               y2={r.y}
-              stroke={accent}
-              strokeWidth="1.4"
+              stroke={r.tone === "ink" ? "var(--v2-secondary)" : accent}
+              strokeWidth={r.weight ?? 1.4}
               strokeLinecap="round"
               initial={{ opacity: 0, x2: r.x }}
               animate={{ x2: [r.x, r.x, r.x + r.w, r.x + r.w, r.x], opacity: h.values }}
@@ -658,6 +768,57 @@ function Overlay({ demo, built, tint }: { demo: Demo; built: Built; tint: string
                 </g>
               ))}
             </motion.g>
+          );
+        }
+
+        if (r.kind === "layer") {
+          return (
+            <g key={key}>
+              {r.cover && (
+                <motion.rect
+                  x={r.cover.x}
+                  y={r.cover.y}
+                  width={r.cover.w}
+                  height={r.cover.h}
+                  rx={r.cover.rx ?? 5}
+                  fill={tint}
+                  stroke="none"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: h.values }}
+                  transition={loop(h.times)}
+                />
+              )}
+              {r.items.map((item, j) => {
+                const hj = hold(Math.min(0.9, fire + 0.02 + j * 0.035));
+                const rise = r.rise === false ? 0 : 4;
+                return (
+                  <motion.g
+                    key={j}
+                    initial={{ opacity: 0, y: rise }}
+                    animate={{ opacity: hj.values, y: hj.values.map((v) => (v ? 0 : rise)) }}
+                    transition={loop(hj.times)}
+                  >
+                    {item}
+                  </motion.g>
+                );
+              })}
+            </g>
+          );
+        }
+
+        if (r.kind === "draw") {
+          return (
+            <motion.path
+              key={key}
+              d={r.d}
+              fill="none"
+              stroke={accent}
+              strokeWidth="1.4"
+              strokeLinecap="round"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: [0, 0, 1, 1, 0], opacity: h.values }}
+              transition={{ ...loop([0, Math.max(0.002, fire - 0.001), Math.min(0.95, fire + span), 0.955, 1]), ease: "linear" }}
+            />
           );
         }
 
@@ -792,23 +953,6 @@ export function CardDemo({
   const Screen = screens[slug];
   const w = phone ? "w-auto" : "w-full";
   const tint = demo.tint ? demo.tint[dark ? 1 : 0] : "var(--v2-bg)";
-
-  /* Savee: raster screen, overlay sits on top, no zoom */
-  if (demo.raster) {
-    return (
-      <div ref={rootRef} className={`relative h-full ${w} ${className}`}>
-        <Screen className={`block h-full ${w}`} />
-        <svg
-          viewBox={`0 0 ${demo.vbw} ${demo.vbh}`}
-          aria-hidden
-          preserveAspectRatio="xMidYMid meet"
-          className="pointer-events-none absolute inset-0 h-full w-full"
-        >
-          {run && <Overlay demo={demo} built={built} tint={tint} />}
-        </svg>
-      </div>
-    );
-  }
 
   return (
     <div ref={rootRef} className={`relative h-full ${w} ${className}`}>

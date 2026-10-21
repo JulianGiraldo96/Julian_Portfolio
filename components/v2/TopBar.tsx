@@ -4,17 +4,18 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BerlinClock } from "../Clock";
 import { ThemeToggle } from "./Theme";
-import { showOtherThings } from "./projects";
+import { VIEW_EVENT } from "./WorkSwitch";
 
 /* Same anatomy as the original portfolio header, wordmark left, links centred,
    Berlin time right, but drawn light: hairline rule, glass fill, no
    mix-blend inversion, and the theme switch sitting beside the clock.
    On a case study the section links point back at the home page. */
 
+/* "#design" opens the Work block on its Design view (WorkSwitch listens for
+   the hash), so both kinds of work are one click from anywhere. */
 const sections = [
-  { hash: "#work", label: "Work" },
-  /* only while the section it points at exists */
-  ...(showOtherThings ? [{ hash: "#other", label: "Design" }] : []),
+  { hash: "#work", label: "Product" },
+  { hash: "#design", label: "Design" },
   { hash: "#contact", label: "Contact" },
 ];
 
@@ -22,6 +23,28 @@ export function TopBar({ home = false }: { home?: boolean }) {
   /* on the home page these are in-page anchors; anywhere else they have to
      travel back to the home page first */
   const href = (hash: string) => (home ? hash : `/${hash}`);
+
+  /* On the home page the scroll is Lenis's alone. Left to the browser, the
+     anchor jumped natively and Lenis, still holding its old position and
+     page length, then pulled the page somewhere else. The hash is written
+     with replaceState and announced with WorkSwitch's own event, so the
+     Product and Design links still pick the view. */
+  const go = (e: React.MouseEvent, hash: string) => {
+    if (!home || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const el = document.querySelector<HTMLElement>(hash);
+    if (!el) return;
+    e.preventDefault();
+    history.replaceState(null, "", hash);
+    window.dispatchEvent(new Event(VIEW_EVENT));
+    /* one frame, so a view switch has started before the target is measured */
+    requestAnimationFrame(() => {
+      const lenis = window.__lenis;
+      if (lenis) {
+        lenis.resize();
+        lenis.scrollTo(el, { offset: -72 });
+      } else el.scrollIntoView({ behavior: "smooth" });
+    });
+  };
 
   /* The bar earns its surface. At the top of the page there is nothing under
      it to separate, so it starts as bare text; the hairline and the glass
@@ -60,6 +83,7 @@ export function TopBar({ home = false }: { home?: boolean }) {
               <li key={l.hash}>
                 <a
                   href={href(l.hash)}
+                  onClick={(e) => go(e, l.hash)}
                   className="group relative py-2 text-[var(--v2-secondary)] transition-colors hover:text-[var(--v2-ink)]"
                 >
                   {l.label}

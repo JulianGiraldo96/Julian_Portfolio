@@ -6,7 +6,7 @@ const SITE = "https://juliang.de";
 export const metadata: Metadata = {
   title: "Duo Scan Memory | Julian Giraldo",
   description:
-    "Scan Memory for Duo's inventory app: a receiving screen that remembers every unit scanned, flavour by flavour, instead of showing only the last one. Inventory errors down around 30%, loading bay time down 15 to 20%, and no more unstacking pallets to find a miscount.",
+    "Scan Memory for Duo's inventory app: a receiving screen that remembers every unit scanned, flavour by flavour, instead of showing only the last one. Inventory errors down around 35%, loading bay time down 15 to 20%, and no more unstacking pallets to find a miscount.",
   alternates: { canonical: `${SITE}/work/scan-memory` },
   openGraph: {
     type: "article",
@@ -357,7 +357,7 @@ export default function ScanMemoryPage() {
                 {
                   title: "The result",
                   items: [
-                    "Inventory errors down about 30%",
+                    "Inventory errors down about 35%",
                     "Loading bay time down 15 to 20%",
                     "Unstacking a pallet to find a miscount is gone",
                   ],
@@ -371,7 +371,7 @@ export default function ScanMemoryPage() {
             label: "05 · Results",
             heading: "The number is right the first time.",
             body: [
-              "Errors in the general inventory dropped by roughly 30%, and the time a delivery spends at the loading bay came down by 15 to 20%. Those are the numbers the operation tracks.",
+              "Errors in the general inventory dropped by about 35%, and the time a delivery spends at the loading bay came down by 15 to 20%. Those are the numbers the operation tracks.",
               "The result the team actually talks about is not on that list. Before this, finding a miscount meant carrying boxes of ice cream off the stack and putting them back, over and over, to work out where the difference was. That work is simply gone. The logistics team were the happiest people about the change, and they were right to be: the screen absorbed a job that used to be done with their backs.",
             ],
           },
@@ -386,10 +386,10 @@ export default function ScanMemoryPage() {
             rows: [
               {
                 label: "Errors in the general inventory",
-                value: "~30% fewer",
-                total: 10,
-                now: 7,
-                note: "Roughly three errors in every ten stopped happening, because the count is now visible while it is being made rather than checked afterwards.",
+                value: "~35% fewer",
+                total: 20,
+                now: 13,
+                note: "About seven errors in every twenty stopped happening, because the count is now visible while it is being made rather than checked afterwards.",
               },
               {
                 label: "Time at the loading bay",

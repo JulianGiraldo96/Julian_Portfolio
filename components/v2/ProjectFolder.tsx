@@ -44,6 +44,7 @@ export function ProjectFolder({
   compact = false,
   full = false,
   row = false,
+  tall = false,
 }: {
   project: FolderProject;
   index: number;
@@ -58,6 +59,11 @@ export function ProjectFolder({
      hovered one grows while the rest give up the width, pure CSS (`flex`
      is animatable, so no JS drives the expand) */
   row?: boolean;
+  /* a row of two: each card is half the width rather than a third, so the
+     360 x 240 art is limited by the card's height instead of its width and
+     sits small in the middle. The extra height lets it fill the width again,
+     the same scale as in a row of three. */
+  tall?: boolean;
 }) {
   const router = useRouter();
   const prefersReduced = useReducedMotion();
@@ -108,7 +114,7 @@ export function ProjectFolder({
               : full
                 ? "h-[70vh] md:h-[85vh]"
                 : row
-                  ? "h-[380px] md:h-[560px]"
+                  ? `h-[380px] ${tall ? "md:h-[660px]" : "md:h-[560px]"}`
                   : "h-[400px] md:h-[520px]"
           }`}
           style={
@@ -215,9 +221,11 @@ export function ProjectFolder({
           {/* case-study affordance, bottom-right, on hover/focus only */}
           <span
             aria-hidden
-            className="pointer-events-none absolute bottom-6 right-6 z-10 hidden rounded-full border border-[var(--v2-line-strong)] bg-[var(--v2-invert-bg)] px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--v2-invert-ink)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 md:block"
+            className="pointer-events-none absolute bottom-6 right-6 z-10 hidden rounded-full border border-[var(--v2-line-strong)] bg-[var(--v2-invert-bg)] px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--v2-invert-ink)] translate-y-3 scale-90 opacity-0 transition-[opacity,transform] duration-500 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:scale-100 group-focus-visible:opacity-100 md:block"
           >
-            Read case study
+            {/* rises in on the energy curve as the card grows, so the card's
+                widening and its call to action read as one gesture */}
+            Read case study <span className="inline-block">→</span>
           </span>
         </div>
       </Link>
