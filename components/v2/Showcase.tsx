@@ -199,17 +199,10 @@ function JobRow({
         whileTap={{ scale: 0.985 }}
         className="relative isolate grid w-full grid-cols-[7.5rem_1fr_auto] items-baseline gap-x-4 gap-y-0.5 overflow-hidden rounded-[12px] px-3 py-3.5 text-left md:grid-cols-[8.5rem_1fr_auto_auto]"
       >
-        {/* the ink that floods the row from the left */}
-        <motion.span
-          aria-hidden
-          variants={{ rest: { scaleX: 0 }, on: { scaleX: 1 } }}
-          transition={{ duration: 0.45, ease: ENERGY }}
-          className="absolute inset-0 -z-10 origin-left bg-[var(--v2-invert-bg)]"
-        />
         <motion.span
           variants={{
             rest: { color: "var(--v2-label)" },
-            on: { color: "var(--v2-invert-ink)" },
+            on: { color: "var(--v2-ink)" },
           }}
           transition={{ duration: DURATION.hover }}
           className="font-mono text-[11px] uppercase tracking-[0.14em]"
@@ -218,18 +211,18 @@ function JobRow({
         </motion.span>
         <motion.span
           variants={{
-            rest: { color: "var(--v2-ink)", x: 0 },
-            on: { color: "var(--v2-invert-ink)", x: 6 },
+            rest: { x: 0 },
+            on: { x: 6 },
           }}
           transition={{ duration: 0.45, ease: ENERGY }}
-          className="text-[14px]"
+          className="text-[14px] text-[var(--v2-ink)]"
         >
           {job.role}
         </motion.span>
         <motion.span
           variants={{
             rest: { color: "var(--v2-secondary)" },
-            on: { color: "var(--v2-invert-ink)" },
+            on: { color: "var(--v2-ink)" },
           }}
           transition={{ duration: DURATION.hover }}
           className="col-start-2 row-start-2 text-[13px] md:col-start-auto md:row-start-auto md:text-right"
@@ -240,7 +233,7 @@ function JobRow({
           aria-hidden
           variants={{
             rest: { color: "var(--v2-label)" },
-            on: { color: "var(--v2-invert-ink)" },
+            on: { color: "var(--v2-ink)" },
           }}
           className="col-start-3 row-start-1 self-center md:col-start-auto md:row-start-auto"
         >

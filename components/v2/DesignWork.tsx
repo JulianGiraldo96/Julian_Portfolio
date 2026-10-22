@@ -483,8 +483,8 @@ function ProjectPanel({
               {detail.made.map((m, i) => (
                 <motion.li
                   key={m}
-                  initial={reduced ? false : { opacity: 0, scale: 0.6 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={reduced ? false : { opacity: 0, scale: 0.5, rotate: -6 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
                   transition={{ ...POP, delay: 0.25 + i * 0.05 }}
                   className="rounded-full border border-[var(--v2-line)] px-3 py-1.5 text-[13px]"
                 >

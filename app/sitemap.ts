@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const updated = new Date();
   return [
     { url: SITE, lastModified: updated, changeFrequency: "monthly", priority: 1 },
+    { url: `${SITE}/notchtunes`, lastModified: updated, changeFrequency: "monthly", priority: 0.7 },
     ...work.map((p) => ({
       url: `${SITE}/work/${p.slug}`,
       lastModified: updated,

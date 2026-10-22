@@ -674,3 +674,24 @@ html.lenis body {
     0 2px 4px rgba(0, 0, 0, 0.3),
     0 28px 48px -16px rgba(0, 0, 0, 0.7);
 }
+
+/* NotchTunes' equalizer: each bar breathes between a third and full height
+   on its own period, so the three never line up. Transform only. */
+@keyframes nt-eq {
+  0%,
+  100% {
+    transform: scaleY(0.38);
+  }
+  30% {
+    transform: scaleY(1);
+  }
+  55% {
+    transform: scaleY(0.55);
+  }
+  78% {
+    transform: scaleY(0.85);
+  }
+}
+.nt-eq {
+  animation: nt-eq 1s ease-in-out infinite;
+}

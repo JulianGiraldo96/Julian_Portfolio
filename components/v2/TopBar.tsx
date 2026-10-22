@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { BerlinClock } from "../Clock";
 import { ThemeToggle } from "./Theme";
 import { VIEW_EVENT } from "./WorkSwitch";
+import { SPRING, ENERGY } from "./motion";
 
 /* Same anatomy as the original portfolio header, wordmark left, links centred,
    Berlin time right, but drawn light: hairline rule, glass fill, no
@@ -98,12 +100,57 @@ export function TopBar({ home = false }: { home?: boolean }) {
         </nav>
 
         <div className="flex items-center gap-3 justify-self-end md:gap-4">
-          <span className="hidden text-[var(--v2-label)] sm:inline">
+          <GitHubLink />
+          <motion.span layout="position" transition={SPRING} className="hidden text-[var(--v2-label)] sm:inline">
             <BerlinClock />
-          </span>
+          </motion.span>
           <ThemeToggle />
         </div>
       </div>
     </header>
+  );
+}
+
+/* GitHub, as a mark beside the clock. Hovered or focused it opens sideways
+   into the username and an arrow, so the handle is there to read before the
+   click takes you away. The pill grows by layout animation (a transform), and
+   the label pops out of the flow on the way out so the pill can close. */
+const GITHUB = "JulianGiraldo96";
+
+function GitHubLink() {
+  const [open, setOpen] = useState(false);
+  return (
+    <motion.a
+      layout
+      href={`https://github.com/${GITHUB}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`GitHub: ${GITHUB} (opens in a new tab)`}
+      onHoverStart={() => setOpen(true)}
+      onHoverEnd={() => setOpen(false)}
+      onFocus={() => setOpen(true)}
+      onBlur={() => setOpen(false)}
+      transition={SPRING}
+      style={{ borderRadius: 999 }}
+      className="flex h-[30px] items-center gap-1.5 overflow-hidden border border-[var(--v2-line)] px-[7px] text-[var(--v2-label)] transition-colors duration-200 hover:border-[var(--v2-line-strong)] hover:text-[var(--v2-ink)]"
+    >
+      <motion.svg layout="position" aria-hidden viewBox="0 0 16 16" className="h-[14px] w-[14px] shrink-0" fill="currentColor">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+      </motion.svg>
+      <AnimatePresence mode="popLayout" initial={false}>
+        {open && (
+          <motion.span
+            key="handle"
+            initial={{ opacity: 0, x: -8 }}
+            animate={{ opacity: 1, x: 0, transition: { duration: 0.35, ease: ENERGY, delay: 0.05 } }}
+            exit={{ opacity: 0, x: -8, transition: { duration: 0.12 } }}
+            className="flex items-center gap-1 whitespace-nowrap pr-1 font-mono text-[11px] tracking-[0.06em]"
+          >
+            {GITHUB}
+            <span aria-hidden>↗</span>
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </motion.a>
   );
 }

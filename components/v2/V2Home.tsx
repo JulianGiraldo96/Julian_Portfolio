@@ -8,6 +8,7 @@ import { V2Button } from "./V2Button";
 import { DURATION, EASE } from "./motion";
 import { Showcase } from "./Showcase";
 import { WorkSwitch } from "./WorkSwitch";
+import { GiftBand, GiftHint } from "./GiftBand";
 
 const EMAIL = "application@juliang.de";
 const LINKEDIN = "https://www.linkedin.com/in/julian-gr/";
@@ -91,6 +92,7 @@ export function V2Home() {
           <Intro />
           <WorkSwitch />
           <Showcase />
+          <GiftBand />
         </main>
         <Footer />
       </div>
@@ -154,6 +156,7 @@ function Intro() {
             </V2Button>
             <CopiedStatus copied={copied} />
           </p>
+          <GiftHint />
         </div>
 
         <nav
