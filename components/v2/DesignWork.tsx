@@ -27,8 +27,9 @@ import { Drift, Tilt } from "./Tilt";
    on a spring, the one tile that answers the hand, because it is the one
    object here that is meant to be touched.
 
-   Only real pieces: the Savee and Meinerva identities, the personal banner,
-   and the food brands as text until their files are archived.
+   Only real pieces: CamelWebs, which has a page of its own with the full
+   brand guide, the Savee and Meinerva identities, the personal banner, and
+   the food brands as text until their files are archived.
 
    Savee and Meinerva open. A click on either tile, or on the project's own
    button, unfolds a panel under its row: what the identity had to do, what
@@ -45,6 +46,12 @@ type Tile = {
 };
 
 const tiles: Tile[] = [
+  {
+    id: "camelwebs",
+    span: "md:col-span-12",
+    caption: "CamelWebs · Brand identity and guide",
+    note: "Farm software for alpaca and llama herds. The mark, the brand guide with logo, colour, type and 171 icons, and the brand in use. Open it ↗",
+  },
   {
     id: "savee-hero",
     span: "md:col-span-8",
@@ -192,6 +199,34 @@ export function DesignWork() {
   return (
     <LayoutGroup>
       <div className="flex flex-col gap-14 md:gap-20">
+        {/* the one piece with a page of its own, so it links out instead of
+            unfolding a panel */}
+        <motion.ul
+          layout="position"
+          className="grid list-none grid-cols-1 gap-x-5 md:grid-cols-12"
+        >
+          <Piece tile={byId.camelwebs} index={0}>
+            <Link
+              href="/design/camelwebs"
+              aria-label="CamelWebs, open the brand identity and guide"
+              className="block h-full"
+            >
+              <Uncover
+                className="flex aspect-[16/8] items-center justify-center md:aspect-[16/6]"
+                style={{ background: "#45A5FD" }}
+              >
+                <Image
+                  src="/design/camelwebs/logo/04.svg"
+                  alt="The CamelWebs logo in white on brand blue"
+                  width={2313}
+                  height={344}
+                  className="h-auto w-[66%] max-w-[720px] transition-transform duration-700 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-safe:group-hover:scale-[1.04]"
+                />
+              </Uncover>
+            </Link>
+          </Piece>
+        </motion.ul>
+
         <Project
           detail={details.savee}
           open={open === "savee"}

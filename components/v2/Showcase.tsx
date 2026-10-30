@@ -42,6 +42,18 @@ type Card = {
 
 const design: Card[] = [
   {
+    title: "CamelWebs",
+    eyebrow: "Brand identity · 2024",
+    line: "A llama cut out of a mountain, and the guide that keeps it whole.",
+    href: "/design/camelwebs",
+    src: "/design/camelwebs/logo/04.svg",
+    w: 2313,
+    h: 344,
+    alt: "The CamelWebs logo in white on brand blue",
+    tint: "#45A5FD",
+    art: "w-[64%]",
+  },
+  {
     title: "Savee",
     eyebrow: "Brand · 2025",
     line: "A heavy wordmark and one green, built to survive a feed.",

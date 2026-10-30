@@ -5,6 +5,7 @@ import "./globals.css";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { RouteVeil } from "@/components/v2/RouteVeil";
 import { GooDefs, ThemeScript } from "@/components/v2/Theme";
+import { Buddy } from "@/components/v2/Buddy";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -58,6 +59,7 @@ export default function RootLayout({
           {children}
           <RouteVeil />
         </SmoothScroll>
+        <Buddy />
         <Analytics />
       </body>
     </html>
