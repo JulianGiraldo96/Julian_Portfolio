@@ -85,7 +85,7 @@ export function GiftBand() {
                   : "bg-[var(--v2-invert-bg)] text-[var(--v2-invert-ink)]"
               }`}
             >
-              {mac ? "How it works" : "See it play"} ↗
+              {mac ? "How it works" : "See it play"} ↗︎
             </Link>
           </div>
           <p className="mt-4 font-mono text-[10.5px] uppercase tracking-[0.14em] text-[var(--v2-label)]">

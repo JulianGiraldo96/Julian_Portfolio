@@ -147,7 +147,7 @@ function GitHubLink() {
             className="flex items-center gap-1 whitespace-nowrap pr-1 font-mono text-[11px] tracking-[0.06em]"
           >
             {GITHUB}
-            <span aria-hidden>↗</span>
+            <span aria-hidden>↗︎</span>
           </motion.span>
         )}
       </AnimatePresence>

@@ -733,7 +733,7 @@ function MoreWork({ currentSlug }: { currentSlug: string }) {
           href="/#work"
           className="-my-2 py-2 font-mono text-[12px] uppercase tracking-[0.2em] text-[var(--v2-label)] transition-colors hover:text-[var(--v2-ink)]"
         >
-          All work ↗
+          All work ↗︎
         </Link>
       </div>
 

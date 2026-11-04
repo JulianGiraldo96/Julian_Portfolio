@@ -655,7 +655,7 @@ export function CamelWebsPage() {
                 rel="noopener noreferrer"
                 className="v2-rise v2-rise-3 mt-8 inline-flex items-center gap-2 rounded-full border border-[var(--v2-line)] px-5 py-3 font-mono text-[11.5px] uppercase tracking-[0.14em] text-[var(--v2-secondary)] transition-colors duration-200 hover:border-[var(--v2-line-strong)] hover:text-[var(--v2-ink)]"
               >
-                camelwebs.com ↗
+                camelwebs.com ↗︎
               </a>
             </div>
             <div className="v2-rise v2-rise-2 md:col-span-7">
@@ -805,7 +805,7 @@ export function CamelWebsPage() {
               llama riding on a photo of the herd, NB International throughout,
               and the icon set leading every module.{" "}
               <a href={LIVE} target="_blank" rel="noopener noreferrer" className="text-[var(--v2-ink)] underline decoration-[var(--v2-line-strong)] underline-offset-4">
-                See it live ↗
+                See it live ↗︎
               </a>
             </SectionHead>
             <div className="mt-12 flex flex-col gap-4">

@@ -333,7 +333,7 @@ function LinkRow({
         transition={{ duration: DURATION.hover, ease: EASE }}
         className="relative flex shrink-0 items-center"
       >
-        {trailing ?? "↗"}
+        {trailing ?? "↗︎"}
       </motion.span>
     </>
   );

@@ -112,7 +112,7 @@ export function V2Button({
       {external && !trailing && (
         <>
           <span aria-hidden className="text-[0.9em] opacity-70">
-            ↗
+            ↗︎
           </span>
           <span className="sr-only">(opens in new tab)</span>
         </>

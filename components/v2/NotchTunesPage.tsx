@@ -228,7 +228,7 @@ export function NotchTunesPage() {
                   rel="noopener noreferrer"
                   className="text-[var(--v2-secondary)] underline decoration-[var(--v2-line-strong)] underline-offset-4 transition-colors duration-200 hover:text-[var(--v2-ink)]"
                 >
-                  Open source on GitHub ↗
+                  Open source on GitHub ↗︎
                 </a>
               </p>
               {!mac && (

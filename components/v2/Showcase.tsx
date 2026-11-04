@@ -348,7 +348,7 @@ function Shelf({
           the snap line is worked out from the 1240px page column instead */}
       {/* the reveal is driven by the track, not each card: a card waiting
           off to the side would never count as in view and never appear */}
-      <CursorChip label="View ↗">
+      <CursorChip label="View ↗︎">
         <motion.ul
           ref={track}
           layout="position"
@@ -465,7 +465,7 @@ function PosterCard({ card }: { card: Card }) {
             aria-hidden
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-black transition-[opacity,transform] duration-300 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] [@media(pointer:fine)]:translate-y-2 [@media(pointer:fine)]:opacity-0 [@media(pointer:fine)]:group-hover:translate-y-0 [@media(pointer:fine)]:group-hover:opacity-100 [@media(pointer:fine)]:group-focus-visible:translate-y-0 [@media(pointer:fine)]:group-focus-visible:opacity-100"
           >
-            ↗
+            ↗︎
           </span>
         </span>
       </Tag>

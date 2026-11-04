@@ -50,7 +50,7 @@ const tiles: Tile[] = [
     id: "camelwebs",
     span: "md:col-span-12",
     caption: "CamelWebs · Brand identity and guide",
-    note: "Farm software for alpaca and llama herds. The mark, the brand guide with logo, colour, type and 171 icons, and the brand in use. Open it ↗",
+    note: "Farm software for alpaca and llama herds. The mark, the brand guide with logo, colour, type and 171 icons, and the brand in use. Open it ↗︎",
   },
   {
     id: "savee-hero",
