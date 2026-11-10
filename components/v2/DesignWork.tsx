@@ -27,8 +27,8 @@ import { Drift, Tilt } from "./Tilt";
    on a spring, the one tile that answers the hand, because it is the one
    object here that is meant to be touched.
 
-   Only real pieces: CamelWebs, which has a page of its own with the full
-   brand guide, the Savee and Meinerva identities, the personal banner, and
+   Only real pieces: CamelWebs and Greens, which have pages of their own
+   with the full brand guide, the Savee and Meinerva identities, the personal banner, and
    the food brands as text until their files are archived.
 
    Savee and Meinerva open. A click on either tile, or on the project's own
@@ -51,6 +51,18 @@ const tiles: Tile[] = [
     span: "md:col-span-12",
     caption: "CamelWebs · Brand identity and guide",
     note: "Farm software for alpaca and llama herds. The mark, the brand guide with logo, colour, type and 171 icons, and the brand in use. Open it ↗︎",
+  },
+  {
+    id: "greens",
+    span: "md:col-span-7",
+    caption: "Greens Supermarket · Logo revamp and brand guide",
+    note: "A family supermarket in Malta. The logo made flat, and the guide the whole team works from. Open it ↗︎",
+  },
+  {
+    id: "greens-work",
+    span: "md:col-span-5",
+    caption: "Greens · Social, leaflet and video",
+    note: "Weekly post templates, the monthly offers leaflet, and films from concept to edit.",
   },
   {
     id: "savee-hero",
@@ -199,11 +211,11 @@ export function DesignWork() {
   return (
     <LayoutGroup>
       <div className="flex flex-col gap-14 md:gap-20">
-        {/* the one piece with a page of its own, so it links out instead of
+        {/* the pieces with a page of their own, so they link out instead of
             unfolding a panel */}
         <motion.ul
           layout="position"
-          className="grid list-none grid-cols-1 gap-x-5 md:grid-cols-12"
+          className="grid list-none grid-cols-1 gap-x-5 gap-y-10 md:grid-cols-12 md:gap-y-14"
         >
           <Piece tile={byId.camelwebs} index={0}>
             <Link
@@ -222,6 +234,55 @@ export function DesignWork() {
                   height={344}
                   className="h-auto w-[66%] max-w-[720px] transition-transform duration-700 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-safe:group-hover:scale-[1.04]"
                 />
+              </Uncover>
+            </Link>
+          </Piece>
+          <Piece tile={byId.greens} index={1}>
+            <Link
+              href="/design/greens"
+              aria-label="Greens Supermarket, open the logo revamp and brand guide"
+              className="block h-full"
+            >
+              <Uncover
+                className="flex aspect-[16/9] items-center justify-center"
+                style={{ background: "#76AB42" }}
+              >
+                <Image
+                  src="/design/greens/logo/horizontal-white.svg"
+                  alt="The Greens Supermarket logo in white on leaf green"
+                  width={776}
+                  height={290}
+                  className="h-auto w-[52%] max-w-[560px] transition-transform duration-700 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-safe:group-hover:scale-[1.04]"
+                />
+              </Uncover>
+            </Link>
+          </Piece>
+          {/* the rest of the Greens work in one look, each square a piece */}
+          <Piece tile={byId["greens-work"]} index={2}>
+            <Link
+              href="/design/greens#social"
+              aria-label="Greens social posts, offers leaflet and video"
+              className="block h-full"
+            >
+              <Uncover className="aspect-square md:aspect-auto">
+                <span className="grid h-full w-full grid-cols-2 grid-rows-2 gap-px bg-[var(--v2-line)]">
+                  {[
+                    ["/design/greens/post-open.webp", "Open all day post"],
+                    ["/design/greens/leaflet/new-1.webp", "Cover of the monthly offers leaflet"],
+                    ["/design/greens/video/christmas.webp", "Christmas film"],
+                    ["/design/greens/post-pears.webp", "Offer of the weekend post"],
+                  ].map(([src, alt]) => (
+                    <span key={src} className="relative block overflow-hidden">
+                      <Image
+                        src={src}
+                        alt={alt}
+                        fill
+                        sizes="(min-width: 768px) 20vw, 50vw"
+                        className="object-cover transition-transform duration-700 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-safe:group-hover:scale-[1.05]"
+                      />
+                    </span>
+                  ))}
+                </span>
               </Uncover>
             </Link>
           </Piece>

@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: SITE, lastModified: updated, changeFrequency: "monthly", priority: 1 },
     { url: `${SITE}/notchtunes`, lastModified: updated, changeFrequency: "monthly", priority: 0.7 },
     { url: `${SITE}/design/camelwebs`, lastModified: updated, changeFrequency: "yearly", priority: 0.8 },
+    { url: `${SITE}/design/greens`, lastModified: updated, changeFrequency: "yearly", priority: 0.8 },
     ...work.map((p) => ({
       url: `${SITE}/work/${p.slug}`,
       lastModified: updated,

@@ -54,6 +54,18 @@ const design: Card[] = [
     art: "w-[64%]",
   },
   {
+    title: "Greens",
+    eyebrow: "Brand guide · Malta",
+    line: "The logo revamp, the brand guide, the weekly posts and the films.",
+    href: "/design/greens",
+    src: "/design/greens/logo/horizontal-white.svg",
+    w: 776,
+    h: 290,
+    alt: "The Greens Supermarket logo in white on leaf green",
+    tint: "#76AB42",
+    art: "w-[52%]",
+  },
+  {
     title: "Savee",
     eyebrow: "Brand · 2025",
     line: "A heavy wordmark and one green, built to survive a feed.",
