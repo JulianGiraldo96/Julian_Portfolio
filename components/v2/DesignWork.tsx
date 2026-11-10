@@ -47,12 +47,6 @@ type Tile = {
 
 const tiles: Tile[] = [
   {
-    id: "camelwebs",
-    span: "md:col-span-12",
-    caption: "CamelWebs · Brand identity and guide",
-    note: "Farm software for alpaca and llama herds. The mark, the brand guide with logo, colour, type and 171 icons, and the brand in use. Open it ↗︎",
-  },
-  {
     id: "greens",
     span: "md:col-span-7",
     caption: "Greens Supermarket · Logo revamp and brand guide",
@@ -63,6 +57,12 @@ const tiles: Tile[] = [
     span: "md:col-span-5",
     caption: "Greens · Social, leaflet and video",
     note: "Weekly post templates, the monthly offers leaflet, and films from concept to edit.",
+  },
+  {
+    id: "camelwebs",
+    span: "md:col-span-12",
+    caption: "CamelWebs · Brand identity and guide",
+    note: "Farm software for alpaca and llama herds. The mark, the brand guide with logo, colour, type and 171 icons, and the brand in use. Open it ↗︎",
   },
   {
     id: "savee-hero",
@@ -217,27 +217,7 @@ export function DesignWork() {
           layout="position"
           className="grid list-none grid-cols-1 gap-x-5 gap-y-10 md:grid-cols-12 md:gap-y-14"
         >
-          <Piece tile={byId.camelwebs} index={0}>
-            <Link
-              href="/design/camelwebs"
-              aria-label="CamelWebs, open the brand identity and guide"
-              className="block h-full"
-            >
-              <Uncover
-                className="flex aspect-[16/8] items-center justify-center md:aspect-[16/6]"
-                style={{ background: "#45A5FD" }}
-              >
-                <Image
-                  src="/design/camelwebs/logo/04.svg"
-                  alt="The CamelWebs logo in white on brand blue"
-                  width={2313}
-                  height={344}
-                  className="h-auto w-[66%] max-w-[720px] transition-transform duration-700 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-safe:group-hover:scale-[1.04]"
-                />
-              </Uncover>
-            </Link>
-          </Piece>
-          <Piece tile={byId.greens} index={1}>
+          <Piece tile={byId.greens} index={0}>
             <Link
               href="/design/greens"
               aria-label="Greens Supermarket, open the logo revamp and brand guide"
@@ -258,7 +238,7 @@ export function DesignWork() {
             </Link>
           </Piece>
           {/* the rest of the Greens work in one look, each square a piece */}
-          <Piece tile={byId["greens-work"]} index={2}>
+          <Piece tile={byId["greens-work"]} index={1}>
             <Link
               href="/design/greens#social"
               aria-label="Greens social posts, offers leaflet and video"
@@ -283,6 +263,26 @@ export function DesignWork() {
                     </span>
                   ))}
                 </span>
+              </Uncover>
+            </Link>
+          </Piece>
+          <Piece tile={byId.camelwebs} index={2}>
+            <Link
+              href="/design/camelwebs"
+              aria-label="CamelWebs, open the brand identity and guide"
+              className="block h-full"
+            >
+              <Uncover
+                className="flex aspect-[16/8] items-center justify-center md:aspect-[16/6]"
+                style={{ background: "#45A5FD" }}
+              >
+                <Image
+                  src="/design/camelwebs/logo/04.svg"
+                  alt="The CamelWebs logo in white on brand blue"
+                  width={2313}
+                  height={344}
+                  className="h-auto w-[66%] max-w-[720px] transition-transform duration-700 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-safe:group-hover:scale-[1.04]"
+                />
               </Uncover>
             </Link>
           </Piece>
@@ -617,7 +617,7 @@ function ProjectPanel({
       </div>
 
       {/* the screens, as a strip that scrolls sideways on narrow screens */}
-      <ul className="relative z-10 flex list-none snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto px-6 pb-7 pt-7 [scrollbar-width:none] md:gap-4 md:scroll-px-9 md:px-9 md:pb-9">
+      <ul className="relative z-10 flex list-none snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto overflow-y-hidden px-6 pb-7 pt-7 [scrollbar-width:none] md:gap-4 md:scroll-px-9 md:px-9 md:pb-9">
         {detail.shots.map((s, i) => (
           <motion.li
             key={s.src}

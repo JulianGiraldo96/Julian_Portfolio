@@ -42,18 +42,6 @@ type Card = {
 
 const design: Card[] = [
   {
-    title: "CamelWebs",
-    eyebrow: "Brand identity · 2024",
-    line: "A llama cut out of a mountain, and the guide that keeps it whole.",
-    href: "/design/camelwebs",
-    src: "/design/camelwebs/logo/04.svg",
-    w: 2313,
-    h: 344,
-    alt: "The CamelWebs logo in white on brand blue",
-    tint: "#45A5FD",
-    art: "w-[64%]",
-  },
-  {
     title: "Greens",
     eyebrow: "Brand guide · Malta",
     line: "The logo revamp, the brand guide, the weekly posts and the films.",
@@ -64,6 +52,18 @@ const design: Card[] = [
     alt: "The Greens Supermarket logo in white on leaf green",
     tint: "#76AB42",
     art: "w-[52%]",
+  },
+  {
+    title: "CamelWebs",
+    eyebrow: "Brand identity · 2024",
+    line: "A llama cut out of a mountain, and the guide that keeps it whole.",
+    href: "/design/camelwebs",
+    src: "/design/camelwebs/logo/04.svg",
+    w: 2313,
+    h: 344,
+    alt: "The CamelWebs logo in white on brand blue",
+    tint: "#45A5FD",
+    art: "w-[64%]",
   },
   {
     title: "Savee",
@@ -358,6 +358,10 @@ function Shelf({
           there is more to the shelf; the padding puts the first card back on
           the column. Scroll padding resolves % against the track itself, so
           the snap line is worked out from the 1240px page column instead */}
+      {/* overflow-x alone makes the y axis auto too, and the cards rising in
+          (or lifting on hover) poke out of the bottom, so a hidden vertical
+          scrollbar came and went. Safari 26 crashed the tab when that happened
+          during a momentum swipe on the snap track, so y is shut outright */}
       {/* the reveal is driven by the track, not each card: a card waiting
           off to the side would never count as in view and never appear */}
       <CursorChip label="View ↗︎">
@@ -368,7 +372,7 @@ function Shelf({
           whileInView="shown"
           viewport={{ once: true, amount: 0.3 }}
           transition={{ staggerChildren: 0.1 }}
-          className="-mx-5 flex list-none snap-x snap-mandatory scroll-px-5 gap-5 overflow-x-auto px-5 pb-10 pt-2 [scrollbar-width:none] md:mx-[calc(50%-50vw)] md:scroll-px-[calc((100vw_-_min(100vw,1240px))/2_+_2rem)] md:px-[calc(50vw-50%)]"
+          className="-mx-5 flex list-none snap-x snap-mandatory scroll-px-5 gap-5 overflow-x-auto overflow-y-hidden px-5 pb-10 pt-2 [scrollbar-width:none] md:mx-[calc(50%-50vw)] md:scroll-px-[calc((100vw_-_min(100vw,1240px))/2_+_2rem)] md:px-[calc(50vw-50%)]"
         >
           {cards.map((c) => (
             <motion.li
