@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 
 declare global {
@@ -10,6 +11,49 @@ declare global {
 }
 
 export function SmoothScroll({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+
+  /* Lenis lives in the root layout, so it outlives every navigation and
+     keeps whatever scroll it was easing toward on the page that just left.
+     Next scrolls the new page to the top, and on the next frame Lenis
+     writes its old target back: a case opened from far down the home page
+     came in ~1900px down. On every route change Lenis is told where the
+     new page starts, immediately, which also cancels the easing in flight. */
+  /* A trackpad keeps sending wheel events for a second or so after the
+     fingers lift (inertia). Clicked mid swipe, those events arrived on the
+     new page and carried it 1000px or more down. So Lenis is held still
+     (which also cancels the wheel events) until the wheel has been quiet
+     for a beat, and lets go after 2s whatever happens. */
+  useEffect(() => {
+    const lenis = window.__lenis;
+    if (!lenis) return;
+    const hash = window.location.hash;
+    const el = hash ? document.querySelector<HTMLElement>(hash) : null;
+    lenis.stop();
+    lenis.resize();
+    if (el) lenis.scrollTo(el, { offset: -20, immediate: true, force: true });
+    else lenis.scrollTo(0, { immediate: true, force: true });
+
+    let quiet = 0;
+    let done = false;
+    function release() {
+      if (done) return;
+      done = true;
+      window.clearTimeout(quiet);
+      window.clearTimeout(cap);
+      window.removeEventListener("wheel", onWheel);
+      lenis?.start();
+    }
+    function onWheel() {
+      window.clearTimeout(quiet);
+      quiet = window.setTimeout(release, 160);
+    }
+    const cap = window.setTimeout(release, 2000);
+    quiet = window.setTimeout(release, 160);
+    window.addEventListener("wheel", onWheel, { passive: true });
+    return release;
+  }, [pathname]);
+
   useEffect(() => {
     // Respect reduced-motion: skip smooth scrolling entirely
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
