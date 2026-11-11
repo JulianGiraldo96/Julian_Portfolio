@@ -310,7 +310,7 @@ function Desktop() {
       <div className="flex flex-1 items-center justify-center">
         <motion.div whileHover={{ y: -6, scale: 1.04 }} transition={{ type: "spring", duration: 0.4, bounce: 0.3 }} className="flex flex-col items-center gap-3">
           <div className="flex aspect-square w-[118px] items-center justify-center rounded-[28px] shadow-[0_20px_40px_-12px_rgba(0,0,0,0.55)] md:w-[132px]" style={{ background: BLUE }}>
-            <Image src={`${D}/logo/08.svg`} alt="The CamelWebs app icon: the white symbol on brand blue" width={674} height={410} className="h-auto w-[66%]" />
+            <Image src={`${D}/logo/08.svg`} alt="The CamelWebs app icon: the white symbol on brand blue" width={674} height={410} priority className="h-auto w-[66%]" />
           </div>
           <span className="rounded-[6px] bg-black/25 px-2 py-0.5 text-[12px] text-white">CamelWebs</span>
         </motion.div>
@@ -741,10 +741,10 @@ export function CamelWebsPage() {
               <p className="mt-2 text-[15px] text-[var(--v2-secondary)]">Identity, icons and the interface, from one pair of hands.</p>
             </div>
             <Link
-              href="/"
+              href="/visual-work"
               className="rounded-full border border-[var(--v2-line)] px-5 py-3 font-mono text-[11.5px] uppercase tracking-[0.14em] text-[var(--v2-secondary)] transition-colors duration-200 hover:border-[var(--v2-line-strong)] hover:text-[var(--v2-ink)]"
             >
-              See all my work
+              See all visual work
             </Link>
           </div>
         </footer>

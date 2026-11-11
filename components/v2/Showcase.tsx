@@ -2,16 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { AnimatePresence, LayoutGroup, motion } from "motion/react";
-import { useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DURATION, EASE, ENERGY, POP } from "./motion";
 import { CursorChip, SplitTitle } from "./Playful";
 import { Drift, Tilt } from "./Tilt";
 
-/* The showcase: the design work as key art, the way a streaming service lays
-   out a shelf, under a short record of the years spent as a designer before
-   product. Wide frames, the image carrying the card, the title set big on a
-   dark fade at the bottom.
+/* The shelf: the visual work as key art, the way a streaming service lays
+   out a shelf. Wide frames, the image carrying the card, the title set big on
+   a dark fade at the bottom. The home page shows the first few pieces on it;
+   the Visual work page opens with the record of the years spent as a designer
+   before product (DesignRecord) and lays every piece out in full.
 
    Each card behaves like a focused tile on a TV: under a mouse it tips toward
    the pointer and a soft highlight slides across the glass, so the card reads
@@ -19,8 +20,8 @@ import { Drift, Tilt } from "./Tilt";
    and opacity on motion values, so following the pointer never re-renders
    React and never lays out. Touch and reduced motion get the still card.
 
-   A shelf scrolls sideways with snap on every width, with arrows above it on
-   a pointer device, so three cards never squeeze down to thumbnails. */
+   A shelf moves sideways a card at a time on its arrows, on every width and
+   every device, so three cards never squeeze down to thumbnails. */
 
 type Card = {
   title: string;
@@ -40,7 +41,7 @@ type Card = {
   art?: string;
 };
 
-const design: Card[] = [
+export const designCards: Card[] = [
   {
     title: "Greens",
     eyebrow: "Brand guide · Malta",
@@ -69,7 +70,7 @@ const design: Card[] = [
     title: "Savee",
     eyebrow: "Brand · 2025",
     line: "A heavy wordmark and one green, built to survive a feed.",
-    href: "#design",
+    href: "/visual-work#savee",
     src: "/design/savee-hero.webp",
     w: 1600,
     h: 1200,
@@ -80,7 +81,7 @@ const design: Card[] = [
     title: "Meinerva",
     eyebrow: "Identity · 2025",
     line: "A lettered M in halftone dots, the colour left to the art.",
-    href: "#design",
+    href: "/visual-work#meinerva",
     src: "/design/meinerva-wordmark.webp",
     w: 577,
     h: 232,
@@ -92,7 +93,7 @@ const design: Card[] = [
     title: "Savee icon",
     eyebrow: "App icon · 2025",
     line: "One fork, frosted glass on the brand green.",
-    href: "#design",
+    href: "/visual-work#savee",
     src: "/design/savee-icon.webp",
     w: 640,
     h: 640,
@@ -100,24 +101,6 @@ const design: Card[] = [
     tint: "#1E2A21",
   },
 ];
-
-export function Showcase() {
-  return (
-    <section
-      aria-labelledby="showcase-heading"
-      className="border-t border-[var(--v2-line)] pb-6 pt-14 md:pt-20"
-    >
-      <h2 id="showcase-heading" className="sr-only">
-        Design
-      </h2>
-      {/* the rows of the record open, and everything under them glides down
-          on a layout animation rather than jumping */}
-      <LayoutGroup>
-        <Shelf title="Design" cards={design} intro={<DesignRecord />} />
-      </LayoutGroup>
-    </section>
-  );
-}
 
 /* Where the eye for brand came from: the design jobs before product, as a
    ledger whose rows open. A row floods with ink from the left on hover the
@@ -154,7 +137,7 @@ const record: Job[] = [
   },
 ];
 
-function DesignRecord() {
+export function DesignRecord() {
   const [open, setOpen] = useState<number | null>(0);
   return (
     <div className="mb-8 grid gap-6 md:mb-10 md:grid-cols-12 md:gap-8">
@@ -318,61 +301,92 @@ function JobRow({
   );
 }
 
-function Shelf({
+export function Shelf({
+  name,
   title,
   cards,
   intro,
 }: {
-  title: string;
+  /* what the arrows say they move */
+  name: string;
+  /* the big display title, when the shelf is the page's own section */
+  title?: string;
   cards: Card[];
   intro?: React.ReactNode;
 }) {
   const track = useRef<HTMLUListElement>(null);
+  /* the track starts on its first card with more to its right, at every
+     width the shelf is built for */
+  const [edge, setEdge] = useState({ start: true, end: false });
 
-  /* one card's width plus the gap, so an arrow always lands on a card */
+  const sync = useCallback(() => {
+    const el = track.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    setEdge({ start: el.scrollLeft <= 2, end: el.scrollLeft >= max - 2 });
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("resize", sync);
+    return () => window.removeEventListener("resize", sync);
+  }, [sync]);
+
+  /* to the next card's left edge, or back to the previous one; the last
+     stop is wherever the track runs out, so the final card ends flush */
   const step = (dir: 1 | -1) => {
     const el = track.current;
-    const first = el?.firstElementChild as HTMLElement | null;
-    if (!el || !first) return;
-    el.scrollBy({ left: dir * (first.offsetWidth + 20), behavior: "smooth" });
+    if (!el) return;
+    const items = [...el.children] as HTMLElement[];
+    if (!items.length) return;
+    const max = el.scrollWidth - el.clientWidth;
+    const stops = items.map((li) => Math.min(max, li.offsetLeft - items[0].offsetLeft));
+    const at = el.scrollLeft;
+    const left =
+      dir === 1
+        ? (stops.find((s) => s > at + 2) ?? max)
+        : ([...stops].reverse().find((s) => s < at - 2) ?? 0);
+    el.scrollTo({ left, behavior: "smooth" });
   };
 
   return (
     <div>
-      <SplitTitle
-        text={title}
-        className="mb-5 font-display text-[34px] font-extralight leading-none tracking-[-0.045em] md:mb-7 md:text-[56px]"
-      />
+      {title && (
+        <SplitTitle
+          text={title}
+          className="mb-5 font-display text-[34px] font-extralight leading-none tracking-[-0.045em] md:mb-7 md:text-[56px]"
+        />
+      )}
 
       {intro}
 
       {/* the arrows sit on the shelf they move, not up by the title, where
           the record would come between them */}
-      <div className="mb-3 hidden justify-end gap-2 [@media(pointer:fine)]:flex">
-        <Arrow label={`Previous in ${title}`} onClick={() => step(-1)} flip />
-        <Arrow label={`Next in ${title}`} onClick={() => step(1)} />
+      <div className="mb-3 flex justify-end gap-2">
+        <Arrow label={`Previous in ${name}`} onClick={() => step(-1)} disabled={edge.start} flip />
+        <Arrow label={`Next in ${name}`} onClick={() => step(1)} disabled={edge.end} />
       </div>
 
       {/* the track bleeds to both edges of the window, not just past the
           gutter, so the next card peeks in from the page edge, the cue that
           there is more to the shelf; the padding puts the first card back on
-          the column. Scroll padding resolves % against the track itself, so
-          the snap line is worked out from the 1240px page column instead */}
-      {/* overflow-x alone makes the y axis auto too, and the cards rising in
-          (or lifting on hover) poke out of the bottom, so a hidden vertical
-          scrollbar came and went. Safari 26 crashed the tab when that happened
-          during a momentum swipe on the snap track, so y is shut outright */}
+          the column */}
+      {/* Only the arrows move it. Swiping it sideways fought Lenis for every
+          wheel event and, in Safari 26, could crash the tab when a hidden
+          scrollbar came and went mid swipe, so the track is overflow hidden:
+          no scrollbars at all, nothing to swipe, and an up or down gesture
+          over it simply scrolls the page */}
       {/* the reveal is driven by the track, not each card: a card waiting
           off to the side would never count as in view and never appear */}
       <CursorChip label="View ↗︎">
         <motion.ul
           ref={track}
+          onScroll={sync}
           layout="position"
           initial="hidden"
           whileInView="shown"
           viewport={{ once: true, amount: 0.3 }}
           transition={{ staggerChildren: 0.1 }}
-          className="-mx-5 flex list-none snap-x snap-mandatory scroll-px-5 gap-5 overflow-x-auto overflow-y-hidden px-5 pb-10 pt-2 [scrollbar-width:none] md:mx-[calc(50%-50vw)] md:scroll-px-[calc((100vw_-_min(100vw,1240px))/2_+_2rem)] md:px-[calc(50vw-50%)]"
+          className="relative -mx-5 flex list-none gap-5 overflow-hidden px-5 pb-10 pt-2 md:mx-[calc(50%-50vw)] md:px-[calc(50vw-50%)]"
         >
           {cards.map((c) => (
             <motion.li
@@ -382,7 +396,7 @@ function Shelf({
                 shown: { opacity: 1, y: 0, scale: 1 },
               }}
               transition={{ duration: DURATION.slow, ease: EASE }}
-              className="w-[84%] shrink-0 snap-start sm:w-[62%] lg:w-[46%]"
+              className="w-[84%] shrink-0 sm:w-[62%] lg:w-[46%]"
             >
               <PosterCard card={c} />
             </motion.li>
@@ -396,10 +410,12 @@ function Shelf({
 function Arrow({
   label,
   onClick,
+  disabled = false,
   flip = false,
 }: {
   label: string;
   onClick: () => void;
+  disabled?: boolean;
   flip?: boolean;
 }) {
   return (
@@ -407,9 +423,10 @@ function Arrow({
       type="button"
       aria-label={label}
       onClick={onClick}
+      disabled={disabled}
       whileTap={{ scale: 0.92 }}
       transition={{ duration: DURATION.press }}
-      className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--v2-line)] text-[var(--v2-secondary)] transition-colors duration-200 hover:border-[var(--v2-line-strong)] hover:text-[var(--v2-ink)]"
+      className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--v2-line)] text-[var(--v2-secondary)] transition-colors duration-200 hover:border-[var(--v2-line-strong)] hover:text-[var(--v2-ink)] disabled:pointer-events-none disabled:opacity-30"
     >
       <span aria-hidden className={flip ? "-scale-x-100" : ""}>
         →
@@ -421,28 +438,37 @@ function Arrow({
 /* The focused tile (Tilt): tips toward the pointer, lifts, and a highlight
    crosses the glass. The key art drifts a little against the tilt, which is
    what makes the title read as sitting in front of the image. */
-function PosterCard({ card }: { card: Card }) {
-  /* a design card opens the Work block's Design view: a plain anchor, so the
-     hash change reaches WorkSwitch the same way the top bar's link does */
-  const Tag = card.href.startsWith("#") ? "a" : Link;
-
+/* `wide`: the card spans the whole column (the home page's Greens tile), so
+   it is cut to a letterbox and its art sits a little smaller */
+export function PosterCard({
+  card,
+  wide = false,
+  art,
+}: {
+  card: Card;
+  wide?: boolean;
+  /* a composed piece of art in place of the card's own image */
+  art?: React.ReactNode;
+}) {
   return (
     <Tilt radius={22}>
-      <Tag
+      <Link
         href={card.href}
-        className="group relative isolate block aspect-[16/10] overflow-hidden rounded-[22px] border border-white/10 bg-black outline-offset-4"
+        className={`group relative isolate block overflow-hidden rounded-[22px] ${wide ? "aspect-[16/10] md:aspect-[21/9]" : "aspect-[16/10]"} border border-white/10 bg-black outline-offset-4`}
         style={card.tint ? { background: card.tint } : undefined}
       >
         <Drift className="absolute -inset-4">
-          {card.tint ? (
-            <div className="flex h-full w-full items-center justify-center pb-[12%]">
+          {art ? (
+            <div className="h-full w-full p-4">{art}</div>
+          ) : card.tint ? (
+            <div className="flex h-full w-full items-center justify-center pb-[12%] max-sm:items-start max-sm:pb-0 max-sm:pt-[14%]">
               <Image
                 src={card.src}
                 alt={card.alt}
                 width={card.w}
                 height={card.h}
                 sizes="(min-width: 1024px) 320px, 50vw"
-                className={`h-auto ${card.art ?? "w-[34%]"} transition-transform duration-[900ms] [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.06]`}
+                className={`h-auto max-sm:!w-[36%] ${card.art ?? "w-[34%]"} ${wide ? "md:!w-[34%]" : ""} transition-transform duration-[900ms] [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.06]`}
               />
             </div>
           ) : (
@@ -471,7 +497,7 @@ function PosterCard({ card }: { card: Card }) {
             <span className="mt-2 font-display text-[30px] font-light leading-[0.95] tracking-[-0.045em] md:text-[44px]">
               {card.title}
             </span>
-            <span className="mt-2.5 max-w-[36ch] text-[13px] leading-snug text-white/70 md:text-[14px]">
+            <span className="mt-2.5 max-w-[36ch] text-[13px] leading-snug text-white/70 max-sm:hidden md:text-[14px]">
               {card.line}
             </span>
           </span>
@@ -484,7 +510,7 @@ function PosterCard({ card }: { card: Card }) {
             ↗︎
           </span>
         </span>
-      </Tag>
+      </Link>
     </Tilt>
   );
 }

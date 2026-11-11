@@ -96,7 +96,7 @@ const tiles: Tile[] = [
   },
 ];
 
-/* the switch shows this beside the tab label */
+/* the count the home page and the Visual work head show beside the label */
 export const designCount = tiles.length + 1;
 
 type Detail = {
@@ -258,6 +258,7 @@ export function DesignWork() {
                         alt={alt}
                         fill
                         sizes="(min-width: 768px) 20vw, 50vw"
+                        priority
                         className="object-cover transition-transform duration-700 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-safe:group-hover:scale-[1.05]"
                       />
                     </span>
@@ -445,7 +446,12 @@ function Project({
   }, [open]);
 
   return (
-    <motion.section layout="position" aria-label={detail.title}>
+    <motion.section
+      layout="position"
+      id={detail.id}
+      aria-label={detail.title}
+      className="scroll-mt-24"
+    >
       <div className="mb-5 flex items-center justify-between gap-4">
         <span className="flex items-baseline gap-3 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--v2-label)]">
           <span className="text-[var(--v2-ink)]">{detail.title}</span>
@@ -616,8 +622,9 @@ function ProjectPanel({
         </div>
       </div>
 
-      {/* the screens, as a strip that scrolls sideways on narrow screens */}
-      <ul className="relative z-10 flex list-none snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto overflow-y-hidden px-6 pb-7 pt-7 [scrollbar-width:none] md:gap-4 md:scroll-px-9 md:px-9 md:pb-9">
+      {/* the screens, as a strip that scrolls sideways on narrow screens; a
+          sideways swipe goes to the browser, not Lenis (see the Showcase shelf) */}
+      <ul data-lenis-prevent-horizontal className="relative z-10 flex list-none snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto overflow-y-hidden px-6 pb-7 pt-7 [scrollbar-width:none] md:gap-4 md:scroll-px-9 md:px-9 md:pb-9">
         {detail.shots.map((s, i) => (
           <motion.li
             key={s.src}

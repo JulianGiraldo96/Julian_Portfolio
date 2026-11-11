@@ -730,10 +730,10 @@ function MoreWork({ currentSlug }: { currentSlug: string }) {
           Keep watching
         </h2>
         <Link
-          href="/#work"
+          href="/product-design"
           className="-my-2 py-2 font-mono text-[12px] uppercase tracking-[0.2em] text-[var(--v2-label)] transition-colors hover:text-[var(--v2-ink)]"
         >
-          All work ↗︎
+          All product design ↗︎
         </Link>
       </div>
 
@@ -750,8 +750,8 @@ function PageFoot() {
   return (
     <footer className="mx-auto mt-20 max-w-[1240px] px-5 pb-14 md:px-8">
       <div className="flex flex-col gap-3 border-t border-[var(--v2-line)] pt-6 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--v2-label)] md:flex-row md:items-center md:justify-between">
-        <Link href="/" className="-my-2 inline-block py-2 transition-colors hover:text-[var(--v2-ink)]">
-          ← All work
+        <Link href="/product-design" className="-my-2 inline-block py-2 transition-colors hover:text-[var(--v2-ink)]">
+          ← All product design
         </Link>
         <span>© {new Date().getFullYear()} · Julian Giraldo · Berlin</span>
       </div>

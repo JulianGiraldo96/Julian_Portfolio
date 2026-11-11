@@ -21,6 +21,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     });
     window.__lenis = lenis;
 
+    const cleanups: (() => void)[] = [];
     let rafId: number;
     function raf(time: number) {
       lenis.raf(time);
@@ -39,14 +40,21 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     };
 
     if (window.location.hash) {
-      // wait a tick so sections mount
+      // wait a tick so sections mount, then once more after the entrances
+      // have run: they grow the page, and the first landing comes up short
       requestAnimationFrame(() => scrollToHash(window.location.hash, true));
+      const again = setTimeout(() => {
+        lenis.resize();
+        scrollToHash(window.location.hash, true);
+      }, 700);
+      cleanups.push(() => clearTimeout(again));
     }
 
     const onHash = () => scrollToHash(window.location.hash);
     window.addEventListener("hashchange", onHash);
 
     return () => {
+      cleanups.forEach((fn) => fn());
       cancelAnimationFrame(rafId);
       window.removeEventListener("hashchange", onHash);
       lenis.destroy();

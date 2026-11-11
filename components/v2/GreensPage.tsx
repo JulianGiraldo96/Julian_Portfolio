@@ -1116,10 +1116,10 @@ export function GreensPage({ fontClass = "" }: { fontClass?: string }) {
               <p className="mt-2 text-[15px] text-[var(--v2-secondary)]">The logo, the guide, and the templates that carry it.</p>
             </div>
             <Link
-              href="/"
+              href="/visual-work"
               className="rounded-full border border-[var(--v2-line)] px-5 py-3 font-mono text-[11.5px] uppercase tracking-[0.14em] text-[var(--v2-secondary)] transition-colors duration-200 hover:border-[var(--v2-line-strong)] hover:text-[var(--v2-ink)]"
             >
-              See all my work
+              See all visual work
             </Link>
           </div>
         </footer>

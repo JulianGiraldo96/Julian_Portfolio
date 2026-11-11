@@ -282,6 +282,8 @@ const PAGE_LINES: [string, string[]][] = [
   ["/design/camelwebs", ["Llamas! Well, a llama logo.", "171 icons, one stroke weight."]],
   ["/design/greens", ["Drag the logo. Before, after.", "I like the leaf. It looks fresh."]],
   ["/notchtunes", ["Music in the notch. Free for Mac.", "Go on, hover the notch."]],
+  ["/product-design", ["Five systems. The ERP is the big one.", "Hover a card. They move."]],
+  ["/visual-work", ["So much design in here.", "Logos, posts, films. All Julian."]],
   ["/design", ["So much design in here."]],
   ["/", ["Hi, I'm Pip. I live down here.", "Scroll down. The work is the good part.", "Psst. The ERP case is the big one."]],
 ];

@@ -1,51 +1,61 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { BerlinClock } from "../Clock";
 import { ThemeToggle } from "./Theme";
-import { VIEW_EVENT } from "./WorkSwitch";
-import { SPRING, ENERGY } from "./motion";
+import { SPRING, ENERGY, EASE, DURATION } from "./motion";
 
 /* Same anatomy as the original portfolio header, wordmark left, links centred,
    Berlin time right, but drawn light: hairline rule, glass fill, no
    mix-blend inversion, and the theme switch sitting beside the clock.
-   On a case study the section links point back at the home page. */
 
-/* "#design" opens the Work block on its Design view (WorkSwitch listens for
-   the hash), so both kinds of work are one click from anywhere. */
-const sections = [
-  { hash: "#work", label: "Product" },
-  { hash: "#design", label: "Design" },
-  { hash: "#contact", label: "Contact" },
+   The two kinds of work are pages of their own, so the bar is the switch
+   between them from anywhere on the site: Product design, Visual work, and
+   Contact, which is the footer of whichever page you are on (the home page's
+   when you are somewhere without one). The link for the page you are on, or
+   the kind of work it belongs to, is underlined. */
+
+type Item = { href: string; label: string; short: string; on: (path: string) => boolean };
+
+const items: Item[] = [
+  {
+    href: "/product-design",
+    label: "Product design",
+    short: "Product",
+    on: (p) => p === "/product-design" || p.startsWith("/work/"),
+  },
+  {
+    href: "/visual-work",
+    label: "Visual work",
+    short: "Visual",
+    on: (p) => p === "/visual-work" || p.startsWith("/design/"),
+  },
 ];
 
 export function TopBar({ home = false }: { home?: boolean }) {
-  /* on the home page these are in-page anchors; anywhere else they have to
-     travel back to the home page first */
-  const href = (hash: string) => (home ? hash : `/${hash}`);
+  const pathname = usePathname();
 
-  /* On the home page the scroll is Lenis's alone. Left to the browser, the
-     anchor jumped natively and Lenis, still holding its old position and
-     page length, then pulled the page somewhere else. The hash is written
-     with replaceState and announced with WorkSwitch's own event, so the
-     Product and Design links still pick the view. */
-  const go = (e: React.MouseEvent, hash: string) => {
-    if (!home || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    const el = document.querySelector<HTMLElement>(hash);
+  /* Contact: the page's own footer when it has one (home and both work
+     pages), the home page's otherwise. Lenis owns the scroll, so an in-page
+     jump goes through it rather than the browser: left to the browser the
+     anchor jumped natively and Lenis, still holding its old position, then
+     pulled the page somewhere else. */
+  const hasContact = home || pathname === "/product-design" || pathname === "/visual-work";
+  const contactHref = hasContact ? "#contact" : "/#contact";
+  const goContact = (e: React.MouseEvent) => {
+    if (!hasContact || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const el = document.querySelector<HTMLElement>("#contact");
     if (!el) return;
     e.preventDefault();
-    history.replaceState(null, "", hash);
-    window.dispatchEvent(new Event(VIEW_EVENT));
-    /* one frame, so a view switch has started before the target is measured */
-    requestAnimationFrame(() => {
-      const lenis = window.__lenis;
-      if (lenis) {
-        lenis.resize();
-        lenis.scrollTo(el, { offset: -72 });
-      } else el.scrollIntoView({ behavior: "smooth" });
-    });
+    history.replaceState(null, "", "#contact");
+    const lenis = window.__lenis;
+    if (lenis) {
+      lenis.resize();
+      lenis.scrollTo(el, { offset: -72 });
+    } else el.scrollIntoView({ behavior: "smooth" });
   };
 
   /* The bar earns its surface. At the top of the page there is nothing under
@@ -59,9 +69,35 @@ export function TopBar({ home = false }: { home?: boolean }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  /* The phone menu. Its state remembers the path it was opened on, so a
+     route change closes it on its own (the state no longer matches) without
+     an effect setting state. */
+  const [openedOn, setOpenedOn] = useState<string | null>(null);
+  const menuOpen = openedOn === pathname;
+  const closeMenu = () => setOpenedOn(null);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpenedOn(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
+
+  const linkClass = (on: boolean) =>
+    `group relative py-2 transition-colors ${
+      on ? "text-[var(--v2-ink)]" : "text-[var(--v2-secondary)] hover:text-[var(--v2-ink)]"
+    }`;
+  const underline = (on: boolean) => (
+    <span
+      aria-hidden
+      className={`absolute inset-x-0 -bottom-0.5 h-px origin-right bg-current transition-transform duration-200 ease-out motion-reduce:transition-none group-hover:origin-left group-hover:scale-x-100 ${
+        on ? "scale-x-100" : "scale-x-0"
+      }`}
+    />
+  );
+
   return (
     <header
-      data-scrolled={scrolled}
+      data-scrolled={scrolled || menuOpen}
       className="v2-topbar sticky top-0 z-50 backdrop-blur-xl"
     >
       <a
@@ -73,6 +109,8 @@ export function TopBar({ home = false }: { home?: boolean }) {
       <div className="mx-auto flex max-w-[1240px] items-center justify-between gap-4 px-5 py-3.5 md:grid md:grid-cols-3 md:px-8">
         <Link
           href="/"
+          onClick={closeMenu}
+          aria-current={home ? "page" : undefined}
           className="-my-2 justify-self-start py-2 font-mono text-[13px] uppercase tracking-[0.2em] md:text-[14px]"
         >
           Julian
@@ -81,21 +119,27 @@ export function TopBar({ home = false }: { home?: boolean }) {
 
         <nav aria-label="Sections" className="hidden justify-center md:flex">
           <ul className="flex list-none items-center gap-8 font-mono text-[12px] uppercase tracking-[0.18em]">
-            {sections.map((l) => (
-              <li key={l.hash}>
-                <a
-                  href={href(l.hash)}
-                  onClick={(e) => go(e, l.hash)}
-                  className="group relative py-2 text-[var(--v2-secondary)] transition-colors hover:text-[var(--v2-ink)]"
-                >
-                  {l.label}
-                  <span
-                    aria-hidden
-                    className="absolute inset-x-0 -bottom-0.5 h-px origin-right scale-x-0 bg-current transition-transform duration-200 ease-out motion-reduce:transition-none group-hover:origin-left group-hover:scale-x-100"
-                  />
-                </a>
-              </li>
-            ))}
+            {items.map((l) => {
+              const on = l.on(pathname);
+              return (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    aria-current={pathname === l.href ? "page" : undefined}
+                    className={linkClass(on)}
+                  >
+                    {l.label}
+                    {underline(on)}
+                  </Link>
+                </li>
+              );
+            })}
+            <li>
+              <a href={contactHref} onClick={goContact} className={linkClass(false)}>
+                Contact
+                {underline(false)}
+              </a>
+            </li>
           </ul>
         </nav>
 
@@ -105,9 +149,89 @@ export function TopBar({ home = false }: { home?: boolean }) {
             <BerlinClock />
           </motion.span>
           <ThemeToggle />
+          <button
+            type="button"
+            aria-expanded={menuOpen}
+            aria-controls="topbar-menu"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            onClick={() => setOpenedOn(menuOpen ? null : pathname)}
+            className="flex h-[30px] w-[30px] items-center justify-center rounded-full border border-[var(--v2-line)] text-[var(--v2-label)] transition-colors duration-200 hover:border-[var(--v2-line-strong)] hover:text-[var(--v2-ink)] md:hidden"
+          >
+            <Burger open={menuOpen} />
+          </button>
         </div>
       </div>
+
+      {/* the phone menu: the same three links, laid under the bar */}
+      <AnimatePresence initial={false}>
+        {menuOpen && (
+          <motion.nav
+            key="menu"
+            id="topbar-menu"
+            aria-label="Sections"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0, transition: { duration: DURATION.fast, ease: EASE } }}
+            exit={{ opacity: 0, y: -6, transition: { duration: DURATION.hover, ease: EASE } }}
+            className="border-t border-[var(--v2-line)] md:hidden"
+          >
+            <ul className="mx-auto flex max-w-[1240px] list-none flex-col px-5 py-2 font-mono text-[12px] uppercase tracking-[0.18em]">
+              {items.map((l) => {
+                const on = l.on(pathname);
+                return (
+                  <li key={l.href} className="border-b border-[var(--v2-line)] last:border-b-0">
+                    <Link
+                      href={l.href}
+                      onClick={closeMenu}
+                      aria-current={pathname === l.href ? "page" : undefined}
+                      className={`flex min-h-[48px] items-center justify-between gap-4 ${
+                        on ? "text-[var(--v2-ink)]" : "text-[var(--v2-secondary)]"
+                      }`}
+                    >
+                      {l.label}
+                      <span aria-hidden className={on ? "" : "opacity-50"}>
+                        {on ? "·" : "↗︎"}
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+              <li className="border-t border-[var(--v2-line)]">
+                <a
+                  href={contactHref}
+                  onClick={(e) => {
+                    closeMenu();
+                    goContact(e);
+                  }}
+                  className="flex min-h-[48px] items-center justify-between gap-4 text-[var(--v2-secondary)]"
+                >
+                  Contact
+                  <span aria-hidden className="opacity-50">↓</span>
+                </a>
+              </li>
+            </ul>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
+  );
+}
+
+/* two bars that cross when the menu is open */
+function Burger({ open }: { open: boolean }) {
+  const bar = "absolute left-1/2 h-px w-[14px] -translate-x-1/2 bg-current";
+  return (
+    <span aria-hidden className="relative block h-[14px] w-[14px]">
+      <motion.span
+        animate={{ y: open ? 7 : 4, rotate: open ? 45 : 0 }}
+        transition={SPRING}
+        className={bar}
+      />
+      <motion.span
+        animate={{ y: open ? 7 : 10, rotate: open ? -45 : 0 }}
+        transition={SPRING}
+        className={bar}
+      />
+    </span>
   );
 }
 
