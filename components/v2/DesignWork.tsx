@@ -59,6 +59,12 @@ const tiles: Tile[] = [
     note: "Weekly post templates, the monthly offers leaflet, and films from concept to edit.",
   },
   {
+    id: "duo",
+    span: "md:col-span-12",
+    caption: "Duo Sicilian Ice Cream · Logo, characters and packaging",
+    note: "A gelato shop in Berlin. The logo out of its oval, a cast of drawn characters, the shirts, the jars, a 42 strip wall menu and the campaigns. Open it ↗︎",
+  },
+  {
     id: "camelwebs",
     span: "md:col-span-12",
     caption: "CamelWebs · Brand identity and guide",
@@ -267,7 +273,33 @@ export function DesignWork() {
               </Uncover>
             </Link>
           </Piece>
-          <Piece tile={byId.camelwebs} index={2}>
+          <Piece tile={byId.duo} index={2}>
+            <Link
+              href="/design/duo"
+              aria-label="Duo Sicilian Ice Cream, open the logo, characters and packaging"
+              className="block h-full"
+            >
+              <Uncover className="aspect-[16/9] md:aspect-[16/6]" style={{ background: "#74D0BA" }}>
+                <span className="grid h-full w-full grid-cols-4">
+                  {["arancino", "brot", "cannolo", "gelato"].map((c) => (
+                    <span key={c} className="relative block overflow-hidden">
+                      <Image
+                        src={`/design/duo/cast/${c}.webp`}
+                        alt=""
+                        fill
+                        sizes="(min-width: 768px) 25vw, 25vw"
+                        className="object-cover object-[50%_45%] transition-transform duration-700 [transition-timing-function:cubic-bezier(0.32,0.72,0,1)] motion-safe:group-hover:scale-[1.05]"
+                      />
+                    </span>
+                  ))}
+                </span>
+                <span className="absolute left-2 top-2 z-10 w-[15%] md:left-4 md:top-4 md:w-[8.5%]">
+                  <Image src="/design/duo/logo/wordmark-ink.svg" alt="The Duo Sicilian Ice Cream logo over its cast of drawn characters" width={797} height={538} className="h-auto w-full" />
+                </span>
+              </Uncover>
+            </Link>
+          </Piece>
+          <Piece tile={byId.camelwebs} index={3}>
             <Link
               href="/design/camelwebs"
               aria-label="CamelWebs, open the brand identity and guide"
